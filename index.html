@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
@@ -20,17 +20,12 @@
         --highlight: #f0c060;
         --code-bg: #1a1208;
         --code-fg: #e8d5b0;
-        --red: #c0392b;
-        --green: #27ae60;
-        --blue: #2980b9;
       }
-
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-
       body {
         background: var(--paper);
         color: var(--ink);
@@ -45,15 +40,12 @@
         );
         background-attachment: fixed;
       }
-
       .page {
         max-width: 860px;
         margin: 0 auto;
         padding: 60px 40px;
         position: relative;
       }
-
-      /* 노트 좌측 빨간 줄 */
       .page::before {
         content: "";
         position: fixed;
@@ -64,14 +56,11 @@
         background: rgba(192, 57, 43, 0.35);
         pointer-events: none;
       }
-
-      /* ── 헤더 ── */
       .header {
         padding-left: 48px;
-        margin-bottom: 56px;
+        margin-bottom: 48px;
         animation: fadeSlide 0.6s ease both;
       }
-
       .header .label {
         font-family: "JetBrains Mono", monospace;
         font-size: 11px;
@@ -81,7 +70,6 @@
         margin-bottom: 8px;
         opacity: 0.8;
       }
-
       .header h1 {
         font-family: "Noto Serif KR", serif;
         font-size: 32px;
@@ -92,34 +80,17 @@
         padding-bottom: 12px;
         display: inline-block;
       }
-
       .header .meta {
         margin-top: 10px;
         font-size: 13px;
         color: #7a6650;
         font-family: "JetBrains Mono", monospace;
       }
-
-      /* ── 섹션 카드 ── */
       .section {
         padding-left: 48px;
-        margin-bottom: 44px;
+        margin-bottom: 40px;
         animation: fadeSlide 0.6s ease both;
       }
-
-      .section:nth-child(2) {
-        animation-delay: 0.1s;
-      }
-      .section:nth-child(3) {
-        animation-delay: 0.2s;
-      }
-      .section:nth-child(4) {
-        animation-delay: 0.3s;
-      }
-      .section:nth-child(5) {
-        animation-delay: 0.4s;
-      }
-
       .section-title {
         font-family: "Noto Serif KR", serif;
         font-size: 15px;
@@ -131,7 +102,6 @@
         align-items: center;
         gap: 10px;
       }
-
       .section-title .num {
         width: 26px;
         height: 26px;
@@ -145,7 +115,6 @@
         font-family: "JetBrains Mono", monospace;
         flex-shrink: 0;
       }
-
       .card {
         background: rgba(255, 255, 255, 0.5);
         border: 1px solid var(--line);
@@ -154,25 +123,17 @@
         border-radius: 0 6px 6px 0;
         box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
       }
-
       .card.green {
         border-left-color: var(--accent2);
       }
       .card.blue {
         border-left-color: var(--accent3);
       }
-      .card.gold {
-        border-left-color: #c8860a;
-        background: rgba(255, 240, 190, 0.4);
-      }
-
       p {
         font-size: 15px;
         line-height: 2;
         color: #2a1f10;
       }
-
-      /* ── 코드 블록 ── */
       .code-block {
         background: var(--code-bg);
         border-radius: 8px;
@@ -180,7 +141,6 @@
         margin: 12px 0;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
       }
-
       .code-header {
         background: #2d2318;
         padding: 8px 16px;
@@ -188,7 +148,6 @@
         align-items: center;
         gap: 6px;
       }
-
       .code-header .dot {
         width: 10px;
         height: 10px;
@@ -203,7 +162,6 @@
       .dot-g {
         background: #28c840;
       }
-
       .code-header .lang {
         margin-left: auto;
         font-family: "JetBrains Mono", monospace;
@@ -211,7 +169,6 @@
         color: #8a7a60;
         letter-spacing: 0.1em;
       }
-
       pre {
         padding: 20px 24px;
         font-family: "JetBrains Mono", monospace;
@@ -221,18 +178,14 @@
         overflow-x: auto;
         tab-size: 4;
       }
-
       .kw {
         color: #c792ea;
       }
       .fn {
         color: #82aaff;
       }
-      .num {
+      .nl {
         color: #f78c6c;
-      }
-      .str {
-        color: #c3e88d;
       }
       .cmt {
         color: #546e7a;
@@ -244,8 +197,6 @@
       .ret {
         color: #89ddff;
       }
-
-      /* ── 재귀 트리 ── */
       .tree-container {
         background: rgba(255, 255, 255, 0.6);
         border: 1px solid var(--line);
@@ -254,21 +205,16 @@
         overflow-x: auto;
         box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
       }
-
       svg.tree {
         display: block;
         margin: 0 auto;
-        font-family: "JetBrains Mono", monospace;
       }
-
-      /* ── 단계별 테이블 ── */
       .trace-table {
         width: 100%;
         border-collapse: collapse;
         font-family: "JetBrains Mono", monospace;
         font-size: 13px;
       }
-
       .trace-table th {
         background: var(--ink);
         color: var(--paper);
@@ -277,21 +223,18 @@
         font-weight: 600;
         letter-spacing: 0.05em;
       }
-
       .trace-table td {
         padding: 9px 14px;
         border-bottom: 1px solid var(--aged);
         vertical-align: middle;
         line-height: 1.6;
       }
-
       .trace-table tr:nth-child(even) td {
         background: rgba(0, 0, 0, 0.03);
       }
       .trace-table tr:hover td {
         background: rgba(240, 192, 96, 0.15);
       }
-
       .tag {
         display: inline-block;
         padding: 2px 8px;
@@ -312,8 +255,6 @@
         background: #d5f0e0;
         color: #2d5a3d;
       }
-
-      /* ── 정답 박스 ── */
       .answer-box {
         background: var(--ink);
         color: var(--highlight);
@@ -324,7 +265,6 @@
         position: relative;
         overflow: hidden;
       }
-
       .answer-box::before {
         content: "★";
         position: absolute;
@@ -334,7 +274,6 @@
         color: rgba(255, 255, 255, 0.03);
         pointer-events: none;
       }
-
       .answer-box .answer-label {
         font-family: "Noto Serif KR", serif;
         font-size: 13px;
@@ -342,7 +281,6 @@
         opacity: 0.7;
         margin-bottom: 8px;
       }
-
       .answer-box .answer-value {
         font-family: "JetBrains Mono", monospace;
         font-size: 56px;
@@ -351,22 +289,18 @@
         letter-spacing: -2px;
         animation: pulse 2s ease-in-out infinite;
       }
-
       .answer-box .answer-desc {
         margin-top: 10px;
         font-size: 13px;
         opacity: 0.6;
         font-family: "JetBrains Mono", monospace;
       }
-
-      /* ── 포인트 박스 ── */
       .point-list {
         list-style: none;
         display: flex;
         flex-direction: column;
         gap: 10px;
       }
-
       .point-list li {
         display: flex;
         gap: 12px;
@@ -374,14 +308,11 @@
         font-size: 14.5px;
         line-height: 1.8;
       }
-
       .point-list li .icon {
         font-size: 16px;
         margin-top: 2px;
         flex-shrink: 0;
       }
-
-      /* ── 애니메이션 ── */
       @keyframes fadeSlide {
         from {
           opacity: 0;
@@ -392,7 +323,6 @@
           transform: translateY(0);
         }
       }
-
       @keyframes pulse {
         0%,
         100% {
@@ -402,31 +332,133 @@
           opacity: 0.75;
         }
       }
-
-      /* ── 형광펜 밑줄 ── */
+      @keyframes revealDown {
+        from {
+          opacity: 0;
+          transform: translateY(-12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
       .hl {
         background: linear-gradient(
           transparent 55%,
           rgba(240, 192, 96, 0.5) 55%
         );
       }
-
       .mono {
         font-family: "JetBrains Mono", monospace;
         font-size: 13px;
       }
 
-      /* ── 구분선 ── */
-      hr.divider {
+      /* 버튼 */
+      .btn-row {
+        padding-left: 48px;
+        display: flex;
+        gap: 16px;
+        margin-bottom: 44px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 30px;
         border: none;
-        border-top: 1px dashed var(--line);
-        margin: 32px 0;
+        border-radius: 6px;
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        letter-spacing: 0.05em;
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s,
+          opacity 0.15s;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn:active {
+        transform: translateY(2px);
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--highlight);
+      }
+      .btn-answer:hover {
+        opacity: 0.85;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: var(--paper);
+        border: 2px solid #1e4a2d;
+      }
+      .btn-explain:hover {
+        opacity: 0.85;
+      }
+
+      /* 패널 */
+      .panel {
+        display: none;
+        padding-left: 48px;
+        margin-bottom: 44px;
+      }
+      .panel.visible {
+        display: block;
+        animation: revealDown 0.35s ease both;
+      }
+      .panel .section {
+        padding-left: 0;
+      }
+
+      /* 정답 전용 박스 */
+      .answer-only-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 36px 32px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-only-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 120px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-only-box .a-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-only-box .a-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 80px;
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: -3px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-only-box .a-desc {
+        margin-top: 14px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
       }
     </style>
   </head>
   <body>
     <div class="page">
-      <!-- ── 헤더 ── -->
       <div class="header">
         <div class="label">Algorithm Study Note</div>
         <h1>분할 정복 재귀 함수 출력값 추적</h1>
@@ -435,649 +467,649 @@
         </div>
       </div>
 
-      <!-- ── 1. 문제 유형 ── -->
+      <!-- 문제 코드 (항상 표시) -->
       <div class="section">
-        <div class="section-title"><span class="num">1</span>문제 유형</div>
-        <div class="card">
-          <p>
-            <span class="hl"
-              >재귀 함수의 실행 결과를 직접 추적(Trace)하는 문제</span
-            >입니다.<br />
-            배열을 절반씩 분할하는
-            <strong>분할 정복(Divide &amp; Conquer)</strong> 구조를 사용하며, 각
-            재귀 호출의 반환값이 어떻게 합산되는지 이해하는 것이 핵심입니다.<br /><br />
-            알고리즘 시험에서 자주 출제되는
-            <strong>「재귀 트레이싱」</strong> 유형으로, 호출 스택을 직접
-            그려가며 값을 추적해야 합니다.
-          </p>
-        </div>
-      </div>
-
-      <!-- ── 2. 원본 코드 ── -->
-      <div class="section">
-        <div class="section-title">
-          <span class="num">2</span>문제 원본 코드
-        </div>
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
         <div class="code-block">
           <div class="code-header">
-            <span class="dot dot-r"></span>
-            <span class="dot dot-y"></span>
-            <span class="dot dot-g"></span>
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
             <span class="lang">Java</span>
           </div>
           <pre><span class="kw">public class</span> <span class="cls">Main</span> {
 
     <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
-        <span class="kw">int</span>[] data = {<span class="num">3</span>, <span class="num">5</span>, <span class="num">8</span>, <span class="num">12</span>, <span class="num">17</span>};
-        <span class="cls">System</span>.out.<span class="fn">println</span>(<span class="fn">func</span>(data, <span class="num">0</span>, data.length - <span class="num">1</span>));
+        <span class="kw">int</span>[] data = {<span class="nl">3</span>, <span class="nl">5</span>, <span class="nl">8</span>, <span class="nl">12</span>, <span class="nl">17</span>};
+        <span class="cls">System</span>.out.<span class="fn">println</span>(<span class="fn">func</span>(data, <span class="nl">0</span>, data.length - <span class="nl">1</span>));
     }
 
     <span class="kw">static int</span> <span class="fn">func</span>(<span class="kw">int</span>[] a, <span class="kw">int</span> st, <span class="kw">int</span> end) {
-        <span class="kw">if</span> (st >= end) <span class="ret">return</span> <span class="num">0</span>;           <span class="cmt">// 기저 조건</span>
-        <span class="kw">int</span> mid = (st + end) / <span class="num">2</span>;
+        <span class="kw">if</span> (st >= end) <span class="ret">return</span> <span class="nl">0</span>;           <span class="cmt">// 기저 조건</span>
+        <span class="kw">int</span> mid = (st + end) / <span class="nl">2</span>;
         <span class="ret">return</span> a[mid] + <span class="cls">Math</span>.<span class="fn">max</span>(
             <span class="fn">func</span>(a, st, mid),             <span class="cmt">// 왼쪽 절반</span>
-            <span class="fn">func</span>(a, mid + <span class="num">1</span>, end)         <span class="cmt">// 오른쪽 절반</span>
+            <span class="fn">func</span>(a, mid + <span class="nl">1</span>, end)         <span class="cmt">// 오른쪽 절반</span>
         );
     }
 }</pre>
         </div>
       </div>
 
-      <!-- ── 3. 함수 동작 원리 ── -->
-      <div class="section">
-        <div class="section-title">
-          <span class="num">3</span>함수 동작 원리
-        </div>
-        <div class="card blue">
-          <ul class="point-list">
-            <li>
-              <span class="icon">🔴</span>
-              <span
-                ><strong>기저 조건</strong>:
-                <span class="mono">st &gt;= end</span>이면
-                <span class="mono">0</span>을 반환합니다. 구간이 원소 1개 이하로
-                쪼개지면 더 이상 계산하지 않습니다.</span
-              >
-            </li>
-            <li>
-              <span class="icon">🔵</span>
-              <span
-                ><strong>분할</strong>: 현재 구간의 중간 인덱스
-                <span class="mono">mid = (st+end)/2</span> 를 계산합니다.</span
-              >
-            </li>
-            <li>
-              <span class="icon">🟢</span>
-              <span
-                ><strong>정복</strong>: <span class="mono">a[mid]</span>에
-                <strong>왼쪽(st~mid)</strong>과
-                <strong>오른쪽(mid+1~end)</strong> 재귀 결과 중
-                <span class="hl">더 큰 값</span>을 더하여 반환합니다.</span
-              >
-            </li>
-          </ul>
-        </div>
+      <!-- 버튼 -->
+      <div class="btn-row">
+        <button
+          class="btn btn-answer"
+          id="btnAnswer"
+          onclick="togglePanel('answer')"
+        >
+          ⭐ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="togglePanel('explain')"
+        >
+          📖 설명 보기
+        </button>
       </div>
 
-      <!-- ── 4. 단계별 추적 ── -->
-      <div class="section">
-        <div class="section-title">
-          <span class="num">4</span>재귀 호출 트리
-        </div>
-        <div class="tree-container">
-          <!-- SVG 재귀 트리 -->
-          <svg class="tree" width="720" height="340" viewBox="0 0 720 340">
-            <!-- 엣지 -->
-            <g stroke="#c8b89a" stroke-width="1.5" fill="none">
-              <!-- func(0,4) → func(0,2) -->
-              <line x1="360" y1="52" x2="220" y2="132" />
-              <!-- func(0,4) → func(3,4) -->
-              <line x1="360" y1="52" x2="500" y2="132" />
-              <!-- func(0,2) → func(0,1) -->
-              <line x1="220" y1="152" x2="130" y2="232" />
-              <!-- func(0,2) → func(2,2) -->
-              <line x1="220" y1="152" x2="310" y2="232" />
-              <!-- func(0,1) → func(0,0) -->
-              <line x1="130" y1="252" x2="70" y2="302" />
-              <!-- func(0,1) → func(1,1) -->
-              <line x1="130" y1="252" x2="190" y2="302" />
-              <!-- func(3,4) → func(3,3) -->
-              <line x1="500" y1="152" x2="430" y2="232" />
-              <!-- func(3,4) → func(4,4) -->
-              <line x1="500" y1="152" x2="590" y2="232" />
-            </g>
-
-            <!-- 노드 그리기 헬퍼: 루트 -->
-            <g>
-              <rect
-                x="295"
-                y="18"
-                width="130"
-                height="44"
-                rx="6"
-                fill="#1a1208"
-                stroke="#8b3a0f"
-                stroke-width="2"
-              />
-              <text
-                x="360"
-                y="36"
-                text-anchor="middle"
-                fill="#ffcb6b"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                func(0,4)
-              </text>
-              <text
-                x="360"
-                y="53"
-                text-anchor="middle"
-                fill="#f78c6c"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                mid=2, a[2]=8
-              </text>
-            </g>
-
-            <!-- func(0,2) -->
-            <g>
-              <rect
-                x="155"
-                y="118"
-                width="130"
-                height="44"
-                rx="6"
-                fill="#1a1208"
-                stroke="#2d5a3d"
-                stroke-width="2"
-              />
-              <text
-                x="220"
-                y="136"
-                text-anchor="middle"
-                fill="#c3e88d"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                func(0,2)
-              </text>
-              <text
-                x="220"
-                y="153"
-                text-anchor="middle"
-                fill="#f78c6c"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                mid=1, a[1]=5
-              </text>
-            </g>
-
-            <!-- func(3,4) -->
-            <g>
-              <rect
-                x="435"
-                y="118"
-                width="130"
-                height="44"
-                rx="6"
-                fill="#1a1208"
-                stroke="#1e3a6e"
-                stroke-width="2"
-              />
-              <text
-                x="500"
-                y="136"
-                text-anchor="middle"
-                fill="#82aaff"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                func(3,4)
-              </text>
-              <text
-                x="500"
-                y="153"
-                text-anchor="middle"
-                fill="#f78c6c"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                mid=3, a[3]=12
-              </text>
-            </g>
-
-            <!-- func(0,1) -->
-            <g>
-              <rect
-                x="65"
-                y="218"
-                width="130"
-                height="44"
-                rx="6"
-                fill="#1a1208"
-                stroke="#2d5a3d"
-                stroke-width="2"
-              />
-              <text
-                x="130"
-                y="236"
-                text-anchor="middle"
-                fill="#c3e88d"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                func(0,1)
-              </text>
-              <text
-                x="130"
-                y="253"
-                text-anchor="middle"
-                fill="#f78c6c"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                mid=0, a[0]=3
-              </text>
-            </g>
-
-            <!-- func(2,2) 기저 -->
-            <g>
-              <rect
-                x="248"
-                y="218"
-                width="124"
-                height="44"
-                rx="6"
-                fill="#2d1a1a"
-                stroke="#c0392b"
-                stroke-width="1.5"
-                stroke-dasharray="4"
-              />
-              <text
-                x="310"
-                y="236"
-                text-anchor="middle"
-                fill="#ff7675"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                func(2,2)
-              </text>
-              <text
-                x="310"
-                y="253"
-                text-anchor="middle"
-                fill="#ff7675"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                st≥end → 0
-              </text>
-            </g>
-
-            <!-- func(3,3) 기저 -->
-            <g>
-              <rect
-                x="368"
-                y="218"
-                width="124"
-                height="44"
-                rx="6"
-                fill="#2d1a1a"
-                stroke="#c0392b"
-                stroke-width="1.5"
-                stroke-dasharray="4"
-              />
-              <text
-                x="430"
-                y="236"
-                text-anchor="middle"
-                fill="#ff7675"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                func(3,3)
-              </text>
-              <text
-                x="430"
-                y="253"
-                text-anchor="middle"
-                fill="#ff7675"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                st≥end → 0
-              </text>
-            </g>
-
-            <!-- func(4,4) 기저 -->
-            <g>
-              <rect
-                x="528"
-                y="218"
-                width="124"
-                height="44"
-                rx="6"
-                fill="#2d1a1a"
-                stroke="#c0392b"
-                stroke-width="1.5"
-                stroke-dasharray="4"
-              />
-              <text
-                x="590"
-                y="236"
-                text-anchor="middle"
-                fill="#ff7675"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                func(4,4)
-              </text>
-              <text
-                x="590"
-                y="253"
-                text-anchor="middle"
-                fill="#ff7675"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                st≥end → 0
-              </text>
-            </g>
-
-            <!-- func(0,0) 기저 -->
-            <g>
-              <rect
-                x="8"
-                y="288"
-                width="124"
-                height="40"
-                rx="6"
-                fill="#2d1a1a"
-                stroke="#c0392b"
-                stroke-width="1.5"
-                stroke-dasharray="4"
-              />
-              <text
-                x="70"
-                y="306"
-                text-anchor="middle"
-                fill="#ff7675"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                func(0,0)
-              </text>
-              <text
-                x="70"
-                y="321"
-                text-anchor="middle"
-                fill="#ff7675"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                st≥end → 0
-              </text>
-            </g>
-
-            <!-- func(1,1) 기저 -->
-            <g>
-              <rect
-                x="128"
-                y="288"
-                width="124"
-                height="40"
-                rx="6"
-                fill="#2d1a1a"
-                stroke="#c0392b"
-                stroke-width="1.5"
-                stroke-dasharray="4"
-              />
-              <text
-                x="190"
-                y="306"
-                text-anchor="middle"
-                fill="#ff7675"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                func(1,1)
-              </text>
-              <text
-                x="190"
-                y="321"
-                text-anchor="middle"
-                fill="#ff7675"
-                font-size="11"
-                font-family="JetBrains Mono,monospace"
-              >
-                st≥end → 0
-              </text>
-            </g>
-
-            <!-- 반환값 화살표 레이블 -->
-            <g
-              fill="#8b3a0f"
-              font-size="11"
-              font-family="JetBrains Mono,monospace"
-              font-weight="600"
-            >
-              <!-- func(0,0)↑: 0, func(1,1)↑: 0 → func(0,1): 3+max(0,0)=3 -->
-              <text x="86" y="280">→3</text>
-              <!-- func(2,2)↑: 0 → func(0,2): 5+max(3,0)=8 -->
-              <text x="260" y="214">→0</text>
-              <!-- func(0,2)↑: 8 -->
-              <text x="160" y="114">→8</text>
-              <!-- func(3,3)↑: 0, func(4,4)↑: 0 → func(3,4): 12+max(0,0)=12 -->
-              <text x="378" y="214">→0</text>
-              <text x="555" y="214">→0</text>
-              <!-- func(3,4)↑: 12 -->
-              <text x="520" y="114">→12</text>
-            </g>
-          </svg>
-        </div>
-      </div>
-
-      <!-- ── 5. 단계별 계산표 ── -->
-      <div class="section">
-        <div class="section-title">
-          <span class="num">5</span>단계별 계산 과정
-        </div>
-        <div style="overflow-x: auto">
-          <table class="trace-table">
-            <thead>
-              <tr>
-                <th>호출</th>
-                <th>st</th>
-                <th>end</th>
-                <th>mid</th>
-                <th>a[mid]</th>
-                <th>왼쪽 결과</th>
-                <th>오른쪽 결과</th>
-                <th>max</th>
-                <th>반환값</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="mono">func(0,0)</span></td>
-                <td>0</td>
-                <td>0</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td><span class="tag tag-base">0 (기저)</span></td>
-              </tr>
-              <tr>
-                <td><span class="mono">func(1,1)</span></td>
-                <td>1</td>
-                <td>1</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td><span class="tag tag-base">0 (기저)</span></td>
-              </tr>
-              <tr>
-                <td><span class="mono">func(0,1)</span></td>
-                <td>0</td>
-                <td>1</td>
-                <td>0</td>
-                <td>a[0]=<strong>3</strong></td>
-                <td>func(0,0)=0</td>
-                <td>func(1,1)=0</td>
-                <td>max(0,0)=0</td>
-                <td>
-                  <span class="tag tag-ret">3+0 = <strong>3</strong></span>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="mono">func(2,2)</span></td>
-                <td>2</td>
-                <td>2</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td><span class="tag tag-base">0 (기저)</span></td>
-              </tr>
-              <tr>
-                <td><span class="mono">func(0,2)</span></td>
-                <td>0</td>
-                <td>2</td>
-                <td>1</td>
-                <td>a[1]=<strong>5</strong></td>
-                <td>func(0,1)=3</td>
-                <td>func(2,2)=0</td>
-                <td>max(3,0)=3</td>
-                <td>
-                  <span class="tag tag-ret">5+3 = <strong>8</strong></span>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="mono">func(3,3)</span></td>
-                <td>3</td>
-                <td>3</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td><span class="tag tag-base">0 (기저)</span></td>
-              </tr>
-              <tr>
-                <td><span class="mono">func(4,4)</span></td>
-                <td>4</td>
-                <td>4</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td>—</td>
-                <td><span class="tag tag-base">0 (기저)</span></td>
-              </tr>
-              <tr>
-                <td><span class="mono">func(3,4)</span></td>
-                <td>3</td>
-                <td>4</td>
-                <td>3</td>
-                <td>a[3]=<strong>12</strong></td>
-                <td>func(3,3)=0</td>
-                <td>func(4,4)=0</td>
-                <td>max(0,0)=0</td>
-                <td>
-                  <span class="tag tag-ret">12+0 = <strong>12</strong></span>
-                </td>
-              </tr>
-              <tr style="background: rgba(240, 192, 96, 0.15)">
-                <td><span class="mono">func(0,4)</span></td>
-                <td>0</td>
-                <td>4</td>
-                <td>2</td>
-                <td>a[2]=<strong>8</strong></td>
-                <td>func(0,2)=8</td>
-                <td>func(3,4)=12</td>
-                <td><span class="tag tag-max">max(8,12)=12</span></td>
-                <td>
-                  <span class="tag tag-ret">8+12 = <strong>20</strong></span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ── 6. 풀이 요약 ── -->
-      <div class="section">
-        <div class="section-title">
-          <span class="num">6</span>핵심 풀이 요약
-        </div>
-        <div class="card green">
-          <ul class="point-list">
-            <li>
-              <span class="icon">📌</span>
-              <span
-                >최초 호출은 <span class="mono">func(data, 0, 4)</span>이며 배열
-                전체 구간을 다룹니다.</span
-              >
-            </li>
-            <li>
-              <span class="icon">🔁</span>
-              <span
-                >각 호출은 구간을 절반으로 나누어,
-                <span class="hl">중간값 + max(왼쪽 결과, 오른쪽 결과)</span>를
-                반환합니다.</span
-              >
-            </li>
-            <li>
-              <span class="icon">⛔</span>
-              <span
-                ><span class="mono">st ≥ end</span>인 경우(원소 1개 이하)
-                <span class="mono">0</span>을 반환하는 것이
-                <strong>기저 조건</strong>입니다.</span
-              >
-            </li>
-            <li>
-              <span class="icon">🌿</span>
-              <span
-                >최종적으로 <span class="mono">func(0,4)</span>는
-                <span class="mono">a[2]=8</span>에 max(8, 12)=12를 더해
-                <strong>20</strong>을 반환합니다.</span
-              >
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- ── 정답 ── -->
-      <div class="section">
-        <div class="section-title"><span class="num">7</span>최종 출력값</div>
-        <div class="answer-box">
-          <div class="answer-label">System.out.println() 출력 결과</div>
-          <div class="answer-value">20</div>
-          <div class="answer-desc">
-            func(0,4) = a[2] + max(func(0,2), func(3,4)) = 8 + max(8, 12) = 8 +
-            12 = 20
+      <!-- 정답 패널 -->
+      <div class="panel" id="panel-answer">
+        <div class="answer-only-box">
+          <div class="a-label">System.out.println() 출력 결과</div>
+          <div class="a-value">20</div>
+          <div class="a-desc">
+            func(0,4) = a[2] + max(func(0,2), func(3,4)) = 8 + max(8, 12) = 20
           </div>
         </div>
       </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panel-explain">
+        <div class="section">
+          <div class="section-title"><span class="num">1</span>문제 유형</div>
+          <div class="card">
+            <p>
+              <span class="hl"
+                >재귀 함수의 실행 결과를 직접 추적(Trace)하는 문제</span
+              >입니다.<br />
+              배열을 절반씩 분할하는
+              <strong>분할 정복(Divide &amp; Conquer)</strong> 구조를 사용하며,
+              각 재귀 호출의 반환값이 어떻게 합산되는지 이해하는 것이
+              핵심입니다.<br /><br />
+              알고리즘 시험에서 자주 출제되는
+              <strong>「재귀 트레이싱」</strong> 유형으로, 호출 스택을 직접
+              그려가며 값을 추적해야 합니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <span class="num">2</span>함수 동작 원리
+          </div>
+          <div class="card blue">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔴</span
+                ><span
+                  ><strong>기저 조건</strong>:
+                  <span class="mono">st &ge; end</span>이면
+                  <span class="mono">0</span>을 반환합니다. 구간이 원소 1개
+                  이하로 쪼개지면 더 이상 계산하지 않습니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔵</span
+                ><span
+                  ><strong>분할</strong>: 현재 구간의 중간 인덱스
+                  <span class="mono">mid = (st+end)/2</span>를 계산합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🟢</span
+                ><span
+                  ><strong>정복</strong>: <span class="mono">a[mid]</span>에
+                  <strong>왼쪽(st~mid)</strong>과
+                  <strong>오른쪽(mid+1~end)</strong> 재귀 결과 중
+                  <span class="hl">더 큰 값</span>을 더하여 반환합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <span class="num">3</span>재귀 호출 트리
+          </div>
+          <div class="tree-container">
+            <svg class="tree" width="720" height="340" viewBox="0 0 720 340">
+              <g stroke="#c8b89a" stroke-width="1.5" fill="none">
+                <line x1="360" y1="52" x2="220" y2="132" />
+                <line x1="360" y1="52" x2="500" y2="132" />
+                <line x1="220" y1="152" x2="130" y2="232" />
+                <line x1="220" y1="152" x2="310" y2="232" />
+                <line x1="130" y1="252" x2="70" y2="302" />
+                <line x1="130" y1="252" x2="190" y2="302" />
+                <line x1="500" y1="152" x2="430" y2="232" />
+                <line x1="500" y1="152" x2="590" y2="232" />
+              </g>
+              <g>
+                <rect
+                  x="295"
+                  y="18"
+                  width="130"
+                  height="44"
+                  rx="6"
+                  fill="#1a1208"
+                  stroke="#8b3a0f"
+                  stroke-width="2"
+                />
+                <text
+                  x="360"
+                  y="36"
+                  text-anchor="middle"
+                  fill="#ffcb6b"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  func(0,4)
+                </text>
+                <text
+                  x="360"
+                  y="53"
+                  text-anchor="middle"
+                  fill="#f78c6c"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  mid=2, a[2]=8
+                </text>
+              </g>
+              <g>
+                <rect
+                  x="155"
+                  y="118"
+                  width="130"
+                  height="44"
+                  rx="6"
+                  fill="#1a1208"
+                  stroke="#2d5a3d"
+                  stroke-width="2"
+                />
+                <text
+                  x="220"
+                  y="136"
+                  text-anchor="middle"
+                  fill="#c3e88d"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  func(0,2)
+                </text>
+                <text
+                  x="220"
+                  y="153"
+                  text-anchor="middle"
+                  fill="#f78c6c"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  mid=1, a[1]=5
+                </text>
+              </g>
+              <g>
+                <rect
+                  x="435"
+                  y="118"
+                  width="130"
+                  height="44"
+                  rx="6"
+                  fill="#1a1208"
+                  stroke="#1e3a6e"
+                  stroke-width="2"
+                />
+                <text
+                  x="500"
+                  y="136"
+                  text-anchor="middle"
+                  fill="#82aaff"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  func(3,4)
+                </text>
+                <text
+                  x="500"
+                  y="153"
+                  text-anchor="middle"
+                  fill="#f78c6c"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  mid=3, a[3]=12
+                </text>
+              </g>
+              <g>
+                <rect
+                  x="65"
+                  y="218"
+                  width="130"
+                  height="44"
+                  rx="6"
+                  fill="#1a1208"
+                  stroke="#2d5a3d"
+                  stroke-width="2"
+                />
+                <text
+                  x="130"
+                  y="236"
+                  text-anchor="middle"
+                  fill="#c3e88d"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  func(0,1)
+                </text>
+                <text
+                  x="130"
+                  y="253"
+                  text-anchor="middle"
+                  fill="#f78c6c"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  mid=0, a[0]=3
+                </text>
+              </g>
+              <g>
+                <rect
+                  x="248"
+                  y="218"
+                  width="124"
+                  height="44"
+                  rx="6"
+                  fill="#2d1a1a"
+                  stroke="#c0392b"
+                  stroke-width="1.5"
+                  stroke-dasharray="4"
+                />
+                <text
+                  x="310"
+                  y="236"
+                  text-anchor="middle"
+                  fill="#ff7675"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  func(2,2)
+                </text>
+                <text
+                  x="310"
+                  y="253"
+                  text-anchor="middle"
+                  fill="#ff7675"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  st≥end → 0
+                </text>
+              </g>
+              <g>
+                <rect
+                  x="368"
+                  y="218"
+                  width="124"
+                  height="44"
+                  rx="6"
+                  fill="#2d1a1a"
+                  stroke="#c0392b"
+                  stroke-width="1.5"
+                  stroke-dasharray="4"
+                />
+                <text
+                  x="430"
+                  y="236"
+                  text-anchor="middle"
+                  fill="#ff7675"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  func(3,3)
+                </text>
+                <text
+                  x="430"
+                  y="253"
+                  text-anchor="middle"
+                  fill="#ff7675"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  st≥end → 0
+                </text>
+              </g>
+              <g>
+                <rect
+                  x="528"
+                  y="218"
+                  width="124"
+                  height="44"
+                  rx="6"
+                  fill="#2d1a1a"
+                  stroke="#c0392b"
+                  stroke-width="1.5"
+                  stroke-dasharray="4"
+                />
+                <text
+                  x="590"
+                  y="236"
+                  text-anchor="middle"
+                  fill="#ff7675"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  func(4,4)
+                </text>
+                <text
+                  x="590"
+                  y="253"
+                  text-anchor="middle"
+                  fill="#ff7675"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  st≥end → 0
+                </text>
+              </g>
+              <g>
+                <rect
+                  x="8"
+                  y="288"
+                  width="124"
+                  height="40"
+                  rx="6"
+                  fill="#2d1a1a"
+                  stroke="#c0392b"
+                  stroke-width="1.5"
+                  stroke-dasharray="4"
+                />
+                <text
+                  x="70"
+                  y="306"
+                  text-anchor="middle"
+                  fill="#ff7675"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  func(0,0)
+                </text>
+                <text
+                  x="70"
+                  y="321"
+                  text-anchor="middle"
+                  fill="#ff7675"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  st≥end → 0
+                </text>
+              </g>
+              <g>
+                <rect
+                  x="128"
+                  y="288"
+                  width="124"
+                  height="40"
+                  rx="6"
+                  fill="#2d1a1a"
+                  stroke="#c0392b"
+                  stroke-width="1.5"
+                  stroke-dasharray="4"
+                />
+                <text
+                  x="190"
+                  y="306"
+                  text-anchor="middle"
+                  fill="#ff7675"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  func(1,1)
+                </text>
+                <text
+                  x="190"
+                  y="321"
+                  text-anchor="middle"
+                  fill="#ff7675"
+                  font-size="11"
+                  font-family="JetBrains Mono,monospace"
+                >
+                  st≥end → 0
+                </text>
+              </g>
+              <g
+                fill="#8b3a0f"
+                font-size="11"
+                font-family="JetBrains Mono,monospace"
+                font-weight="600"
+              >
+                <text x="86" y="280">→3</text>
+                <text x="260" y="214">→0</text>
+                <text x="160" y="114">→8</text>
+                <text x="378" y="214">→0</text>
+                <text x="555" y="214">→0</text>
+                <text x="520" y="114">→12</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <span class="num">4</span>단계별 계산 과정
+          </div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>호출</th>
+                  <th>st</th>
+                  <th>end</th>
+                  <th>mid</th>
+                  <th>a[mid]</th>
+                  <th>왼쪽 결과</th>
+                  <th>오른쪽 결과</th>
+                  <th>max</th>
+                  <th>반환값</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="mono">func(0,0)</span></td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td><span class="tag tag-base">0 (기저)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">func(1,1)</span></td>
+                  <td>1</td>
+                  <td>1</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td><span class="tag tag-base">0 (기저)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">func(0,1)</span></td>
+                  <td>0</td>
+                  <td>1</td>
+                  <td>0</td>
+                  <td>a[0]=<strong>3</strong></td>
+                  <td>func(0,0)=0</td>
+                  <td>func(1,1)=0</td>
+                  <td>max(0,0)=0</td>
+                  <td>
+                    <span class="tag tag-ret">3+0 = <strong>3</strong></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="mono">func(2,2)</span></td>
+                  <td>2</td>
+                  <td>2</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td><span class="tag tag-base">0 (기저)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">func(0,2)</span></td>
+                  <td>0</td>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>a[1]=<strong>5</strong></td>
+                  <td>func(0,1)=3</td>
+                  <td>func(2,2)=0</td>
+                  <td>max(3,0)=3</td>
+                  <td>
+                    <span class="tag tag-ret">5+3 = <strong>8</strong></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="mono">func(3,3)</span></td>
+                  <td>3</td>
+                  <td>3</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td><span class="tag tag-base">0 (기저)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">func(4,4)</span></td>
+                  <td>4</td>
+                  <td>4</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td><span class="tag tag-base">0 (기저)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">func(3,4)</span></td>
+                  <td>3</td>
+                  <td>4</td>
+                  <td>3</td>
+                  <td>a[3]=<strong>12</strong></td>
+                  <td>func(3,3)=0</td>
+                  <td>func(4,4)=0</td>
+                  <td>max(0,0)=0</td>
+                  <td>
+                    <span class="tag tag-ret">12+0 = <strong>12</strong></span>
+                  </td>
+                </tr>
+                <tr style="background: rgba(240, 192, 96, 0.15)">
+                  <td><span class="mono">func(0,4)</span></td>
+                  <td>0</td>
+                  <td>4</td>
+                  <td>2</td>
+                  <td>a[2]=<strong>8</strong></td>
+                  <td>func(0,2)=8</td>
+                  <td>func(3,4)=12</td>
+                  <td><span class="tag tag-max">max(8,12)=12</span></td>
+                  <td>
+                    <span class="tag tag-ret">8+12 = <strong>20</strong></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <span class="num">5</span>핵심 풀이 요약
+          </div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">📌</span
+                ><span
+                  >최초 호출은 <span class="mono">func(data, 0, 4)</span>이며
+                  배열 전체 구간을 다룹니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔁</span
+                ><span
+                  >각 호출은 구간을 절반으로 나누어,
+                  <span class="hl">중간값 + max(왼쪽 결과, 오른쪽 결과)</span>를
+                  반환합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⛔</span
+                ><span
+                  ><span class="mono">st &ge; end</span>인 경우(원소 1개 이하)
+                  <span class="mono">0</span>을 반환하는 것이
+                  <strong>기저 조건</strong>입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🌿</span
+                ><span
+                  >최종적으로 <span class="mono">func(0,4)</span>는
+                  <span class="mono">a[2]=8</span>에 max(8, 12)=12를 더해
+                  <strong>20</strong>을 반환합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title"><span class="num">6</span>최종 출력값</div>
+          <div class="answer-box">
+            <div class="answer-label">System.out.println() 출력 결과</div>
+            <div class="answer-value">20</div>
+            <div class="answer-desc">
+              func(0,4) = a[2] + max(func(0,2), func(3,4)) = 8 + max(8, 12) = 8
+              + 12 = 20
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /panel-explain -->
     </div>
+    <!-- /page -->
 
     <script>
-      // 테이블 행 호버 시 해당 호출명 강조
-      document.querySelectorAll(".trace-table tbody tr").forEach((row) => {
-        row.addEventListener("mouseenter", () => {
-          row.style.transition = "background 0.2s";
-        });
-      });
+      const state = { answer: false, explain: false };
+      function togglePanel(type) {
+        state[type] = !state[type];
+        const panel = document.getElementById("panel-" + type);
+        const btn = document.getElementById(
+          "btn" + type.charAt(0).toUpperCase() + type.slice(1),
+        );
+        if (state[type]) {
+          panel.classList.add("visible");
+          btn.innerHTML = type === "answer" ? "⭐ 정답 닫기" : "📖 설명 닫기";
+        } else {
+          panel.classList.remove("visible");
+          btn.innerHTML = type === "answer" ? "⭐ 정답 보기" : "📖 설명 보기";
+        }
+      }
     </script>
   </body>
 </html>
