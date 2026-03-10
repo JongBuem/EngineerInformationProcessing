@@ -1,0 +1,1383 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+      .inc {
+        color: #89ddff;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 100px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+
+      /* 비트 연산 시각화 */
+      .bit-block {
+        display: inline-flex;
+        flex-direction: column;
+        gap: 3px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+      }
+      .bit-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .bit-label {
+        width: 60px;
+        text-align: right;
+        color: #7a6650;
+        font-size: 11px;
+      }
+      .bit-val {
+        display: flex;
+        gap: 2px;
+      }
+      .bit-cell {
+        width: 18px;
+        height: 20px;
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .bc-1 {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .bc-0 {
+        background: #1e1e1e;
+        color: #546e7a;
+        border: 1px solid #2d2d2d;
+      }
+      .bc-mask {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+      .bc-res {
+        background: #1a1e2d;
+        color: #82aaff;
+        border: 1px solid #1e3a6e;
+      }
+      .bit-line {
+        border-top: 2px solid #c8b89a;
+        margin: 2px 0;
+      }
+      .bit-op {
+        width: 10px;
+        text-align: center;
+        color: #c792ea;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-kim {
+        background: #1e2d1e;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-lee {
+        background: #1e1a2d;
+        color: #c792ea;
+        border: 1px solid #5a3a8b;
+      }
+      .tag-res {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 구조체 배열 &amp; 비트 AND 마스킹 합산 추적</h1>
+        <div class="meta">
+          C · Struct · Bitwise AND · Hex · Masking · Array · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+
+<span class="kw">typedef struct</span> student {
+    <span class="kw">char</span>* name;
+    <span class="kw">int</span>   score[<span class="nl">3</span>];
+} <span class="cls">Student</span>;
+
+<span class="kw">int</span> <span class="fn">dec</span>(<span class="kw">int</span> enc) {
+    <span class="ret">return</span> enc &amp; <span class="nl">0xA5</span>;        <span class="cmt">// 마스크: 1010 0101</span>
+}
+
+<span class="kw">int</span> <span class="fn">sum</span>(<span class="cls">Student</span>* p) {
+    <span class="ret">return</span> <span class="fn">dec</span>(p-&gt;score[<span class="nl">0</span>])
+         + <span class="fn">dec</span>(p-&gt;score[<span class="nl">1</span>])
+         + <span class="fn">dec</span>(p-&gt;score[<span class="nl">2</span>]);
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="cls">Student</span> s[<span class="nl">2</span>] = {
+        <span class="str">"Kim"</span>, {<span class="nl">0xA0</span>, <span class="nl">0xA5</span>, <span class="nl">0xDB</span>},
+        <span class="str">"Lee"</span>, {<span class="nl">0xA0</span>, <span class="nl">0xED</span>, <span class="nl">0x81</span>}
+    };
+    <span class="kw">int</span> result = <span class="nl">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nl">0</span>; i &lt; <span class="nl">2</span>; i++)
+        result += <span class="fn">sum</span>(&amp;s[i]);
+    <span class="fn">printf</span>(<span class="str">"%d"</span>, result);
+    <span class="ret">return</span> <span class="nl">0</span>;
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">printf("%d", result) 출력 결과</div>
+          <div class="answer-value">908</div>
+          <div class="answer-desc">sum(Kim)=454 + sum(Lee)=454 = 908</div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >구조체 배열의 각 멤버에 비트 AND 마스킹을 적용하여 합산하는
+                16진수 비트 연산 추적 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>dec() 함수</strong>:
+                  <span class="mono">enc &amp; 0xA5</span> — 마스크
+                  <span class="mono">0xA5 = 1010 0101</span>과 AND 연산합니다.
+                  마스크가 0인 비트는 항상 0, 1인 비트는 원래 값을
+                  유지합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>sum() 함수</strong>: 구조체 포인터로 3개의 score에
+                  dec()를 적용하여 합산합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🟡</span
+                ><span
+                  >16진수를 2진수로 변환한 뒤 비트별 AND 연산을 정확히 수행해야
+                  합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 마스크 0xA5 설명 -->
+        <div class="sub-section">
+          <div class="sub-title">② 마스크 0xA5 = 1010 0101 이해</div>
+          <div class="flow-wrap">
+            <svg
+              width="520"
+              height="80"
+              viewBox="0 0 520 80"
+              font-family="JetBrains Mono,monospace"
+            >
+              <text x="10" y="20" fill="#7a6650" font-size="11">0xA5 =</text>
+              <text
+                x="68"
+                y="20"
+                fill="#f0c060"
+                font-size="13"
+                font-weight="bold"
+              >
+                1010 0101
+              </text>
+              <text x="160" y="20" fill="#7a6650" font-size="11">
+                = 165 (10진수)
+              </text>
+
+              <!-- 비트 의미 -->
+              <text x="10" y="44" fill="#546e7a" font-size="10">비트 7</text>
+              <rect
+                x="50"
+                y="32"
+                width="18"
+                height="18"
+                rx="2"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+              />
+              <text
+                x="59"
+                y="45"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+                font-weight="bold"
+              >
+                1
+              </text>
+              <rect
+                x="72"
+                y="32"
+                width="18"
+                height="18"
+                rx="2"
+                fill="#1e1e1e"
+                stroke="#2d2d2d"
+              />
+              <text
+                x="81"
+                y="45"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="11"
+              >
+                0
+              </text>
+              <rect
+                x="94"
+                y="32"
+                width="18"
+                height="18"
+                rx="2"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+              />
+              <text
+                x="103"
+                y="45"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+                font-weight="bold"
+              >
+                1
+              </text>
+              <rect
+                x="116"
+                y="32"
+                width="18"
+                height="18"
+                rx="2"
+                fill="#1e1e1e"
+                stroke="#2d2d2d"
+              />
+              <text
+                x="125"
+                y="45"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="11"
+              >
+                0
+              </text>
+              <rect
+                x="144"
+                y="32"
+                width="18"
+                height="18"
+                rx="2"
+                fill="#1e1e1e"
+                stroke="#2d2d2d"
+              />
+              <text
+                x="153"
+                y="45"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="11"
+              >
+                0
+              </text>
+              <rect
+                x="166"
+                y="32"
+                width="18"
+                height="18"
+                rx="2"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+              />
+              <text
+                x="175"
+                y="45"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+                font-weight="bold"
+              >
+                1
+              </text>
+              <rect
+                x="188"
+                y="32"
+                width="18"
+                height="18"
+                rx="2"
+                fill="#1e1e1e"
+                stroke="#2d2d2d"
+              />
+              <text
+                x="197"
+                y="45"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="11"
+              >
+                0
+              </text>
+              <rect
+                x="210"
+                y="32"
+                width="18"
+                height="18"
+                rx="2"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+              />
+              <text
+                x="219"
+                y="45"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+                font-weight="bold"
+              >
+                1
+              </text>
+              <text x="240" y="45" fill="#546e7a" font-size="10">비트 0</text>
+
+              <text x="10" y="70" fill="#c3e88d" font-size="10">
+                ■ = 1: 해당 비트 유지
+              </text>
+              <text x="170" y="70" fill="#546e7a" font-size="10">
+                ■ = 0: 해당 비트 강제 0
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ③ dec() 비트 연산 전체 계산 -->
+        <div class="sub-section">
+          <div class="sub-title">③ dec() 비트 AND 연산 전체 계산</div>
+
+          <div class="flow-wrap">
+            <!-- 0xA0 & 0xA5 -->
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #8b3a0f;
+                font-weight: bold;
+                margin-bottom: 12px;
+              "
+            >
+              dec(0xA0) — Kim·Lee 공통 score[0]
+            </p>
+            <svg
+              width="360"
+              height="88"
+              viewBox="0 0 360 88"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- 0xA0 = 1010 0000 -->
+              <text
+                x="8"
+                y="18"
+                fill="#7a6650"
+                font-size="10"
+                text-anchor="start"
+              >
+                0xA0
+              </text>
+              <text x="80" y="18" fill="#e8d5b0" font-size="12">
+                1 0 1 0 0 0 0 0
+              </text>
+
+              <!-- 0xA5 = 1010 0101 (mask) -->
+              <text x="8" y="36" fill="#7a6650" font-size="10">0xA5</text>
+              <text x="76" y="36" fill="#f0c060" font-size="12">
+                1 0 1 0 0 1 0 1
+              </text>
+              <text
+                x="66"
+                y="36"
+                fill="#c792ea"
+                font-size="14"
+                font-weight="bold"
+              >
+                &amp;
+              </text>
+
+              <line
+                x1="8"
+                y1="42"
+                x2="190"
+                y2="42"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+
+              <!-- result = 1010 0000 = 0xA0 = 160 -->
+              <text x="8" y="56" fill="#7a6650" font-size="10">결과</text>
+              <text
+                x="80"
+                y="56"
+                fill="#82aaff"
+                font-size="12"
+                font-weight="bold"
+              >
+                1 0 1 0 0 0 0 0
+              </text>
+              <text
+                x="200"
+                y="56"
+                fill="#82aaff"
+                font-size="13"
+                font-weight="bold"
+              >
+                = 0xA0 =
+              </text>
+              <text
+                x="282"
+                y="56"
+                fill="#c3e88d"
+                font-size="16"
+                font-weight="bold"
+              >
+                160
+              </text>
+            </svg>
+
+            <div
+              style="border-top: 1px solid var(--aged); margin: 12px 0"
+            ></div>
+
+            <!-- 0xA5 & 0xA5 -->
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #8b3a0f;
+                font-weight: bold;
+                margin-bottom: 12px;
+              "
+            >
+              dec(0xA5) — Kim score[1]
+            </p>
+            <svg
+              width="360"
+              height="70"
+              viewBox="0 0 360 70"
+              font-family="JetBrains Mono,monospace"
+            >
+              <text x="8" y="18" fill="#7a6650" font-size="10">0xA5</text>
+              <text x="80" y="18" fill="#e8d5b0" font-size="12">
+                1 0 1 0 0 1 0 1
+              </text>
+              <text x="8" y="36" fill="#7a6650" font-size="10">0xA5</text>
+              <text x="76" y="36" fill="#f0c060" font-size="12">
+                1 0 1 0 0 1 0 1
+              </text>
+              <text
+                x="66"
+                y="36"
+                fill="#c792ea"
+                font-size="14"
+                font-weight="bold"
+              >
+                &amp;
+              </text>
+              <line
+                x1="8"
+                y1="42"
+                x2="190"
+                y2="42"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+              <text x="8" y="56" fill="#7a6650" font-size="10">결과</text>
+              <text
+                x="80"
+                y="56"
+                fill="#82aaff"
+                font-size="12"
+                font-weight="bold"
+              >
+                1 0 1 0 0 1 0 1
+              </text>
+              <text
+                x="200"
+                y="56"
+                fill="#82aaff"
+                font-size="13"
+                font-weight="bold"
+              >
+                = 0xA5 =
+              </text>
+              <text
+                x="282"
+                y="56"
+                fill="#c3e88d"
+                font-size="16"
+                font-weight="bold"
+              >
+                165
+              </text>
+            </svg>
+
+            <div
+              style="border-top: 1px solid var(--aged); margin: 12px 0"
+            ></div>
+
+            <!-- 0xDB & 0xA5 -->
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #8b3a0f;
+                font-weight: bold;
+                margin-bottom: 12px;
+              "
+            >
+              dec(0xDB) — Kim score[2]
+            </p>
+            <svg
+              width="400"
+              height="88"
+              viewBox="0 0 400 88"
+              font-family="JetBrains Mono,monospace"
+            >
+              <text x="8" y="18" fill="#7a6650" font-size="10">0xDB</text>
+              <text x="80" y="18" fill="#e8d5b0" font-size="12">
+                1 1 0 1 1 0 1 1
+              </text>
+              <text x="8" y="36" fill="#7a6650" font-size="10">0xA5</text>
+              <text x="76" y="36" fill="#f0c060" font-size="12">
+                1 0 1 0 0 1 0 1
+              </text>
+              <text
+                x="66"
+                y="36"
+                fill="#c792ea"
+                font-size="14"
+                font-weight="bold"
+              >
+                &amp;
+              </text>
+              <line
+                x1="8"
+                y1="42"
+                x2="190"
+                y2="42"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+              <!-- 1101 1011 & 1010 0101 = 1000 0001 = 0x81 = 129 -->
+              <text x="8" y="56" fill="#7a6650" font-size="10">결과</text>
+              <text
+                x="80"
+                y="56"
+                fill="#82aaff"
+                font-size="12"
+                font-weight="bold"
+              >
+                1 0 0 0 0 0 0 1
+              </text>
+              <text
+                x="200"
+                y="56"
+                fill="#82aaff"
+                font-size="13"
+                font-weight="bold"
+              >
+                = 0x81 =
+              </text>
+              <text
+                x="282"
+                y="56"
+                fill="#c3e88d"
+                font-size="16"
+                font-weight="bold"
+              >
+                129
+              </text>
+              <!-- 비트별 표시 -->
+              <text x="8" y="76" fill="#546e7a" font-size="9">
+                1&amp;1=1 1&amp;0=0 0&amp;1=0 1&amp;0=0 | 1&amp;0=0 0&amp;1=0
+                1&amp;0=0 1&amp;1=1
+              </text>
+            </svg>
+
+            <div
+              style="border-top: 1px solid var(--aged); margin: 12px 0"
+            ></div>
+
+            <!-- 0xED & 0xA5 -->
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #5a3a8b;
+                font-weight: bold;
+                margin-bottom: 12px;
+              "
+            >
+              dec(0xED) — Lee score[1]
+            </p>
+            <svg
+              width="400"
+              height="88"
+              viewBox="0 0 400 88"
+              font-family="JetBrains Mono,monospace"
+            >
+              <text x="8" y="18" fill="#7a6650" font-size="10">0xED</text>
+              <text x="80" y="18" fill="#e8d5b0" font-size="12">
+                1 1 1 0 1 1 0 1
+              </text>
+              <text x="8" y="36" fill="#7a6650" font-size="10">0xA5</text>
+              <text x="76" y="36" fill="#f0c060" font-size="12">
+                1 0 1 0 0 1 0 1
+              </text>
+              <text
+                x="66"
+                y="36"
+                fill="#c792ea"
+                font-size="14"
+                font-weight="bold"
+              >
+                &amp;
+              </text>
+              <line
+                x1="8"
+                y1="42"
+                x2="190"
+                y2="42"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+              <!-- 1110 1101 & 1010 0101 = 1010 0101 = 0xA5 = 165 -->
+              <text x="8" y="56" fill="#7a6650" font-size="10">결과</text>
+              <text
+                x="80"
+                y="56"
+                fill="#82aaff"
+                font-size="12"
+                font-weight="bold"
+              >
+                1 0 1 0 0 1 0 1
+              </text>
+              <text
+                x="200"
+                y="56"
+                fill="#82aaff"
+                font-size="13"
+                font-weight="bold"
+              >
+                = 0xA5 =
+              </text>
+              <text
+                x="282"
+                y="56"
+                fill="#c3e88d"
+                font-size="16"
+                font-weight="bold"
+              >
+                165
+              </text>
+              <text x="8" y="76" fill="#546e7a" font-size="9">
+                1&amp;1=1 1&amp;0=0 1&amp;1=1 0&amp;0=0 | 1&amp;0=0 1&amp;1=1
+                0&amp;0=0 1&amp;1=1
+              </text>
+            </svg>
+
+            <div
+              style="border-top: 1px solid var(--aged); margin: 12px 0"
+            ></div>
+
+            <!-- 0x81 & 0xA5 -->
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #5a3a8b;
+                font-weight: bold;
+                margin-bottom: 12px;
+              "
+            >
+              dec(0x81) — Lee score[2]
+            </p>
+            <svg
+              width="400"
+              height="88"
+              viewBox="0 0 400 88"
+              font-family="JetBrains Mono,monospace"
+            >
+              <text x="8" y="18" fill="#7a6650" font-size="10">0x81</text>
+              <text x="80" y="18" fill="#e8d5b0" font-size="12">
+                1 0 0 0 0 0 0 1
+              </text>
+              <text x="8" y="36" fill="#7a6650" font-size="10">0xA5</text>
+              <text x="76" y="36" fill="#f0c060" font-size="12">
+                1 0 1 0 0 1 0 1
+              </text>
+              <text
+                x="66"
+                y="36"
+                fill="#c792ea"
+                font-size="14"
+                font-weight="bold"
+              >
+                &amp;
+              </text>
+              <line
+                x1="8"
+                y1="42"
+                x2="190"
+                y2="42"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+              <!-- 1000 0001 & 1010 0101 = 1000 0001 = 0x81 = 129 -->
+              <text x="8" y="56" fill="#7a6650" font-size="10">결과</text>
+              <text
+                x="80"
+                y="56"
+                fill="#82aaff"
+                font-size="12"
+                font-weight="bold"
+              >
+                1 0 0 0 0 0 0 1
+              </text>
+              <text
+                x="200"
+                y="56"
+                fill="#82aaff"
+                font-size="13"
+                font-weight="bold"
+              >
+                = 0x81 =
+              </text>
+              <text
+                x="282"
+                y="56"
+                fill="#c3e88d"
+                font-size="16"
+                font-weight="bold"
+              >
+                129
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ④ sum() 합산 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">④ sum() 결과 및 최종 합산</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>학생</th>
+                  <th>score[0]</th>
+                  <th>dec()</th>
+                  <th>score[1]</th>
+                  <th>dec()</th>
+                  <th>score[2]</th>
+                  <th>dec()</th>
+                  <th>sum 합계</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag-kim">Kim</span></td>
+                  <td>0xA0</td>
+                  <td><strong>160</strong></td>
+                  <td>0xA5</td>
+                  <td><strong>165</strong></td>
+                  <td>0xDB</td>
+                  <td><strong>129</strong></td>
+                  <td><strong>160+165+129 = 454</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-lee">Lee</span></td>
+                  <td>0xA0</td>
+                  <td><strong>160</strong></td>
+                  <td>0xED</td>
+                  <td><strong>165</strong></td>
+                  <td>0x81</td>
+                  <td><strong>129</strong></td>
+                  <td><strong>160+165+129 = 454</strong></td>
+                </tr>
+                <tr class="hl-row">
+                  <td colspan="7" style="text-align: right; color: #8b3a0f">
+                    result = 454 + 454 =
+                  </td>
+                  <td>
+                    <span class="tag tag-res" style="font-size: 14px">908</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p
+            style="
+              margin-top: 10px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 12px;
+              color: #7a6650;
+            "
+          >
+            ※ 두 학생의 dec() 결과가 같은 것은 우연이 아닙니다. score[0]은 동일
+            값이고,<br />
+            &nbsp;&nbsp;0xA5&amp;0xA5=0xA5, 0xED&amp;0xA5=0xA5,
+            0xDB&amp;0xA5=0x81, 0x81&amp;0xA5=0x81 이 일치합니다.
+          </p>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  ><strong>16진수 → 2진수 변환</strong>이 필수입니다. 16진수 한
+                  자리 = 4비트이므로
+                  <span class="mono"
+                    >0xDB = 0xD(1101) 0xB(1011) = 1101 1011</span
+                  >.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔧</span>
+                <span
+                  ><span class="hl">AND 연산 규칙</span>: 1&amp;1=1, 1&amp;0=0,
+                  0&amp;1=0, 0&amp;0=0 — 마스크 비트가 0인 자리는 무조건 0이
+                  됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚡</span>
+                <span
+                  >dec(0xA5)=165, dec(0xED)=165 — 다른 값이지만 마스크 후 같은
+                  결과가 나오는 것이 핵심 함정입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span>최종 출력: <strong>908</strong></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">printf("%d", result) 출력 결과</div>
+          <div class="answer-value">908</div>
+          <div class="answer-desc">
+            sum(Kim)=160+165+129=454 + sum(Lee)=160+165+129=454 = 908
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

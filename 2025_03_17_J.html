@@ -1,0 +1,1034 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+      .en {
+        color: #f0c060;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 96px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* enum 시각화 */
+      .enum-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      /* 연쇄 분해 박스들 */
+      .chain {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .chain-step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .chain-step .step-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .box-expr {
+        background: #1a1208;
+        border: 1.5px solid #546e7a;
+        border-radius: 5px;
+        padding: 5px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: #e8d5b0;
+        white-space: nowrap;
+      }
+      .box-arrow {
+        color: #c8b89a;
+        font-size: 16px;
+      }
+      .box-result {
+        background: #1a1208;
+        border: 2px solid #2d5a3d;
+        border-radius: 5px;
+        padding: 5px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: #c3e88d;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .box-result.highlight {
+        border-color: #f0c060;
+        color: #f0c060;
+        background: #2d2010;
+      }
+      .chain-step .note {
+        font-size: 12px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-step {
+        background: #fde8d8;
+        color: #8b3a0f;
+      }
+      .tag-val {
+        background: #d5e8f0;
+        color: #1e3a6e;
+      }
+      .tag-result {
+        background: #d5f0e0;
+        color: #2d5a3d;
+      }
+      .tag-en {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java enum 메서드 연쇄 추적</h1>
+        <div class="meta">
+          Java · enum · values() · name() · length() · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">enum</span> <span class="cls">Tri</span> {
+    <span class="en">A</span>(<span class="str">"A"</span>), <span class="en">B</span>(<span class="str">"AB"</span>), <span class="en">C</span>(<span class="str">"ABC"</span>);
+
+    <span class="kw">private</span> <span class="cls">String</span> code;
+
+    <span class="cls">Tri</span>(<span class="cls">String</span> code) {
+        <span class="kw">this</span>.code = code;
+    }
+
+    <span class="kw">public</span> <span class="cls">String</span> <span class="fn">code</span>() {
+        <span class="ret">return</span> code;
+    }
+}
+
+<span class="kw">public class</span> <span class="cls">Main</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+        <span class="cls">Tri</span> t = <span class="cls">Tri</span>.<span class="fn">values</span>()[<span class="cls">Tri</span>.<span class="en">A</span>.<span class="fn">name</span>().<span class="fn">length</span>()];
+        <span class="cls">System</span>.out.<span class="fn">print</span>(t.<span class="fn">code</span>());
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">System.out.print() 출력 결과</div>
+          <div class="answer-value">AB</div>
+          <div class="answer-desc">
+            Tri.A.name()="A" → length()=1 → values()[1]=B → B.code()="AB"
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >Java enum 내장 메서드(values, name)와 String 메서드(length)를
+                연쇄 호출하여 출력값을 추적하는 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><span class="mono">values()</span> — enum의 모든 상수를
+                  <strong>선언 순서대로</strong> 배열로 반환합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><span class="mono">name()</span> — enum 상수의
+                  <strong>이름 문자열</strong>을 반환합니다. (소스코드에 선언된
+                  이름 그대로)</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><span class="mono">code()</span> — 이 enum이 직접 정의한
+                  메서드로, 생성자에서 전달된 <strong>code 필드 값</strong>을
+                  반환합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② enum 구조 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">② enum Tri 구조</div>
+          <div class="enum-wrap">
+            <svg
+              width="600"
+              height="120"
+              viewBox="0 0 600 120"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- 헤더 -->
+              <text
+                x="20"
+                y="18"
+                fill="#8b3a0f"
+                font-size="12"
+                font-weight="bold"
+              >
+                Tri.values() 배열
+              </text>
+              <text x="460" y="18" fill="#546e7a" font-size="11">
+                ← 선언 순서 그대로 인덱스 부여
+              </text>
+
+              <!-- A [0] -->
+              <rect
+                x="20"
+                y="26"
+                width="130"
+                height="64"
+                rx="6"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="85"
+                y="46"
+                text-anchor="middle"
+                fill="#7a6650"
+                font-size="10"
+              >
+                [0]
+              </text>
+              <text
+                x="85"
+                y="63"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="16"
+                font-weight="bold"
+              >
+                A
+              </text>
+              <text
+                x="85"
+                y="80"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="12"
+              >
+                code = "A"
+              </text>
+
+              <!-- B [1] — 강조 -->
+              <rect
+                x="168"
+                y="20"
+                width="130"
+                height="76"
+                rx="6"
+                fill="#2d2010"
+                stroke="#f0c060"
+                stroke-width="2.5"
+              />
+              <text
+                x="233"
+                y="40"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="10"
+                font-weight="bold"
+              >
+                [1] ← 선택됨
+              </text>
+              <text
+                x="233"
+                y="60"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="18"
+                font-weight="bold"
+              >
+                B
+              </text>
+              <text
+                x="233"
+                y="78"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="13"
+                font-weight="bold"
+              >
+                code = "AB"
+              </text>
+
+              <!-- C [2] -->
+              <rect
+                x="316"
+                y="26"
+                width="130"
+                height="64"
+                rx="6"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="381"
+                y="46"
+                text-anchor="middle"
+                fill="#7a6650"
+                font-size="10"
+              >
+                [2]
+              </text>
+              <text
+                x="381"
+                y="63"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="16"
+                font-weight="bold"
+              >
+                C
+              </text>
+              <text
+                x="381"
+                y="80"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="12"
+              >
+                code = "ABC"
+              </text>
+
+              <!-- 인덱스 화살표 설명 -->
+              <line
+                x1="233"
+                y1="96"
+                x2="233"
+                y2="112"
+                stroke="#f0c060"
+                stroke-width="1.5"
+              />
+              <text
+                x="233"
+                y="112"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="10"
+              >
+                values()[1] = B
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ③ 연쇄 호출 분해 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 연쇄 호출 단계별 분해</div>
+          <div class="card">
+            <div class="chain">
+              <div class="chain-step">
+                <span class="step-num">1</span>
+                <span class="box-expr">Tri.A.name()</span>
+                <span class="box-arrow">→</span>
+                <span class="box-result">"A"</span>
+                <span class="note">enum 상수 A의 이름 문자열</span>
+              </div>
+              <div class="chain-step">
+                <span class="step-num">2</span>
+                <span class="box-expr">"A".length()</span>
+                <span class="box-arrow">→</span>
+                <span class="box-result">1</span>
+                <span class="note">문자열 "A"의 길이 = 1</span>
+              </div>
+              <div class="chain-step">
+                <span class="step-num">3</span>
+                <span class="box-expr">Tri.values()[1]</span>
+                <span class="box-arrow">→</span>
+                <span class="box-result">B</span>
+                <span class="note">인덱스 1번 = 두 번째 상수 B</span>
+              </div>
+              <div class="chain-step">
+                <span class="step-num">4</span>
+                <span class="box-expr">t = B</span>
+                <span class="box-arrow">→</span>
+                <span class="box-result">Tri.B</span>
+                <span class="note">t에 enum 상수 B 할당</span>
+              </div>
+              <div class="chain-step">
+                <span class="step-num">5</span>
+                <span class="box-expr">t.code()</span>
+                <span class="box-arrow">→</span>
+                <span class="box-result highlight">"AB"</span>
+                <span class="note">B의 code 필드값 반환 → 출력!</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ 단계별 추적 테이블 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 단계별 추적 테이블</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>단계</th>
+                  <th>호출</th>
+                  <th>반환 타입</th>
+                  <th>값</th>
+                  <th>근거</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag-step">①</span></td>
+                  <td><span class="mono">Tri.A.name()</span></td>
+                  <td><span class="mono">String</span></td>
+                  <td><span class="tag tag-val">"A"</span></td>
+                  <td>enum 상수 이름 그대로 반환</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">②</span></td>
+                  <td><span class="mono">"A".length()</span></td>
+                  <td><span class="mono">int</span></td>
+                  <td><span class="tag tag-val">1</span></td>
+                  <td>"A"는 한 글자 → 길이 1</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">③</span></td>
+                  <td><span class="mono">Tri.values()[1]</span></td>
+                  <td><span class="mono">Tri</span></td>
+                  <td><span class="tag tag-en">B</span></td>
+                  <td>values() = {A,B,C}, 인덱스 1 = B</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">④</span></td>
+                  <td><span class="mono">t = B</span></td>
+                  <td><span class="mono">Tri</span></td>
+                  <td><span class="tag tag-en">Tri.B</span></td>
+                  <td>변수 t에 B 할당</td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="tag tag-result">⑤</span></td>
+                  <td><span class="mono">t.code()</span></td>
+                  <td><span class="mono">String</span></td>
+                  <td><span class="tag tag-result">"AB"</span></td>
+                  <td>B 생성자에 전달된 code = "AB"</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ enum 내장 메서드 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 자주 쓰이는 enum 내장 메서드</div>
+          <div class="card">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>메서드</th>
+                  <th>반환 타입</th>
+                  <th>설명</th>
+                  <th>이 코드에서 결과</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="mono">values()</span></td>
+                  <td><span class="mono">Tri[]</span></td>
+                  <td>모든 상수를 배열로 반환 (선언 순서)</td>
+                  <td><span class="mono">{A, B, C}</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">name()</span></td>
+                  <td><span class="mono">String</span></td>
+                  <td>상수의 이름 문자열 반환</td>
+                  <td><span class="mono">A.name() = "A"</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">ordinal()</span></td>
+                  <td><span class="mono">int</span></td>
+                  <td>선언 순서 인덱스 반환 (0부터)</td>
+                  <td><span class="mono">A=0, B=1, C=2</span></td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="mono">code()</span></td>
+                  <td><span class="mono">String</span></td>
+                  <td>사용자 정의 메서드 (code 필드 반환)</td>
+                  <td><span class="mono">B.code() = "AB"</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  ><span class="mono">name()</span>은
+                  <span class="hl">소스코드에 선언된 상수 이름</span> 그대로
+                  반환합니다. <span class="mono">Tri.A.name()</span> →
+                  <span class="mono">"A"</span> (대문자 그대로)</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  ><span class="mono">"A".length() = 1</span> — 이 값이
+                  <span class="mono">values()</span> 배열의 인덱스로 사용됩니다.
+                  인덱스 1 = 두 번째 원소 <strong>B</strong></span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span>
+                <span
+                  ><span class="mono">code()</span>와
+                  <span class="mono">name()</span>을 혼동하지 마세요.
+                  <span class="mono">name()</span>은
+                  <span class="mono">"B"</span>,
+                  <span class="mono">code()</span>는 생성자에 전달된
+                  <span class="hl"><span class="mono">"AB"</span></span
+                  >를 반환합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span
+                  ><span class="mono">System.out.print</span> (println
+                  <strong>아님</strong>) — 줄바꿈 없이 <strong>AB</strong>만
+                  출력합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">System.out.print(t.code()) 출력 결과</div>
+          <div class="answer-value">AB</div>
+          <div class="answer-desc">
+            A.name()="A" → length()=1 → values()[1]=B → B.code()="AB"
+          </div>
+        </div>
+      </div>
+      <!-- /panelExplain -->
+    </div>
+    <!-- /page -->
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

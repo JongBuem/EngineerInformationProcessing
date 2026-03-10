@@ -1,0 +1,1333 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.warn {
+        border-left-color: #c0392b;
+        background: rgba(255, 235, 230, 0.35);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 110px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+      .trace-table tr.base-row td {
+        background: rgba(192, 57, 43, 0.08);
+      }
+      .trace-table tr.str-row td {
+        background: rgba(30, 58, 110, 0.1);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-str {
+        background: #1e1a2d;
+        color: #c792ea;
+        border: 1px solid #5a3a8b;
+      }
+      .tag-int {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-base {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1px solid #c0392b;
+      }
+      .tag-ret {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      .overload-box {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .ol-card {
+        flex: 1;
+        min-width: 240px;
+        border-radius: 6px;
+        padding: 14px 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        line-height: 1.8;
+      }
+      .ol-str {
+        background: #1e1a2d;
+        border: 2px solid #5a3a8b;
+        color: #c792ea;
+      }
+      .ol-int {
+        background: #1a2010;
+        border: 2px solid #2d5a3d;
+        color: #c3e88d;
+      }
+      .ol-card .title {
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 0.1em;
+        opacity: 0.8;
+        margin-bottom: 6px;
+      }
+      .ol-card .rule {
+        color: #e8d5b0;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java 메서드 오버로딩 + 재귀 호출 추적</h1>
+        <div class="meta">
+          Java · Method Overloading · Recursion · String vs int · Dispatch ·
+          Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">public class</span> <span class="cls">Main</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+        <span class="cls">System</span>.out.<span class="fn">println</span>(<span class="fn">calc</span>(<span class="str">"5"</span>));   <span class="cmt">// String 인수 → calc(String) 호출</span>
+    }
+
+    <span class="cmt">/* ① calc(int) — int 인수 버전: value-1, value-2 피보나치 */</span>
+    <span class="kw">static int</span> <span class="fn">calc</span>(<span class="kw">int</span> value) {
+        <span class="kw">if</span> (value &lt;= <span class="nl">1</span>) <span class="ret">return</span> value;
+        <span class="ret">return</span> <span class="fn">calc</span>(value - <span class="nl">1</span>) + <span class="fn">calc</span>(value - <span class="nl">2</span>);
+    }
+
+    <span class="cmt">/* ② calc(String) — String 인수 버전: value-1, value-3 */</span>
+    <span class="kw">static int</span> <span class="fn">calc</span>(<span class="cls">String</span> str) {
+        <span class="kw">int</span> value = <span class="cls">Integer</span>.<span class="fn">valueOf</span>(str);
+        <span class="kw">if</span> (value &lt;= <span class="nl">1</span>) <span class="ret">return</span> value;
+        <span class="ret">return</span> <span class="fn">calc</span>(value - <span class="nl">1</span>) + <span class="fn">calc</span>(value - <span class="nl">3</span>);   <span class="cmt">// int 연산 → calc(int) 호출!</span>
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">System.out.println 출력 결과</div>
+          <div class="answer-value">4</div>
+          <div class="answer-desc">
+            calc("5") → calc(int 4) + calc(int 2) → 3 + 1 = 4
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >메서드 오버로딩(Overloading)으로 인해 String 버전과 int 버전 중
+                어떤 calc()가 호출되는지 파악하는 것이 핵심인 재귀 추적
+                문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">⚠️</span
+                ><span
+                  ><span class="hl">핵심 함정</span>:
+                  <span class="mono">calc(String)</span> 안에서
+                  <span class="mono">calc(value-1)</span>을 호출할 때,
+                  <span class="mono">value-1</span>은
+                  <span class="mono">int</span> 연산 결과이므로
+                  <strong>calc(int) 버전</strong>이 호출됩니다. String 버전은
+                  최초 한 번만 실행됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔵</span
+                ><span
+                  >두 버전의 점화식이 다릅니다: calc(int)는
+                  <span class="mono">f(n-1)+f(n-2)</span> (피보나치),
+                  calc(String)은
+                  <span class="mono">f(n-1)+f(n-3)</span>입니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 두 오버로드 비교 -->
+        <div class="sub-section">
+          <div class="sub-title">② 두 calc() 오버로드 비교</div>
+          <div class="overload-box">
+            <div class="ol-card ol-str">
+              <div class="title">calc(String str) — 단 1회만 호출</div>
+              <div class="rule">
+                인수 타입: String<br />점화식: f(n-1) + f(n-3)<br />내부에서
+                value-1, value-3은<br /><strong style="color: #f0c060"
+                  >int이므로 calc(int) 호출!</strong
+                >
+              </div>
+            </div>
+            <div class="ol-card ol-int">
+              <div class="title">calc(int value) — 이후 모든 재귀에 사용</div>
+              <div class="rule">
+                인수 타입: int<br />점화식: f(n-1) + f(n-2)<br />기저: value ≤ 1
+                → return value<br />(0→0, 1→1)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ calc(String "5") 진입점 분석 -->
+        <div class="sub-section">
+          <div class="sub-title">
+            ③ calc(String "5") 진입 — int 재귀로 전환되는 순간
+          </div>
+          <div class="card warn">
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 13px;
+                line-height: 2;
+              "
+            >
+              calc(<span style="color: #c792ea">"5"</span>) 호출<br />
+              &nbsp;&nbsp;→ value = Integer.valueOf("5") =
+              <span style="color: #f78c6c">5</span><br />
+              &nbsp;&nbsp;→ 5 &gt; 1 이므로:<br />
+              &nbsp;&nbsp;→ return calc(<span style="color: #f78c6c">5</span
+              >-<span style="color: #f78c6c">1</span>) + calc(<span
+                style="color: #f78c6c"
+                >5</span
+              >-<span style="color: #f78c6c">3</span>)<br />
+              &nbsp;&nbsp;→ return calc(<span style="color: #c3e88d">int 4</span
+              >) + calc(<span style="color: #c3e88d">int 2</span>)
+              &nbsp;&nbsp;<span style="color: #f0c060; font-weight: bold"
+                >← 이제부터 calc(int)만 호출!</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- ④ 재귀 호출 트리 -->
+        <div class="sub-section">
+          <div class="sub-title">
+            ④ 재귀 호출 트리 (calc(int) 버전 — 피보나치)
+          </div>
+          <div class="flow-wrap">
+            <svg
+              width="620"
+              height="300"
+              viewBox="0 0 620 300"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- 레벨 라벨 -->
+              <text x="4" y="38" fill="#c792ea" font-size="10">String</text>
+              <text x="4" y="105" fill="#c3e88d" font-size="10">int</text>
+              <text x="4" y="175" fill="#c3e88d" font-size="10">int</text>
+              <text x="4" y="245" fill="#ff7675" font-size="10">base</text>
+
+              <!-- calc("5") -->
+              <rect
+                x="240"
+                y="10"
+                width="130"
+                height="36"
+                rx="5"
+                fill="#1e1a2d"
+                stroke="#5a3a8b"
+                stroke-width="2"
+              />
+              <text
+                x="305"
+                y="26"
+                text-anchor="middle"
+                fill="#c792ea"
+                font-size="11"
+              >
+                calc("5")
+              </text>
+              <text
+                x="305"
+                y="40"
+                text-anchor="middle"
+                fill="#f78c6c"
+                font-size="10"
+              >
+                → calc(4)+calc(2)
+              </text>
+
+              <!-- edges from "5" -->
+              <line
+                x1="270"
+                y1="46"
+                x2="185"
+                y2="82"
+                stroke="#5a3a8b"
+                stroke-width="1.5"
+                stroke-dasharray="5,3"
+              />
+              <line
+                x1="340"
+                y1="46"
+                x2="430"
+                y2="82"
+                stroke="#5a3a8b"
+                stroke-width="1.5"
+                stroke-dasharray="5,3"
+              />
+
+              <!-- calc(4) -->
+              <rect
+                x="120"
+                y="82"
+                width="130"
+                height="36"
+                rx="5"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="2"
+              />
+              <text
+                x="185"
+                y="98"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+              >
+                calc(int 4)
+              </text>
+              <text
+                x="185"
+                y="112"
+                text-anchor="middle"
+                fill="#f78c6c"
+                font-size="10"
+              >
+                → calc(3)+calc(2)
+              </text>
+
+              <!-- calc(2) right -->
+              <rect
+                x="360"
+                y="82"
+                width="130"
+                height="36"
+                rx="5"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="2"
+              />
+              <text
+                x="425"
+                y="98"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+              >
+                calc(int 2)
+              </text>
+              <text
+                x="425"
+                y="112"
+                text-anchor="middle"
+                fill="#f78c6c"
+                font-size="10"
+              >
+                → calc(1)+calc(0)
+              </text>
+
+              <!-- edges from calc(4) -->
+              <line
+                x1="155"
+                y1="118"
+                x2="105"
+                y2="152"
+                stroke="#2d5a3d"
+                stroke-width="1.3"
+              />
+              <line
+                x1="215"
+                y1="118"
+                x2="290"
+                y2="152"
+                stroke="#2d5a3d"
+                stroke-width="1.3"
+              />
+
+              <!-- edges from calc(2) right -->
+              <line
+                x1="400"
+                y1="118"
+                x2="370"
+                y2="152"
+                stroke="#2d5a3d"
+                stroke-width="1.3"
+              />
+              <line
+                x1="450"
+                y1="118"
+                x2="490"
+                y2="152"
+                stroke="#2d5a3d"
+                stroke-width="1.3"
+              />
+
+              <!-- calc(3) -->
+              <rect
+                x="50"
+                y="152"
+                width="110"
+                height="36"
+                rx="5"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="1.5"
+              />
+              <text
+                x="105"
+                y="168"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+              >
+                calc(3)
+              </text>
+              <text
+                x="105"
+                y="182"
+                text-anchor="middle"
+                fill="#f78c6c"
+                font-size="10"
+              >
+                → calc(2)+calc(1)
+              </text>
+
+              <!-- calc(2) middle -->
+              <rect
+                x="240"
+                y="152"
+                width="110"
+                height="36"
+                rx="5"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="1.5"
+              />
+              <text
+                x="295"
+                y="168"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+              >
+                calc(2)
+              </text>
+              <text
+                x="295"
+                y="182"
+                text-anchor="middle"
+                fill="#f78c6c"
+                font-size="10"
+              >
+                → calc(1)+calc(0)
+              </text>
+
+              <!-- calc(1) right-right -->
+              <rect
+                x="340"
+                y="152"
+                width="80"
+                height="36"
+                rx="5"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="1.5"
+                stroke-dasharray="3"
+              />
+              <text
+                x="380"
+                y="168"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="11"
+              >
+                calc(1)
+              </text>
+              <text
+                x="380"
+                y="182"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="10"
+              >
+                → 1
+              </text>
+
+              <!-- calc(0) -->
+              <rect
+                x="450"
+                y="152"
+                width="80"
+                height="36"
+                rx="5"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="1.5"
+                stroke-dasharray="3"
+              />
+              <text
+                x="490"
+                y="168"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="11"
+              >
+                calc(0)
+              </text>
+              <text
+                x="490"
+                y="182"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="10"
+              >
+                → 0
+              </text>
+
+              <!-- edges from calc(3) -->
+              <line
+                x1="80"
+                y1="188"
+                x2="60"
+                y2="222"
+                stroke="#2d5a3d"
+                stroke-width="1.2"
+              />
+              <line
+                x1="130"
+                y1="188"
+                x2="155"
+                y2="222"
+                stroke="#2d5a3d"
+                stroke-width="1.2"
+              />
+
+              <!-- edges from calc(2) middle -->
+              <line
+                x1="270"
+                y1="188"
+                x2="250"
+                y2="222"
+                stroke="#2d5a3d"
+                stroke-width="1.2"
+              />
+              <line
+                x1="320"
+                y1="188"
+                x2="330"
+                y2="222"
+                stroke="#2d5a3d"
+                stroke-width="1.2"
+              />
+
+              <!-- base nodes from calc(3) -->
+              <rect
+                x="20"
+                y="222"
+                width="70"
+                height="32"
+                rx="4"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="1.5"
+                stroke-dasharray="3"
+              />
+              <text
+                x="55"
+                y="237"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="11"
+              >
+                calc(2)
+              </text>
+              <text
+                x="55"
+                y="250"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="10"
+              >
+                → 1
+              </text>
+
+              <rect
+                x="120"
+                y="222"
+                width="70"
+                height="32"
+                rx="4"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="1.5"
+                stroke-dasharray="3"
+              />
+              <text
+                x="155"
+                y="237"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="11"
+              >
+                calc(1)
+              </text>
+              <text
+                x="155"
+                y="250"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="10"
+              >
+                → 1
+              </text>
+
+              <rect
+                x="220"
+                y="222"
+                width="70"
+                height="32"
+                rx="4"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="1.5"
+                stroke-dasharray="3"
+              />
+              <text
+                x="255"
+                y="237"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="11"
+              >
+                calc(1)
+              </text>
+              <text
+                x="255"
+                y="250"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="10"
+              >
+                → 1
+              </text>
+
+              <rect
+                x="310"
+                y="222"
+                width="70"
+                height="32"
+                rx="4"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="1.5"
+                stroke-dasharray="3"
+              />
+              <text
+                x="345"
+                y="237"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="11"
+              >
+                calc(0)
+              </text>
+              <text
+                x="345"
+                y="250"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="10"
+              >
+                → 0
+              </text>
+
+              <!-- 반환값 레이블 -->
+              <text
+                x="48"
+                y="275"
+                fill="#8b3a0f"
+                font-size="10"
+                font-weight="bold"
+              >
+                →2
+              </text>
+              <text
+                x="148"
+                y="275"
+                fill="#8b3a0f"
+                font-size="10"
+                font-weight="bold"
+              >
+                →1
+              </text>
+              <text
+                x="410"
+                y="130"
+                fill="#8b3a0f"
+                font-size="10"
+                font-weight="bold"
+              >
+                →1
+              </text>
+              <text
+                x="500"
+                y="130"
+                fill="#8b3a0f"
+                font-size="10"
+                font-weight="bold"
+              >
+                →0
+              </text>
+              <text
+                x="78"
+                y="148"
+                fill="#8b3a0f"
+                font-size="10"
+                font-weight="bold"
+              >
+                →2
+              </text>
+              <text
+                x="425"
+                y="148"
+                fill="#8b3a0f"
+                font-size="10"
+                font-weight="bold"
+              >
+                1+0=1
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ⑤ 단계별 반환값 추적표 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 단계별 반환값 추적표</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>호출</th>
+                  <th>타입</th>
+                  <th>조건</th>
+                  <th>왼쪽 재귀</th>
+                  <th>오른쪽 재귀</th>
+                  <th>반환값</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="base-row">
+                  <td><span class="mono">calc(int 0)</span></td>
+                  <td><span class="tag tag-int">int</span></td>
+                  <td>0 ≤ 1</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td><span class="tag tag-base">0 (기저)</span></td>
+                </tr>
+                <tr class="base-row">
+                  <td><span class="mono">calc(int 1)</span></td>
+                  <td><span class="tag tag-int">int</span></td>
+                  <td>1 ≤ 1</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td><span class="tag tag-base">1 (기저)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">calc(int 2)</span></td>
+                  <td><span class="tag tag-int">int</span></td>
+                  <td>2 &gt; 1</td>
+                  <td>calc(1)=1</td>
+                  <td>calc(0)=0</td>
+                  <td><span class="tag tag-ret">1+0 = 1</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">calc(int 3)</span></td>
+                  <td><span class="tag tag-int">int</span></td>
+                  <td>3 &gt; 1</td>
+                  <td>calc(2)=1</td>
+                  <td>calc(1)=1</td>
+                  <td><span class="tag tag-ret">1+1 = 2</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">calc(int 4)</span></td>
+                  <td><span class="tag tag-int">int</span></td>
+                  <td>4 &gt; 1</td>
+                  <td>calc(3)=2</td>
+                  <td>calc(2)=1</td>
+                  <td><span class="tag tag-ret">2+1 = 3</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">calc(int 2)</span></td>
+                  <td><span class="tag tag-int">int</span></td>
+                  <td>2 &gt; 1</td>
+                  <td>calc(1)=1</td>
+                  <td>calc(0)=0</td>
+                  <td><span class="tag tag-ret">1+0 = 1</span></td>
+                </tr>
+                <tr class="str-row hl-row">
+                  <td><span class="mono">calc(String "5")</span></td>
+                  <td><span class="tag tag-str">String</span></td>
+                  <td>5 &gt; 1</td>
+                  <td>calc(4)=3</td>
+                  <td>calc(2)=1</td>
+                  <td>
+                    <span class="tag tag-ret" style="font-size: 13px"
+                      >3+1 = <strong>4</strong></span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">⚠️</span>
+                <span
+                  ><span class="hl"
+                    >오버로딩 디스패치는 컴파일 타임 타입 기준</span
+                  >: <span class="mono">calc(String)</span> 안에서
+                  <span class="mono">calc(value-1)</span>을 호출할 때
+                  <span class="mono">value-1</span>은
+                  <span class="mono">int</span> 연산이므로
+                  <strong>calc(int)가 호출됩니다.</strong> String 버전은 최초 한
+                  번만 실행됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  ><span class="mono">calc(String)</span>의 점화식은
+                  <span class="mono">f(n-1) + f(n-3)</span>이지만, 실제로 재귀는
+                  <span class="hl">calc(int)의 f(n-1)+f(n-2)</span>로
+                  수행됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔁</span>
+                <span
+                  >최종 계산:
+                  <span class="mono"
+                    >calc("5") = calc(int 4) + calc(int 2) = 3 + 1 =
+                    <strong>4</strong></span
+                  ></span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">System.out.println 출력 결과</div>
+          <div class="answer-value">4</div>
+          <div class="answer-desc">
+            calc("5") → calc(int 4) + calc(int 2) = 3 + 1 = 4
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

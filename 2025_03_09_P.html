@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+
+      /* 버튼 */
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      /* 패널 */
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      /* 정답 박스 — 출력이 길어서 폰트 조정 */
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 14px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 1.6;
+        letter-spacing: 0;
+        animation: pulse 2s ease-in-out infinite;
+        word-break: break-all;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 12px;
+        opacity: 0.55;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* 트레이스 테이블 */
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+
+      /* dict 시각화 박스 */
+      .dict-visual {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 4px;
+      }
+      .dict-row {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .dict-key {
+        background: #1a1208;
+        border: 1.5px solid #8b3a0f;
+        border-radius: 6px 0 0 6px;
+        padding: 8px 16px;
+        color: #ffcb6b;
+        font-weight: 700;
+        min-width: 44px;
+        text-align: center;
+      }
+      .dict-arrow {
+        background: #2d1e0a;
+        border-top: 1.5px solid #8b3a0f;
+        border-bottom: 1.5px solid #8b3a0f;
+        padding: 8px 10px;
+        color: #546e7a;
+        font-size: 14px;
+      }
+      .dict-val {
+        background: #1a1208;
+        border: 1.5px solid #2d5a3d;
+        border-radius: 0 6px 6px 0;
+        padding: 8px 20px;
+        color: #c3e88d;
+        font-weight: 600;
+        flex: 1;
+      }
+      .dict-val span.v-sum {
+        color: #82aaff;
+      }
+      .dict-val span.v-len {
+        color: #f78c6c;
+      }
+      .dict-val span.v-punc {
+        color: #546e7a;
+      }
+      .dict-row .note {
+        margin-left: 14px;
+        font-size: 11px;
+        color: #7a6650;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-step {
+        background: #fde8d8;
+        color: #8b3a0f;
+      }
+      .tag-val {
+        background: #d5e8f0;
+        color: #1e3a6e;
+      }
+      .tag-result {
+        background: #d5f0e0;
+        color: #2d5a3d;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Python enumerate &amp; 딕셔너리 구성 추적</h1>
+        <div class="meta">Python · enumerate · dict · sum · len · Tracing</div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Python</span>
+          </div>
+          <pre>data = [
+    [<span class="nl">3</span>, <span class="nl">5</span>, <span class="nl">2</span>, <span class="nl">4</span>, <span class="nl">1</span>],
+    [<span class="nl">4</span>, <span class="nl">5</span>, <span class="nl">1</span>],
+    [<span class="nl">4</span>, <span class="nl">4</span>, <span class="nl">1</span>, <span class="nl">5</span>, <span class="nl">4</span>],
+    [<span class="nl">4</span>, <span class="nl">5</span>]
+]
+
+result = {}
+
+<span class="kw">for</span> index, lis <span class="kw">in</span> <span class="fn">enumerate</span>(data):
+    list_sum = <span class="fn">sum</span>(lis)       <span class="cmt"># 리스트 합계</span>
+    list_len = <span class="fn">len</span>(lis)       <span class="cmt"># 리스트 길이</span>
+
+    result[index] = (list_sum, list_len)   <span class="cmt"># 튜플로 저장</span>
+
+<span class="fn">print</span>(result)</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">print(result) 출력 결과</div>
+          <div class="answer-value">
+            {0: (15, 5), 1: (10, 3), 2: (18, 5), 3: (9, 2)}
+          </div>
+          <div class="answer-desc">
+            각 리스트의 (합계, 길이) 튜플을 인덱스 키로 저장
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >enumerate()로 인덱스와 원소를 동시에 순회하며 딕셔너리를
+                구성하는 출력값 추적 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>enumerate(iterable)</strong> — 반복할 때
+                  <span class="mono">(인덱스, 값)</span> 쌍을 함께
+                  반환합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>sum(list) / len(list)</strong> — 리스트의 합계와
+                  길이를 구하는 내장 함수입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>튜플로 저장</strong> —
+                  <span class="mono">result[index] = (sum, len)</span> 형태로
+                  딕셔너리에 저장합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 단계별 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">② for 루프 단계별 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>index</th>
+                  <th>lis</th>
+                  <th>list_sum (sum)</th>
+                  <th>list_len (len)</th>
+                  <th>result[index]</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag-step">0</span></td>
+                  <td><span class="mono">[3, 5, 2, 4, 1]</span></td>
+                  <td>
+                    <span class="mono">3+5+2+4+1 = <strong>15</strong></span>
+                  </td>
+                  <td><strong>5</strong></td>
+                  <td><span class="tag tag-val">(15, 5)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">1</span></td>
+                  <td><span class="mono">[4, 5, 1]</span></td>
+                  <td>
+                    <span class="mono">4+5+1 = <strong>10</strong></span>
+                  </td>
+                  <td><strong>3</strong></td>
+                  <td><span class="tag tag-val">(10, 3)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">2</span></td>
+                  <td><span class="mono">[4, 4, 1, 5, 4]</span></td>
+                  <td>
+                    <span class="mono">4+4+1+5+4 = <strong>18</strong></span>
+                  </td>
+                  <td><strong>5</strong></td>
+                  <td><span class="tag tag-val">(18, 5)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">3</span></td>
+                  <td><span class="mono">[4, 5]</span></td>
+                  <td>
+                    <span class="mono">4+5 = <strong>9</strong></span>
+                  </td>
+                  <td><strong>2</strong></td>
+                  <td><span class="tag tag-val">(9, 2)</span></td>
+                </tr>
+                <tr class="hl-row">
+                  <td colspan="4" style="text-align: right">최종 result =</td>
+                  <td>
+                    <span class="tag tag-result"
+                      >{0:(15,5), 1:(10,3), 2:(18,5), 3:(9,2)}</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ③ 딕셔너리 구조 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 최종 딕셔너리 구조</div>
+          <div class="dict-visual">
+            <div class="dict-row">
+              <div class="dict-key">0</div>
+              <div class="dict-arrow">:</div>
+              <div class="dict-val">
+                <span class="v-punc">(</span><span class="v-sum">15</span
+                ><span class="v-punc">, </span><span class="v-len">5</span
+                ><span class="v-punc">)</span>
+              </div>
+              <span class="note">← sum=15, len=5</span>
+            </div>
+            <div class="dict-row">
+              <div class="dict-key">1</div>
+              <div class="dict-arrow">:</div>
+              <div class="dict-val">
+                <span class="v-punc">(</span><span class="v-sum">10</span
+                ><span class="v-punc">, </span><span class="v-len">3</span
+                ><span class="v-punc">)</span>
+              </div>
+              <span class="note">← sum=10, len=3</span>
+            </div>
+            <div class="dict-row">
+              <div class="dict-key">2</div>
+              <div class="dict-arrow">:</div>
+              <div class="dict-val">
+                <span class="v-punc">(</span><span class="v-sum">18</span
+                ><span class="v-punc">, </span><span class="v-len">5</span
+                ><span class="v-punc">)</span>
+              </div>
+              <span class="note">← sum=18, len=5</span>
+            </div>
+            <div class="dict-row">
+              <div class="dict-key">3</div>
+              <div class="dict-arrow">:</div>
+              <div class="dict-val">
+                <span class="v-punc">(</span><span class="v-sum">9</span
+                ><span class="v-punc">, </span><span class="v-len">2</span
+                ><span class="v-punc">)</span>
+              </div>
+              <span class="note">← sum=9, len=2</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 핵심 정리</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  ><span class="mono">enumerate(data)</span>는
+                  <span class="hl">(0, data[0]), (1, data[1]), …</span> 순서로
+                  인덱스와 값을 함께 반환합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📦</span>
+                <span
+                  ><span class="mono"
+                    >result[index] = (list_sum, list_len)</span
+                  >
+                  — 딕셔너리의 값으로 <strong>튜플</strong>이 저장됩니다. 괄호가
+                  튜플을 만듭니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🎨</span>
+                <span
+                  >출력 형식은 Python 딕셔너리 표준 표현식:
+                  <span class="mono">{key: value, ...}</span> 형태로
+                  출력됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔵</span>
+                <span
+                  >딕셔너리 키는 <span class="mono">0, 1, 2, 3</span>의
+                  정수이고, 값은 <span class="mono">(합계, 길이)</span>의
+                  튜플입니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">print(result) 출력 결과</div>
+          <div class="answer-value">
+            {0: (15, 5), 1: (10, 3), 2: (18, 5), 3: (9, 2)}
+          </div>
+          <div class="answer-desc">
+            key = 인덱스(0~3) │ value = (sum, len) 튜플
+          </div>
+        </div>
+      </div>
+      <!-- /panelExplain -->
+    </div>
+    <!-- /page -->
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

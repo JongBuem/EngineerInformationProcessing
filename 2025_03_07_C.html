@@ -1,0 +1,1182 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+      .inc {
+        color: #89ddff;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 28px 32px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 8px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 80px;
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: -2px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .mem-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 28px 16px 24px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      /* XOR 비트 테이블 */
+      .bit-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+      .bit-table td {
+        padding: 8px 12px;
+        border: 1px solid var(--aged);
+        text-align: center;
+        min-width: 32px;
+      }
+      .bit-table tr:first-child td {
+        background: #1a1208;
+        color: #e8d5b0;
+        font-weight: 600;
+      }
+      .bit-table tr:nth-child(2) td {
+        background: #1e1a2d;
+        color: #c792ea;
+      }
+      .bit-table tr:nth-child(3) td {
+        background: #1e2820;
+        color: #c3e88d;
+      }
+      .bit-table .xor-line td {
+        background: #1a1208;
+        color: #546e7a;
+        font-size: 11px;
+        border-top: 2px solid #f0c060;
+      }
+      .bit-table .result-row td {
+        background: #2d2010;
+        color: #f0c060;
+        font-weight: 700;
+        border-top: 2px solid #f0c060;
+      }
+      .bit-one {
+        color: #f78c6c !important;
+        font-weight: bold;
+      }
+      .bit-zero {
+        color: #546e7a !important;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-step {
+        background: #fde8d8;
+        color: #8b3a0f;
+      }
+      .tag-val {
+        background: #d5e8f0;
+        color: #1e3a6e;
+      }
+      .tag-result {
+        background: #d5f0e0;
+        color: #2d5a3d;
+      }
+      .tag-null {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1px solid #c0392b;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- ── 헤더 ── -->
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 연결 리스트 순회 &amp; XOR 비트 연산 추적</h1>
+        <div class="meta">
+          C · Linked List · Pointer · Bitwise XOR · Tracing
+        </div>
+      </div>
+
+      <!-- ── 문제 코드 ── -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span>
+            <span class="dot dot-y"></span>
+            <span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+
+<span class="kw">struct</span> <span class="cls">Node</span> {
+    <span class="kw">struct</span> <span class="cls">Node</span>* next;
+    <span class="kw">unsigned int</span> x;
+};
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">struct</span> <span class="cls">Node</span> t1 = { <span class="nl">0</span>, <span class="nl">5u</span>  };   <span class="cmt">// next=NULL, x=5</span>
+    <span class="kw">struct</span> <span class="cls">Node</span> t2 = { <span class="nl">0</span>, <span class="nl">7u</span>  };   <span class="cmt">// next=NULL, x=7</span>
+    <span class="kw">struct</span> <span class="cls">Node</span> t3 = { <span class="nl">0</span>, <span class="nl">11u</span> };   <span class="cmt">// next=NULL, x=11</span>
+
+    t3.next = &amp;t2;                  <span class="cmt">// t3 → t2</span>
+    t2.next = &amp;t1;                  <span class="cmt">// t2 → t1 → NULL</span>
+
+    <span class="kw">struct</span> <span class="cls">Node</span>* curr = &amp;t3;
+    <span class="kw">int</span> sum = <span class="nl">0</span>;
+
+    <span class="kw">while</span> (curr) {
+        sum = sum * <span class="nl">3</span> + curr-&gt;x;    <span class="cmt">// Horner 방식 누산</span>
+        curr = curr-&gt;next;
+    }
+
+    sum = (sum ^ <span class="nl">42u</span>) + <span class="nl">100u</span>;       <span class="cmt">// XOR 후 덧셈</span>
+
+    <span class="fn">printf</span>(<span class="str">"%u\n"</span>, sum);
+    <span class="ret">return</span> <span class="nl">0</span>;
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- ── 버튼 ── -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- ── 정답 패널 ── -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">printf("%u\n", sum) 출력 결과</div>
+          <div class="answer-value">187</div>
+          <div class="answer-desc">
+            sum=125 → 125 XOR 42 = 87 → 87 + 100 = 187
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 설명 패널 ── -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >연결 리스트를 포인터로 순회하며 누산한 뒤, XOR 비트 연산으로
+                최종값을 구하는 복합 추적 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>연결 리스트 구조 파악</strong> — next 포인터 연결
+                  순서를 먼저 그려야 합니다. (t3 → t2 → t1 → NULL)</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>Horner 누산 공식</strong> —
+                  <span class="mono">sum = sum * 3 + x</span> 패턴은 각 단계마다
+                  이전 값을 3배 한 뒤 더합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>XOR(^) 비트 연산</strong> —
+                  <span class="hl">같은 비트는 0, 다른 비트는 1</span>이 됩니다.
+                  이진수 변환 후 자리별로 계산해야 합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 연결 리스트 구조 -->
+        <div class="sub-section">
+          <div class="sub-title">② 연결 리스트 구조 &amp; 순회 방향</div>
+          <div class="mem-wrap">
+            <svg
+              width="620"
+              height="130"
+              viewBox="0 0 620 130"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- curr 포인터 표시 -->
+              <text
+                x="100"
+                y="18"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="11"
+                font-weight="bold"
+              >
+                curr (시작)
+              </text>
+              <line
+                x1="100"
+                y1="22"
+                x2="100"
+                y2="36"
+                stroke="#f0c060"
+                stroke-width="2"
+              />
+              <polygon points="94,34 106,34 100,44" fill="#f0c060" />
+
+              <!-- t3 노드 -->
+              <rect
+                x="30"
+                y="44"
+                width="70"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#8b3a0f"
+                stroke-width="2"
+              />
+              <rect
+                x="100"
+                y="44"
+                width="70"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#8b3a0f"
+                stroke-width="2"
+              />
+              <text
+                x="65"
+                y="62"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="10"
+              >
+                next
+              </text>
+              <text
+                x="135"
+                y="62"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="10"
+              >
+                x
+              </text>
+              <text
+                x="65"
+                y="78"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="12"
+              >
+                →t2
+              </text>
+              <text
+                x="135"
+                y="78"
+                text-anchor="middle"
+                fill="#f78c6c"
+                font-size="14"
+                font-weight="bold"
+              >
+                11
+              </text>
+              <text
+                x="85"
+                y="106"
+                text-anchor="middle"
+                fill="#8b3a0f"
+                font-size="11"
+                font-weight="bold"
+              >
+                t3
+              </text>
+
+              <!-- 화살표 t3→t2 -->
+              <line
+                x1="170"
+                y1="66"
+                x2="208"
+                y2="66"
+                stroke="#c8b89a"
+                stroke-width="2"
+              />
+              <polygon points="206,60 218,66 206,72" fill="#c8b89a" />
+
+              <!-- t2 노드 -->
+              <rect
+                x="218"
+                y="44"
+                width="70"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#2d5a3d"
+                stroke-width="2"
+              />
+              <rect
+                x="288"
+                y="44"
+                width="70"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#2d5a3d"
+                stroke-width="2"
+              />
+              <text
+                x="253"
+                y="62"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="10"
+              >
+                next
+              </text>
+              <text
+                x="323"
+                y="62"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="10"
+              >
+                x
+              </text>
+              <text
+                x="253"
+                y="78"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="12"
+              >
+                →t1
+              </text>
+              <text
+                x="323"
+                y="78"
+                text-anchor="middle"
+                fill="#f78c6c"
+                font-size="14"
+                font-weight="bold"
+              >
+                7
+              </text>
+              <text
+                x="273"
+                y="106"
+                text-anchor="middle"
+                fill="#2d5a3d"
+                font-size="11"
+                font-weight="bold"
+              >
+                t2
+              </text>
+
+              <!-- 화살표 t2→t1 -->
+              <line
+                x1="358"
+                y1="66"
+                x2="396"
+                y2="66"
+                stroke="#c8b89a"
+                stroke-width="2"
+              />
+              <polygon points="394,60 406,66 394,72" fill="#c8b89a" />
+
+              <!-- t1 노드 -->
+              <rect
+                x="406"
+                y="44"
+                width="70"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#1e3a6e"
+                stroke-width="2"
+              />
+              <rect
+                x="476"
+                y="44"
+                width="70"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#1e3a6e"
+                stroke-width="2"
+              />
+              <text
+                x="441"
+                y="62"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="10"
+              >
+                next
+              </text>
+              <text
+                x="511"
+                y="62"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="10"
+              >
+                x
+              </text>
+              <text
+                x="441"
+                y="78"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="12"
+              >
+                NULL
+              </text>
+              <text
+                x="511"
+                y="78"
+                text-anchor="middle"
+                fill="#f78c6c"
+                font-size="14"
+                font-weight="bold"
+              >
+                5
+              </text>
+              <text
+                x="461"
+                y="106"
+                text-anchor="middle"
+                fill="#1e3a6e"
+                font-size="11"
+                font-weight="bold"
+              >
+                t1
+              </text>
+
+              <!-- 화살표 t1→NULL -->
+              <line
+                x1="546"
+                y1="66"
+                x2="576"
+                y2="66"
+                stroke="#c0392b"
+                stroke-width="1.5"
+                stroke-dasharray="4"
+              />
+              <polygon points="574,60 586,66 574,72" fill="#c0392b" />
+              <text x="595" y="70" fill="#ff7675" font-size="11">NULL</text>
+
+              <!-- 순회 방향 라벨 -->
+              <text
+                x="310"
+                y="125"
+                text-anchor="middle"
+                fill="#7a6650"
+                font-size="11"
+              >
+                순회 방향: t3(11) → t2(7) → t1(5) → NULL
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ③ while 루프 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">③ while 루프 단계별 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>반복</th>
+                  <th>curr</th>
+                  <th>curr→x</th>
+                  <th>계산식</th>
+                  <th>sum</th>
+                  <th>다음 curr</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag-step">초기</span></td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td><span class="mono">sum = 0</span></td>
+                  <td><strong>0</strong></td>
+                  <td>&amp;t3</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">1회</span></td>
+                  <td><span class="mono">&amp;t3</span></td>
+                  <td><span class="mono">11</span></td>
+                  <td><span class="mono">0 × 3 + 11</span></td>
+                  <td><strong>11</strong></td>
+                  <td>&amp;t2</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">2회</span></td>
+                  <td><span class="mono">&amp;t2</span></td>
+                  <td><span class="mono">7</span></td>
+                  <td><span class="mono">11 × 3 + 7 = 33 + 7</span></td>
+                  <td><strong>40</strong></td>
+                  <td>&amp;t1</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">3회</span></td>
+                  <td><span class="mono">&amp;t1</span></td>
+                  <td><span class="mono">5</span></td>
+                  <td><span class="mono">40 × 3 + 5 = 120 + 5</span></td>
+                  <td><strong>125</strong></td>
+                  <td>NULL</td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="tag tag-result">종료</span></td>
+                  <td><span class="tag tag-null">NULL</span></td>
+                  <td>—</td>
+                  <td>while 조건 false</td>
+                  <td><strong>125</strong></td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ XOR 비트 연산 -->
+        <div class="sub-section">
+          <div class="sub-title">④ XOR 비트 연산 상세 계산</div>
+          <div class="card">
+            <p style="margin-bottom: 16px; font-size: 14px">
+              <span class="mono">sum = (125 ^ 42) + 100</span>
+            </p>
+            <table class="bit-table">
+              <tr>
+                <td
+                  style="text-align: left; padding-left: 16px; min-width: 100px"
+                >
+                  값
+                </td>
+                <td>128</td>
+                <td>64</td>
+                <td>32</td>
+                <td>16</td>
+                <td>8</td>
+                <td>4</td>
+                <td>2</td>
+                <td>1</td>
+                <td style="text-align: left; padding-left: 12px">10진수</td>
+              </tr>
+              <tr>
+                <td style="text-align: left; padding-left: 16px">125</td>
+                <td class="bit-zero">0</td>
+                <td class="bit-one">1</td>
+                <td class="bit-one">1</td>
+                <td class="bit-one">1</td>
+                <td class="bit-one">1</td>
+                <td class="bit-one">1</td>
+                <td class="bit-zero">0</td>
+                <td class="bit-one">1</td>
+                <td
+                  style="text-align: left; padding-left: 12px; color: #c792ea"
+                >
+                  64+32+16+8+4+1
+                </td>
+              </tr>
+              <tr>
+                <td style="text-align: left; padding-left: 16px">42</td>
+                <td class="bit-zero">0</td>
+                <td class="bit-zero">0</td>
+                <td class="bit-one">1</td>
+                <td class="bit-zero">0</td>
+                <td class="bit-one">1</td>
+                <td class="bit-zero">0</td>
+                <td class="bit-one">1</td>
+                <td class="bit-zero">0</td>
+                <td
+                  style="text-align: left; padding-left: 12px; color: #c3e88d"
+                >
+                  32+8+2
+                </td>
+              </tr>
+              <tr class="xor-line">
+                <td style="text-align: left; padding-left: 16px">XOR (^)</td>
+                <td
+                  colspan="8"
+                  style="text-align: left; padding-left: 8px; color: #546e7a"
+                >
+                  같은 비트 → 0 &nbsp;|&nbsp; 다른 비트 → 1
+                </td>
+                <td></td>
+              </tr>
+              <tr class="result-row">
+                <td style="text-align: left; padding-left: 16px">= 87</td>
+                <td class="bit-zero">0</td>
+                <td class="bit-one">1</td>
+                <td class="bit-zero">0</td>
+                <td class="bit-one">1</td>
+                <td class="bit-zero">0</td>
+                <td class="bit-one">1</td>
+                <td class="bit-one">1</td>
+                <td class="bit-one">1</td>
+                <td
+                  style="text-align: left; padding-left: 12px; color: #f0c060"
+                >
+                  64+16+4+2+1 = 87
+                </td>
+              </tr>
+            </table>
+            <p
+              style="
+                margin-top: 16px;
+                font-size: 14px;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                color: #2a1f10;
+              "
+            >
+              <span style="color: #7a6650">최종:</span>
+              &nbsp;<strong
+                >87 + 100 =
+                <span style="color: #8b3a0f; font-size: 17px">187</span></strong
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 포인트 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔗</span>
+                <span
+                  ><strong>연결 리스트 방향</strong> —
+                  <span class="mono">t3.next = &t2</span>,
+                  <span class="mono">t2.next = &t1</span> 이므로 순회 순서는
+                  <span class="hl">t3(11) → t2(7) → t1(5)</span>입니다. 선언
+                  순서와 다름에 주의하세요.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  ><strong>Horner 누산</strong> —
+                  <span class="mono">sum = sum*3 + x</span>는 매 단계마다 이전
+                  합을 3배 합니다. 수식으로 표현하면
+                  <span class="mono">((0×3+11)×3+7)×3+5 = 125</span
+                  >입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⊕</span>
+                <span
+                  ><strong>XOR(^) 연산</strong> — 비트 단위로
+                  <span class="hl">같으면 0, 다르면 1</span>. 125(01111101) ^
+                  42(00101010) = 87(01010111).</span
+                >
+              </li>
+              <li>
+                <span class="icon">📝</span>
+                <span
+                  >원본 코드의 <span class="mono">printf("%un", sum)</span>은
+                  <span class="mono">%u\n</span>의 역슬래시가 누락된 것으로,
+                  <span class="mono">%u</span>(unsigned int 출력)
+                  형식입니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">printf("%u\n", sum) 출력 결과</div>
+          <div class="answer-value">187</div>
+          <div class="answer-desc">
+            루프 → sum=125 │ 125 ^ 42 = 87 │ 87 + 100 = 187
+          </div>
+        </div>
+      </div>
+      <!-- /panelExplain -->
+    </div>
+    <!-- /page -->
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.warn {
+        border-left-color: #c0392b;
+        background: rgba(255, 235, 230, 0.35);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 120px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+      .trace-table tr.skip-row td {
+        background: rgba(80, 80, 80, 0.07);
+        color: #888;
+      }
+      .trace-table tr.catch-row td {
+        background: rgba(192, 57, 43, 0.08);
+      }
+      .trace-table tr.finally-row td {
+        background: rgba(30, 58, 110, 0.1);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-throw {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1px solid #c0392b;
+      }
+      .tag-catch1 {
+        background: #2d1510;
+        color: #f0a060;
+        border: 1px solid #a03010;
+      }
+      .tag-catch2 {
+        background: #2d1a1a;
+        color: #546e7a;
+        border: 1px solid #444;
+      }
+      .tag-finally {
+        background: #1a1e2d;
+        color: #82aaff;
+        border: 1px solid #1e3a6e;
+      }
+      .tag-skip {
+        background: #282828;
+        color: #546e7a;
+        border: 1px solid #444;
+      }
+      .tag-ret {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      /* 예외 계층 다이어그램 */
+      .exc-tree {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        line-height: 2.2;
+        padding: 8px 0;
+      }
+      .exc-root {
+        color: #82aaff;
+        font-weight: bold;
+      }
+      .exc-mid {
+        color: #c792ea;
+        padding-left: 20px;
+      }
+      .exc-leaf {
+        color: #ff7675;
+        padding-left: 40px;
+        font-weight: bold;
+      }
+      .exc-hit {
+        background: rgba(192, 57, 43, 0.2);
+        border-radius: 3px;
+        padding: 1px 6px;
+      }
+
+      /* 실행 흐름 스텝 */
+      .flow-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .flow-step {
+        display: flex;
+        align-items: stretch;
+      }
+      .fs-num {
+        width: 36px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .fs-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+      .fs-line {
+        width: 2px;
+        flex: 1;
+        margin: 0 auto;
+        min-height: 16px;
+      }
+      .fs-body {
+        flex: 1;
+        padding: 4px 0 16px 12px;
+      }
+      .fs-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 3px;
+      }
+      .fs-detail {
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .c-try {
+        background: #1a2010;
+        border-color: #2d5a3d;
+        color: #c3e88d;
+      }
+      .c-throw {
+        background: #2d1a1a;
+        border-color: #c0392b;
+        color: #ff7675;
+      }
+      .c-catch1 {
+        background: #2d1510;
+        border-color: #a03010;
+        color: #f0a060;
+      }
+      .c-catch2 {
+        background: #282828;
+        border-color: #444;
+        color: #546e7a;
+      }
+      .c-finally {
+        background: #1a1e2d;
+        border-color: #1e3a6e;
+        color: #82aaff;
+      }
+      .c-out {
+        background: #2d2010;
+        border-color: #8b6020;
+        color: #f0c060;
+      }
+      .l-green {
+        background: #2d5a3d;
+      }
+      .l-red {
+        background: #c0392b;
+      }
+      .l-orange {
+        background: #a03010;
+      }
+      .l-gray {
+        background: #444;
+      }
+      .l-blue {
+        background: #1e3a6e;
+      }
+      .l-yellow {
+        background: #8b6020;
+      }
+
+      .sum-eq {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 15px;
+        text-align: center;
+        padding: 14px;
+        background: rgba(0, 0, 0, 0.04);
+        border-radius: 6px;
+        margin-top: 8px;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java 다중 catch + finally 예외 처리 흐름 추적</h1>
+        <div class="meta">
+          Java · Exception · try-catch · NullPointerException · finally ·
+          Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">public class</span> <span class="cls">Main</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+        <span class="kw">int</span> sum = <span class="nl">0</span>;
+        <span class="kw">try</span> {
+            <span class="fn">func</span>();                          <span class="cmt">// NullPointerException 발생!</span>
+        } <span class="kw">catch</span>(<span class="cls">NullPointerException</span> e) { <span class="cmt">// ① 첫 번째 catch — 일치!</span>
+            sum = sum + <span class="nl">1</span>;
+        } <span class="kw">catch</span>(<span class="cls">Exception</span> e) {          <span class="cmt">// ② 두 번째 catch — 건너뜀</span>
+            sum = sum + <span class="nl">10</span>;
+        } <span class="kw">finally</span> {                       <span class="cmt">// ③ finally — 항상 실행!</span>
+            sum = sum + <span class="nl">100</span>;
+        }
+        <span class="cls">System</span>.out.<span class="fn">print</span>(sum);
+    }
+
+    <span class="kw">static void</span> <span class="fn">func</span>() <span class="kw">throws</span> <span class="cls">Exception</span> {
+        <span class="kw">throw new</span> <span class="cls">NullPointerException</span>();  <span class="cmt">// 예외 던짐</span>
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">System.out.print(sum) 출력 결과</div>
+          <div class="answer-value">101</div>
+          <div class="answer-desc">
+            0 + 1(NullPointerException catch) + 100(finally) = 101
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >다중 catch 블록에서 예외 타입 매칭 우선순위와 finally의 무조건
+                실행을 이해하는 예외 처리 흐름 추적 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">⚠️</span
+                ><span
+                  ><span class="hl">catch는 위에서 아래로 순서대로 매칭</span
+                  >합니다. 첫 번째 일치하는 catch만 실행되고 나머지는
+                  건너뜁니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔵</span
+                ><span
+                  ><span class="mono">finally</span>는 예외 발생 여부와 관계없이
+                  <span class="hl">항상 마지막에 실행</span>됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><span class="mono">NullPointerException</span>은
+                  <span class="mono">Exception</span>의 하위 클래스이지만, 더
+                  구체적인 catch가 먼저 있으면 그쪽이 처리합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 예외 클래스 계층 -->
+        <div class="sub-section">
+          <div class="sub-title">② Java 예외 클래스 계층 구조</div>
+          <div class="flow-wrap">
+            <div class="exc-tree">
+              <div class="exc-root">Throwable</div>
+              <div class="exc-mid">└── Exception</div>
+              <div class="exc-leaf">└── RuntimeException</div>
+              <div
+                style="
+                  padding-left: 60px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 12px;
+                "
+              >
+                └──
+                <span class="exc-hit" style="color: #ff7675; font-weight: bold"
+                  >NullPointerException</span
+                >
+                <span style="color: #c0392b; font-size: 10px; margin-left: 8px"
+                  >← 이번에 발생한 예외</span
+                >
+              </div>
+            </div>
+            <p
+              style="
+                margin-top: 10px;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #7a6650;
+              "
+            >
+              NullPointerException ⊂ RuntimeException ⊂ Exception — 모두 상위
+              타입이지만 catch 우선순위는 <strong>위에서 아래</strong>
+            </p>
+          </div>
+        </div>
+
+        <!-- ③ 실행 흐름 단계 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 실행 흐름 단계별 추적</div>
+          <div class="flow-wrap">
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="fs-num">
+                  <div
+                    class="fs-circle c-try"
+                    style="border: 2px solid #2d5a3d"
+                  >
+                    1
+                  </div>
+                  <div class="fs-line l-green"></div>
+                </div>
+                <div class="fs-body">
+                  <div class="fs-label" style="color: #c3e88d">
+                    try 블록 진입
+                  </div>
+                  <div class="fs-detail">sum = 0 → func() 호출</div>
+                </div>
+              </div>
+
+              <div class="flow-step">
+                <div class="fs-num">
+                  <div
+                    class="fs-circle c-throw"
+                    style="border: 2px solid #c0392b"
+                  >
+                    2
+                  </div>
+                  <div class="fs-line l-red"></div>
+                </div>
+                <div class="fs-body">
+                  <div class="fs-label" style="color: #ff7675">
+                    NullPointerException 발생!
+                  </div>
+                  <div class="fs-detail">
+                    <span class="tag tag-throw"
+                      >throw new NullPointerException()</span
+                    ><br />try 블록 즉시 중단 → catch 탐색 시작
+                  </div>
+                </div>
+              </div>
+
+              <div class="flow-step">
+                <div class="fs-num">
+                  <div
+                    class="fs-circle c-catch1"
+                    style="border: 2px solid #a03010"
+                  >
+                    3
+                  </div>
+                  <div class="fs-line l-orange"></div>
+                </div>
+                <div class="fs-body">
+                  <div class="fs-label" style="color: #f0a060">
+                    catch(NullPointerException e) — ✅ 일치!
+                  </div>
+                  <div class="fs-detail">
+                    NullPointerException == NullPointerException → 매칭<br />
+                    <strong>sum = 0 + 1 = 1</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flow-step">
+                <div class="fs-num">
+                  <div
+                    class="fs-circle c-catch2"
+                    style="border: 2px solid #444"
+                  >
+                    4
+                  </div>
+                  <div class="fs-line l-gray"></div>
+                </div>
+                <div class="fs-body">
+                  <div class="fs-label" style="color: #546e7a">
+                    catch(Exception e) — ⏭ 건너뜀
+                  </div>
+                  <div class="fs-detail">
+                    <span class="tag tag-skip"
+                      >이미 위 catch에서 처리됨 → 실행 안 됨</span
+                    ><br />
+                    sum 변화 없음 (여전히 1)
+                  </div>
+                </div>
+              </div>
+
+              <div class="flow-step">
+                <div class="fs-num">
+                  <div
+                    class="fs-circle c-finally"
+                    style="border: 2px solid #1e3a6e"
+                  >
+                    5
+                  </div>
+                  <div class="fs-line l-blue"></div>
+                </div>
+                <div class="fs-body">
+                  <div class="fs-label" style="color: #82aaff">
+                    finally — 항상 실행!
+                  </div>
+                  <div class="fs-detail">
+                    예외 처리 여부와 무관하게 반드시 실행<br />
+                    <strong>sum = 1 + 100 = 101</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flow-step">
+                <div class="fs-num">
+                  <div
+                    class="fs-circle c-out"
+                    style="border: 2px solid #8b6020"
+                  >
+                    6
+                  </div>
+                </div>
+                <div class="fs-body">
+                  <div class="fs-label" style="color: #f0c060">
+                    System.out.print(sum)
+                  </div>
+                  <div class="fs-detail">
+                    <strong style="color: #f0c060; font-size: 16px">101</strong>
+                    출력
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ sum 변화 추적표 -->
+        <div class="sub-section">
+          <div class="sub-title">④ sum 변화 단계별 추적표</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>단계</th>
+                  <th>블록</th>
+                  <th>조건</th>
+                  <th>연산</th>
+                  <th>sum</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>초기화</td>
+                  <td>main()</td>
+                  <td>—</td>
+                  <td>int sum = 0</td>
+                  <td><strong>0</strong></td>
+                </tr>
+                <tr class="catch-row">
+                  <td>catch ①</td>
+                  <td>
+                    <span class="tag tag-catch1">NullPointerException</span>
+                  </td>
+                  <td>✅ 타입 일치</td>
+                  <td>sum = 0 + 1</td>
+                  <td><strong>1</strong></td>
+                </tr>
+                <tr class="skip-row">
+                  <td>catch ②</td>
+                  <td><span class="tag tag-catch2">Exception</span></td>
+                  <td>⏭ 건너뜀</td>
+                  <td>(실행 안 됨)</td>
+                  <td>1 (불변)</td>
+                </tr>
+                <tr class="finally-row">
+                  <td>finally</td>
+                  <td><span class="tag tag-finally">finally</span></td>
+                  <td>무조건 실행</td>
+                  <td>sum = 1 + 100</td>
+                  <td><strong>101</strong></td>
+                </tr>
+                <tr class="hl-row">
+                  <td>출력</td>
+                  <td>print</td>
+                  <td>—</td>
+                  <td>System.out.print(sum)</td>
+                  <td>
+                    <span class="tag tag-ret" style="font-size: 14px"
+                      ><strong>101</strong></span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sum-eq" style="margin-top: 12px">
+            sum = <span style="color: #c3e88d">0</span> +
+            <span style="color: #f0a060">1</span> (NullPointerException catch) +
+            <span style="color: #82aaff">100</span> (finally) =
+            <span style="color: #f0c060; font-size: 18px; font-weight: bold"
+              >101</span
+            >
+          </div>
+        </div>
+
+        <!-- ⑤ catch 우선순위 규칙 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 다중 catch 우선순위 규칙</div>
+          <div class="card warn">
+            <ul class="point-list">
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  >catch 블록은
+                  <span class="hl">위에서 아래로 순서대로</span> 타입을
+                  비교합니다. 첫 번째 일치 시 실행 후 나머지 catch는 모두
+                  건너뜁니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span>
+                <span
+                  >만약 순서가 반대였다면 (<span class="mono"
+                    >catch(Exception e)</span
+                  >가 먼저) → Exception이 NullPointerException을 포함하므로
+                  +10이 되고 sum = 110이 됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔵</span>
+                <span
+                  ><span class="mono">finally</span>는
+                  <span class="hl"
+                    >예외 발생 여부, catch 성공 여부와 무관하게 항상 실행</span
+                  >됩니다. return 문이 있어도 finally는 실행됩니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">System.out.print(sum) 출력 결과</div>
+          <div class="answer-value">101</div>
+          <div class="answer-desc">
+            0 + 1(catch NullPointerException) + 100(finally) = 101
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

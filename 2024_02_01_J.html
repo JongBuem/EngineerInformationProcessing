@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.warn {
+        border-left-color: #c0392b;
+        background: rgba(255, 235, 230, 0.35);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 110px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+        letter-spacing: 6px;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+      .trace-table tr.false-row td {
+        background: rgba(192, 57, 43, 0.07);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-ref {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+      .tag-false {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1px solid #c0392b;
+      }
+      .tag-true {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-N {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1px solid #c0392b;
+        font-size: 14px;
+      }
+      .tag-O {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+        font-size: 14px;
+      }
+      .tag-arr {
+        background: #1a1e2d;
+        color: #82aaff;
+        border: 1px solid #1e3a6e;
+      }
+
+      /* 메모리 heap 다이어그램 */
+      .mem-wrap {
+        display: flex;
+        gap: 28px;
+        flex-wrap: wrap;
+      }
+      .mem-stack {
+        flex: 1;
+        min-width: 160px;
+      }
+      .mem-heap {
+        flex: 2;
+        min-width: 280px;
+      }
+      .mem-title {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        font-weight: bold;
+        letter-spacing: 0.15em;
+        margin-bottom: 8px;
+        padding: 4px 10px;
+        border-radius: 3px;
+        display: inline-block;
+      }
+      .mt-stack {
+        background: #2d2010;
+        color: #f0c060;
+      }
+      .mt-heap {
+        background: #1a1e2d;
+        color: #82aaff;
+      }
+      .stack-row {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 10px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+        background: #2d1e0a;
+      }
+      .sr-var {
+        color: #f0c060;
+        min-width: 20px;
+        font-weight: bold;
+      }
+      .sr-addr {
+        color: #546e7a;
+        font-size: 10px;
+      }
+      .heap-obj {
+        border-radius: 6px;
+        padding: 10px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+      .ho-a {
+        background: #12161f;
+        border: 2px solid #1e3a6e;
+      }
+      .ho-b {
+        background: #12161f;
+        border: 2px solid #2d5a3d;
+      }
+      .ho-c {
+        background: #12161f;
+        border: 2px solid #5a3a8b;
+      }
+      .ho-title {
+        font-weight: bold;
+        margin-bottom: 4px;
+      }
+      .ho-a .ho-title {
+        color: #82aaff;
+      }
+      .ho-b .ho-title {
+        color: #c3e88d;
+      }
+      .ho-c .ho-title {
+        color: #c792ea;
+      }
+      .ho-vals {
+        color: #e8d5b0;
+        font-size: 11px;
+      }
+
+      /* 비교 규칙 카드 */
+      .cmp-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .cmp-card {
+        border-radius: 6px;
+        padding: 14px 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        line-height: 1.9;
+      }
+      .cc-eq {
+        background: #2d1a1a;
+        border: 2px solid #c0392b;
+      }
+      .cc-arr {
+        background: #1a2010;
+        border: 2px solid #2d5a3d;
+      }
+      .cc-eq .cc-title {
+        color: #ff7675;
+        font-size: 11px;
+        font-weight: bold;
+        margin-bottom: 6px;
+      }
+      .cc-arr .cc-title {
+        color: #c3e88d;
+        font-size: 11px;
+        font-weight: bold;
+        margin-bottom: 6px;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java 배열 참조 동등성 비교 (== vs Arrays.equals)</h1>
+        <div class="meta">
+          Java · Array · Reference Equality · == · Heap · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">public class</span> <span class="cls">Main</span> {
+    <span class="kw">public static void</span> <span class="fn">check</span>(<span class="kw">int</span>[] x, <span class="kw">int</span>[] y) {
+        <span class="kw">if</span> (x == y) <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="str">"O"</span>);  <span class="cmt">// 참조(주소) 비교!</span>
+        <span class="kw">else</span>        <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="str">"N"</span>);
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+        <span class="kw">int</span> a[] = <span class="kw">new int</span>[] {<span class="nl">1</span>, <span class="nl">2</span>, <span class="nl">3</span>, <span class="nl">4</span>};  <span class="cmt">// 힙에 새 배열 @A</span>
+        <span class="kw">int</span> b[] = <span class="kw">new int</span>[] {<span class="nl">1</span>, <span class="nl">2</span>, <span class="nl">3</span>, <span class="nl">4</span>};  <span class="cmt">// 힙에 새 배열 @B (내용 같지만 다른 객체!)</span>
+        <span class="kw">int</span> c[] = <span class="kw">new int</span>[] {<span class="nl">1</span>, <span class="nl">2</span>, <span class="nl">3</span>};    <span class="cmt">// 힙에 새 배열 @C</span>
+        <span class="fn">check</span>(a, b);  <span class="cmt">// @A == @B ?</span>
+        <span class="fn">check</span>(b, c);  <span class="cmt">// @B == @C ?</span>
+        <span class="fn">check</span>(a, c);  <span class="cmt">// @A == @C ?</span>
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">System.out.print 출력 결과</div>
+          <div class="answer-value">NNN</div>
+          <div class="answer-desc">
+            new int[]{}는 항상 새 힙 객체 → == 는 주소 비교 → 모두 다름
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >Java 배열에서 == 연산자가 내용이 아닌 참조(메모리 주소)를
+                비교함을 이해하는 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">⚠️</span
+                ><span
+                  ><span class="hl">핵심 함정</span>: a, b는 내용이
+                  <span class="mono">{1,2,3,4}</span>로 동일하지만,
+                  <span class="mono">new int[]</span>로 각각 선언했으므로
+                  <strong>힙에 서로 다른 객체</strong>가 생성됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔴</span
+                ><span
+                  >배열에서 <span class="mono">==</span>는
+                  <span class="hl">참조(주소) 비교</span>입니다. 내용 비교가
+                  필요하면 <span class="mono">Arrays.equals()</span>를 사용해야
+                  합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  >a, b, c는 모두 <span class="mono">new int[]</span>로 생성된
+                  <strong>독립적인 객체</strong>이므로 세 비교 모두 false → 모두
+                  "N".</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 힙 메모리 구조 -->
+        <div class="sub-section">
+          <div class="sub-title">② 힙(Heap) 메모리 구조</div>
+          <div class="flow-wrap">
+            <div class="mem-wrap">
+              <div class="mem-stack">
+                <div class="mem-title mt-stack">STACK</div>
+                <div class="stack-row">
+                  <span class="sr-var">a</span
+                  ><span class="sr-addr">→ @0x1A00</span>
+                </div>
+                <div class="stack-row">
+                  <span class="sr-var">b</span
+                  ><span class="sr-addr">→ @0x2B00</span>
+                </div>
+                <div class="stack-row">
+                  <span class="sr-var">c</span
+                  ><span class="sr-addr">→ @0x3C00</span>
+                </div>
+                <div
+                  style="
+                    margin-top: 10px;
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                    font-size: 10px;
+                    color: #546e7a;
+                    line-height: 1.8;
+                  "
+                >
+                  각 변수는 힙 주소를 저장<br />주소값이 모두 다름!
+                </div>
+              </div>
+              <div class="mem-heap">
+                <div class="mem-title mt-heap">HEAP</div>
+                <div class="heap-obj ho-a">
+                  <div class="ho-title">@0x1A00 — 배열 a</div>
+                  <div class="ho-vals">[1, 2, 3, 4] (length=4)</div>
+                </div>
+                <div class="heap-obj ho-b">
+                  <div class="ho-title">@0x2B00 — 배열 b</div>
+                  <div class="ho-vals">
+                    [1, 2, 3, 4] (length=4) ← 내용 같지만 주소 다름!
+                  </div>
+                </div>
+                <div class="heap-obj ho-c">
+                  <div class="ho-title">@0x3C00 — 배열 c</div>
+                  <div class="ho-vals">[1, 2, 3] (length=3)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ == vs Arrays.equals 비교 -->
+        <div class="sub-section">
+          <div class="sub-title">③ == vs Arrays.equals() 차이</div>
+          <div class="cmp-grid">
+            <div class="cmp-card cc-eq">
+              <div class="cc-title">⚠️ == 연산자 — 이 코드에서 사용</div>
+              <div style="color: #e8d5b0; line-height: 2">
+                참조(주소) 비교<br />
+                a == b → <span style="color: #ff7675">false</span> (0x1A00 ≠
+                0x2B00)<br />
+                b == c → <span style="color: #ff7675">false</span> (0x2B00 ≠
+                0x3C00)<br />
+                a == c → <span style="color: #ff7675">false</span> (0x1A00 ≠
+                0x3C00)
+              </div>
+            </div>
+            <div class="cmp-card cc-arr">
+              <div class="cc-title">✅ Arrays.equals() — 내용 비교</div>
+              <div style="color: #e8d5b0; line-height: 2">
+                원소 값 순서대로 비교<br />
+                Arrays.equals(a,b) → <span style="color: #c3e88d">true</span
+                ><br />
+                Arrays.equals(b,c) →
+                <span style="color: #ff7675">false</span> (길이 다름)<br />
+                Arrays.equals(a,c) →
+                <span style="color: #ff7675">false</span> (길이 다름)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ 호출별 추적표 -->
+        <div class="sub-section">
+          <div class="sub-title">④ check() 호출별 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>호출</th>
+                  <th>x 주소</th>
+                  <th>y 주소</th>
+                  <th>x == y</th>
+                  <th>내용 동일?</th>
+                  <th>출력</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="false-row">
+                  <td><span class="mono">check(a, b)</span></td>
+                  <td><span class="tag tag-arr">@0x1A00</span></td>
+                  <td>
+                    <span
+                      class="tag tag-arr"
+                      style="border-color: #2d5a3d; color: #c3e88d"
+                      >@0x2B00</span
+                    >
+                  </td>
+                  <td><span class="tag tag-false">false (주소 다름)</span></td>
+                  <td style="color: #546e7a">
+                    {1,2,3,4} = {1,2,3,4} ✓<br /><span
+                      style="font-size: 10px; color: #546e7a"
+                      >but == 은 내용 무시</span
+                    >
+                  </td>
+                  <td><span class="tag tag-N">N</span></td>
+                </tr>
+                <tr class="false-row">
+                  <td><span class="mono">check(b, c)</span></td>
+                  <td>
+                    <span
+                      class="tag tag-arr"
+                      style="border-color: #2d5a3d; color: #c3e88d"
+                      >@0x2B00</span
+                    >
+                  </td>
+                  <td>
+                    <span
+                      class="tag tag-arr"
+                      style="border-color: #5a3a8b; color: #c792ea"
+                      >@0x3C00</span
+                    >
+                  </td>
+                  <td><span class="tag tag-false">false (주소 다름)</span></td>
+                  <td style="color: #546e7a">길이도 다름 (4 vs 3)</td>
+                  <td><span class="tag tag-N">N</span></td>
+                </tr>
+                <tr class="false-row">
+                  <td><span class="mono">check(a, c)</span></td>
+                  <td><span class="tag tag-arr">@0x1A00</span></td>
+                  <td>
+                    <span
+                      class="tag tag-arr"
+                      style="border-color: #5a3a8b; color: #c792ea"
+                      >@0x3C00</span
+                    >
+                  </td>
+                  <td><span class="tag tag-false">false (주소 다름)</span></td>
+                  <td style="color: #546e7a">길이도 다름 (4 vs 3)</td>
+                  <td><span class="tag tag-N">N</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 출력 순서 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 전체 출력 순서</div>
+          <div class="flow-wrap">
+            <svg
+              width="380"
+              height="64"
+              viewBox="0 0 380 64"
+              font-family="JetBrains Mono,monospace"
+            >
+              <rect
+                x="10"
+                y="16"
+                width="100"
+                height="32"
+                rx="5"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="1.5"
+              />
+              <text
+                x="60"
+                y="37"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="15"
+                font-weight="bold"
+              >
+                N
+              </text>
+              <text
+                x="60"
+                y="12"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="9"
+              >
+                check(a,b)
+              </text>
+
+              <rect
+                x="120"
+                y="16"
+                width="100"
+                height="32"
+                rx="5"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="1.5"
+              />
+              <text
+                x="170"
+                y="37"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="15"
+                font-weight="bold"
+              >
+                N
+              </text>
+              <text
+                x="170"
+                y="12"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="9"
+              >
+                check(b,c)
+              </text>
+
+              <rect
+                x="230"
+                y="16"
+                width="100"
+                height="32"
+                rx="5"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="1.5"
+              />
+              <text
+                x="280"
+                y="37"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="15"
+                font-weight="bold"
+              >
+                N
+              </text>
+              <text
+                x="280"
+                y="12"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="9"
+              >
+                check(a,c)
+              </text>
+
+              <text
+                x="344"
+                y="38"
+                fill="#c3e88d"
+                font-size="15"
+                font-weight="bold"
+              >
+                =NNN
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">📦</span>
+                <span
+                  >Java에서 <span class="mono">new int[]{ }</span>는 항상
+                  <span class="hl">힙에 새로운 배열 객체를 생성</span>합니다.
+                  내용이 완전히 같아도 다른 주소를 가집니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔴</span>
+                <span
+                  >배열에서 <span class="mono">==</span>는
+                  <span class="hl">참조(주소) 비교</span>입니다. 세 배열이 모두
+                  <span class="mono">new int[]</span>로 따로 생성됐으므로 어떤
+                  쌍도 주소가 같지 않습니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">✅</span>
+                <span
+                  >내용을 비교하려면
+                  <span class="mono">Arrays.equals(a, b)</span>를 사용해야
+                  합니다. 이 경우 a와 b는 true, b/c와 a/c는 false입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span>최종 출력: <strong>"NNN"</strong></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">System.out.print 최종 출력 결과</div>
+          <div class="answer-value">NNN</div>
+          <div class="answer-desc">
+            new int[]{ }는 항상 새 힙 객체 → == 주소 비교 → 모두 false → NNN
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+
+      /* 버튼 */
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      /* 패널 */
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      /* 정답 박스 */
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 130px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      /* 추적 테이블 */
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.22);
+        font-weight: 700;
+      }
+      .trace-table tr.dim-row td {
+        opacity: 0.45;
+      }
+      .trace-table tr.sep-row td {
+        background: rgba(139, 58, 15, 0.08);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-t {
+        background: #3a1010;
+        color: #ff7675;
+        border: 1px solid #8b2020;
+      }
+      .tag-seg {
+        background: #1a1e2d;
+        color: #82aaff;
+        border: 1px solid #1e3a6e;
+      }
+      .tag-ans {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      /* 문자열 인덱스 시각화 */
+      .str-vis {
+        display: flex;
+        gap: 2px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+      .sv-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        flex-shrink: 0;
+      }
+      .sv-box {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 17px;
+        font-weight: bold;
+      }
+      .sv-idx {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        color: #546e7a;
+      }
+      .sv-norm {
+        background: #1a2010;
+        border: 2px solid #2d5a3d;
+        color: #c3e88d;
+      }
+      .sv-t {
+        background: #3a1010;
+        border: 2px solid #8b2020;
+        color: #ff7675;
+      }
+
+      /* 분할 결과 배열 시각화 */
+      .arr-vis {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .arr-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      .arr-idx {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: #546e7a;
+      }
+      .arr-box {
+        min-width: 52px;
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 15px;
+        font-weight: bold;
+        text-align: center;
+      }
+      .ab-norm {
+        background: #1a1e2d;
+        border: 2px solid #1e3a6e;
+        color: #82aaff;
+      }
+      .ab-ans {
+        background: #2d2010;
+        border: 2.5px solid #f0c060;
+        color: #f0c060;
+        box-shadow: 0 0 10px rgba(240, 192, 96, 0.3);
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java String.split() 분리 결과 인덱스 추적</h1>
+        <div class="meta">Java · String · split() · Array Index · Tracing</div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">public class</span> <span class="cls">Main</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+        <span class="cls">String</span> str = <span class="str">"ITISTESTSTRING"</span>;
+        <span class="cls">String</span>[] result = str.<span class="fn">split</span>(<span class="str">"T"</span>);   <span class="cmt">// "T" 기준으로 분리</span>
+        <span class="cls">System</span>.out.<span class="fn">print</span>(result[<span class="nl">3</span>]);        <span class="cmt">// 인덱스 3 출력</span>
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">System.out.print() 출력 결과</div>
+          <div class="answer-value">S</div>
+          <div class="answer-desc">
+            "ITISTESTSTRING".split("T") → result[3] = "S"
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >String.split()의 구분자 기준 분리 결과 배열을 정확히 파악하고,
+                특정 인덱스 원소를 읽는 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">✂️</span
+                ><span
+                  ><span class="mono">str.split("T")</span>는 문자열을
+                  <strong>"T"가 나타나는 위치마다 잘라</strong> String 배열로
+                  반환합니다. "T" 자체는 결과에 포함되지 않습니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span
+                ><span
+                  ><span class="hl">함정</span>: "T"가 연속/인접 위치에 있으면
+                  빈 문자열<span class="mono">""</span>이 원소로 들어갑니다. 이
+                  문제에서 "T" 사이 간격을 정확히 세는 것이 핵심입니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 문자열 인덱스 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">② "ITISTESTSTRING" 문자 인덱스 배치</div>
+          <div class="flow-wrap">
+            <div class="str-vis">
+              <div class="sv-cell">
+                <div class="sv-box sv-norm">I</div>
+                <div class="sv-idx">0</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-t">T</div>
+                <div class="sv-idx">1</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-norm">I</div>
+                <div class="sv-idx">2</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-norm">S</div>
+                <div class="sv-idx">3</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-t">T</div>
+                <div class="sv-idx">4</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-norm">E</div>
+                <div class="sv-idx">5</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-norm">S</div>
+                <div class="sv-idx">6</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-t">T</div>
+                <div class="sv-idx">7</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-norm">S</div>
+                <div class="sv-idx">8</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-t">T</div>
+                <div class="sv-idx">9</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-norm">R</div>
+                <div class="sv-idx">10</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-norm">I</div>
+                <div class="sv-idx">11</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-norm">N</div>
+                <div class="sv-idx">12</div>
+              </div>
+              <div class="sv-cell">
+                <div class="sv-box sv-norm">G</div>
+                <div class="sv-idx">13</div>
+              </div>
+            </div>
+            <div
+              style="
+                margin-top: 12px;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #546e7a;
+                line-height: 2;
+              "
+            >
+              <span style="color: #ff7675">■ T</span> 구분자 위치: idx 1, 4, 7,
+              9 (총 4개) &nbsp;→&nbsp; 분리 결과 배열 크기 = <strong>5</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ split 분리 과정 -->
+        <div class="sub-section">
+          <div class="sub-title">③ split("T") 분리 과정 단계별 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>구분자 위치</th>
+                  <th>분리 구간</th>
+                  <th>추출 문자열</th>
+                  <th>result 인덱스</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>idx 1 (T)</td>
+                  <td>idx 0 ~ 0</td>
+                  <td><span class="tag tag-seg">"I"</span></td>
+                  <td><span class="mono">result[0]</span></td>
+                </tr>
+                <tr>
+                  <td>idx 4 (T)</td>
+                  <td>idx 2 ~ 3</td>
+                  <td><span class="tag tag-seg">"IS"</span></td>
+                  <td><span class="mono">result[1]</span></td>
+                </tr>
+                <tr>
+                  <td>idx 7 (T)</td>
+                  <td>idx 5 ~ 6</td>
+                  <td><span class="tag tag-seg">"ES"</span></td>
+                  <td><span class="mono">result[2]</span></td>
+                </tr>
+                <tr class="hl-row">
+                  <td>idx 9 (T)</td>
+                  <td>idx 8 ~ 8</td>
+                  <td><span class="tag tag-ans">"S"</span></td>
+                  <td>
+                    <span class="mono" style="color: #8b3a0f; font-weight: bold"
+                      >result[3] ← 정답</span
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>끝 (마지막)</td>
+                  <td>idx 10 ~ 13</td>
+                  <td><span class="tag tag-seg">"RING"</span></td>
+                  <td><span class="mono">result[4]</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ 결과 배열 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">④ result 배열 시각화</div>
+          <div class="flow-wrap">
+            <div class="arr-vis">
+              <div class="arr-cell">
+                <div class="arr-idx">result[0]</div>
+                <div class="arr-box ab-norm">"I"</div>
+              </div>
+              <div class="arr-cell">
+                <div class="arr-idx">result[1]</div>
+                <div class="arr-box ab-norm">"IS"</div>
+              </div>
+              <div class="arr-cell">
+                <div class="arr-idx">result[2]</div>
+                <div class="arr-box ab-norm">"ES"</div>
+              </div>
+              <div class="arr-cell">
+                <div class="arr-idx">result[3] ✦</div>
+                <div class="arr-box ab-ans">"S"</div>
+              </div>
+              <div class="arr-cell">
+                <div class="arr-idx">result[4]</div>
+                <div class="arr-box ab-norm">"RING"</div>
+              </div>
+            </div>
+            <div
+              style="
+                margin-top: 14px;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 13px;
+                color: #546e7a;
+              "
+            >
+              split 결과:
+              <span style="color: #e8d5b0">["I", "IS", "ES", "S", "RING"]</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ split 원리 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ String.split() 동작 규칙</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>규칙</th>
+                  <th>설명</th>
+                  <th>이 문제 적용</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>구분자 제외</td>
+                  <td>분리 기준 문자는 결과에 포함되지 않음</td>
+                  <td>"T"는 결과 배열에 없음</td>
+                </tr>
+                <tr>
+                  <td>앞쪽 빈 문자열 유지</td>
+                  <td>문자열이 구분자로 시작하면 result[0]=""</td>
+                  <td>"I"로 시작하므로 해당 없음</td>
+                </tr>
+                <tr>
+                  <td>뒤쪽 빈 문자열 제거</td>
+                  <td>trailing empty string은 기본 제거</td>
+                  <td>끝이 "G"이므로 해당 없음</td>
+                </tr>
+                <tr>
+                  <td>구분자 n개 → 배열 크기 n+1</td>
+                  <td>"T" 4개 → 결과 배열 크기 5</td>
+                  <td>result.length = 5</td>
+                </tr>
+                <tr class="hl-row">
+                  <td>result[3]</td>
+                  <td>4번째 T(idx 9)와 3번째 T(idx 7) 사이 문자</td>
+                  <td>idx 8 = <strong style="color: #8b3a0f">"S"</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">✂️</span>
+                <span
+                  ><span class="hl">구분자 "T" 등장 횟수 4번</span> → 분리된
+                  조각 5개. 배열 인덱스 0~4.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  >분리 결과:
+                  <span class="mono">["I", "IS", "ES", "S", "RING"]</span><br />
+                  — T(idx1) 앞: "I" / T(idx4) 앞: "IS" / T(idx7) 앞: "ES" /
+                  T(idx9) 앞: "S" / 나머지: "RING"</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span>
+                <span
+                  >만약 구분자가 연속으로 나오면 (예: "TT") 사이에
+                  <strong>빈 문자열 ""</strong>이 삽입됩니다. 이 문제에는 해당
+                  없음.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span>최종 출력: <strong>S</strong></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">System.out.print() 출력 결과</div>
+          <div class="answer-value">S</div>
+          <div class="answer-desc">
+            split("T") → ["I","IS","ES","S","RING"] &nbsp;|&nbsp; result[3] =
+            "S"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

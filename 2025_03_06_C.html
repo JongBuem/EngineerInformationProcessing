@@ -1,0 +1,1348 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+
+      /* ── 헤더 ── */
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* ── 섹션 ── */
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+
+      /* ── 코드 블록 ── */
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+      .inc {
+        color: #89ddff;
+      }
+
+      /* ── 버튼 ── */
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      /* ── 패널 ── */
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      /* ── 정답 박스 ── */
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 28px 32px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 8px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 96px;
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: -2px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* ── 메모리 셀 그림 ── */
+      .mem-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 28px 16px 24px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      /* ── 트레이스 테이블 ── */
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.22);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-step {
+        background: #fde8d8;
+        color: #8b3a0f;
+      }
+      .tag-val {
+        background: #d5e8f0;
+        color: #1e3a6e;
+      }
+      .tag-result {
+        background: #d5f0e0;
+        color: #2d5a3d;
+      }
+      .tag-null {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1px solid #c0392b;
+      }
+
+      /* ── 포인트 리스트 ── */
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- ── 헤더 ── -->
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 문자열 순회 &amp; 인덱스 역산 추적</h1>
+        <div class="meta">
+          C · String · Array · while loop · putchar · Tracing
+        </div>
+      </div>
+
+      <!-- ── 문제 코드 ── -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span>
+            <span class="dot dot-y"></span>
+            <span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">void</span>) {
+    <span class="kw">char</span> str[] = <span class="str">"REPUBLICOFKOREA"</span>;
+    <span class="kw">int</span> a = <span class="nl">0</span>;
+
+    <span class="kw">while</span> (str[a] != <span class="str">'\0'</span>)   <span class="cmt">// 널 문자 만날 때까지 반복</span>
+        ++a;
+
+    <span class="fn">putchar</span>(str[a - <span class="nl">2</span>]);      <span class="cmt">// 끝에서 두 번째 문자 출력</span>
+    <span class="ret">return</span> <span class="nl">0</span>;
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- ── 버튼 ── -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- ── 정답 패널 ── -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">putchar() 출력 결과</div>
+          <div class="answer-value">E</div>
+          <div class="answer-desc">strlen = 15 → a = 15 → str[13] = 'E'</div>
+        </div>
+      </div>
+
+      <!-- ── 설명 패널 ── -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >문자열 배열을 while 루프로 순회해 길이를 구한 뒤, 인덱스
+                역산으로 특정 문자를 출력하는 추적 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>문자열 종료 조건</strong> — C 문자열은 마지막에
+                  <span class="mono">'\0'</span>(널 문자)을 가집니다.
+                  <span class="mono">while(str[a] != '\0')</span> 루프는 사실상
+                  <strong>문자열 길이를 직접 세는</strong> 구조입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>루프 종료 시 a의 값</strong> — 루프가 끝나면
+                  <span class="mono">a</span>는 <span class="mono">'\0'</span>의
+                  인덱스, 즉 <strong>문자열 길이</strong>와 같습니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>역방향 인덱스 계산</strong> —
+                  <span class="mono">a - 2</span>는
+                  <span class="hl">마지막 유효 문자(a-1)의 바로 앞 문자</span>,
+                  즉 뒤에서 두 번째 문자를 가리킵니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 문자열 메모리 배치 -->
+        <div class="sub-section">
+          <div class="sub-title">② 문자열 메모리 배치 &amp; 인덱스</div>
+          <div class="mem-wrap">
+            <svg
+              width="780"
+              height="150"
+              viewBox="0 0 780 150"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- 문자 셀 16개 (15 글자 + '\0') -->
+              <!-- 각 셀 너비 46px, x 시작: 10 -->
+              <defs>
+                <style>
+                  .cell-char {
+                    font-size: 14px;
+                    font-weight: bold;
+                  }
+                  .cell-idx {
+                    font-size: 10px;
+                  }
+                </style>
+              </defs>
+
+              <!-- 일반 셀: R E P U B L I C O F K O R E A \0 -->
+              <!-- index 0~12, 14 = 일반 / index 13 = 강조 / index 15 = null -->
+
+              <!-- 셀 생성 (JS로 반복 안 하고 SVG 직접) -->
+              <!-- 셀 너비 44, 간격 2, 시작 x=10 -->
+
+              <!-- R [0] -->
+              <rect
+                x="10"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="32"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                R
+              </text>
+              <text
+                x="32"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [0]
+              </text>
+
+              <!-- E [1] -->
+              <rect
+                x="56"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="78"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                E
+              </text>
+              <text
+                x="78"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [1]
+              </text>
+
+              <!-- P [2] -->
+              <rect
+                x="102"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="124"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                P
+              </text>
+              <text
+                x="124"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [2]
+              </text>
+
+              <!-- U [3] -->
+              <rect
+                x="148"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="170"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                U
+              </text>
+              <text
+                x="170"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [3]
+              </text>
+
+              <!-- B [4] -->
+              <rect
+                x="194"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="216"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                B
+              </text>
+              <text
+                x="216"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [4]
+              </text>
+
+              <!-- L [5] -->
+              <rect
+                x="240"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="262"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                L
+              </text>
+              <text
+                x="262"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [5]
+              </text>
+
+              <!-- I [6] -->
+              <rect
+                x="286"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="308"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                I
+              </text>
+              <text
+                x="308"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [6]
+              </text>
+
+              <!-- C [7] -->
+              <rect
+                x="332"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="354"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                C
+              </text>
+              <text
+                x="354"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [7]
+              </text>
+
+              <!-- O [8] -->
+              <rect
+                x="378"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="400"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                O
+              </text>
+              <text
+                x="400"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [8]
+              </text>
+
+              <!-- F [9] -->
+              <rect
+                x="424"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="446"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                F
+              </text>
+              <text
+                x="446"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [9]
+              </text>
+
+              <!-- K [10] -->
+              <rect
+                x="470"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="492"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                K
+              </text>
+              <text
+                x="492"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [10]
+              </text>
+
+              <!-- O [11] -->
+              <rect
+                x="516"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="538"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                O
+              </text>
+              <text
+                x="538"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [11]
+              </text>
+
+              <!-- R [12] -->
+              <rect
+                x="562"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="584"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                R
+              </text>
+              <text
+                x="584"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [12]
+              </text>
+
+              <!-- E [13] — 강조 (정답) -->
+              <rect
+                x="608"
+                y="14"
+                width="44"
+                height="56"
+                rx="4"
+                fill="#2d1a08"
+                stroke="#f0c060"
+                stroke-width="2.5"
+              />
+              <text
+                x="630"
+                y="47"
+                text-anchor="middle"
+                fill="#f0c060"
+                class="cell-char"
+                font-size="16"
+              >
+                E
+              </text>
+              <text
+                x="630"
+                y="80"
+                text-anchor="middle"
+                fill="#f0c060"
+                class="cell-idx"
+                font-weight="bold"
+              >
+                [13]
+              </text>
+
+              <!-- A [14] -->
+              <rect
+                x="654"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="676"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                class="cell-char"
+              >
+                A
+              </text>
+              <text
+                x="676"
+                y="76"
+                text-anchor="middle"
+                fill="#7a6650"
+                class="cell-idx"
+              >
+                [14]
+              </text>
+
+              <!-- '\0' [15] -->
+              <rect
+                x="700"
+                y="20"
+                width="44"
+                height="44"
+                rx="4"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="1.5"
+                stroke-dasharray="4"
+              />
+              <text
+                x="722"
+                y="43"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="11"
+              >
+                \0
+              </text>
+              <text
+                x="722"
+                y="76"
+                text-anchor="middle"
+                fill="#ff7675"
+                class="cell-idx"
+              >
+                [15]
+              </text>
+
+              <!-- 화살표: a=15 (null) -->
+              <line
+                x1="722"
+                y1="90"
+                x2="722"
+                y2="108"
+                stroke="#ff7675"
+                stroke-width="2"
+              />
+              <polygon points="716,106 728,106 722,116" fill="#ff7675" />
+              <text
+                x="722"
+                y="130"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="10"
+              >
+                a=15 (루프 종료)
+              </text>
+
+              <!-- 화살표: a-2=13 (정답 E) -->
+              <line
+                x1="630"
+                y1="90"
+                x2="630"
+                y2="108"
+                stroke="#f0c060"
+                stroke-width="2.5"
+              />
+              <polygon points="624,106 636,106 630,116" fill="#f0c060" />
+              <text
+                x="630"
+                y="130"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="10"
+                font-weight="bold"
+              >
+                a-2=13 → 'E'
+              </text>
+
+              <!-- 화살표: a-1=14 (마지막 문자) -->
+              <line
+                x1="676"
+                y1="90"
+                x2="676"
+                y2="108"
+                stroke="#82aaff"
+                stroke-width="1.5"
+                stroke-dasharray="3"
+              />
+              <polygon points="670,106 682,106 676,116" fill="#82aaff" />
+              <text
+                x="676"
+                y="130"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="10"
+              >
+                a-1=14 ('A')
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ③ 단계별 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 단계별 실행 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>단계</th>
+                  <th>동작</th>
+                  <th>a 값</th>
+                  <th>str[a]</th>
+                  <th>조건 (≠ '\0')</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag-step">초기</span></td>
+                  <td>선언 및 초기화</td>
+                  <td>0</td>
+                  <td><span class="mono">'R'</span></td>
+                  <td>true → ++a</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">…</span></td>
+                  <td>루프 반복 (a: 1 ~ 14)</td>
+                  <td>1 ~ 14</td>
+                  <td><span class="mono">E P U B L I C O F K O R E A</span></td>
+                  <td>모두 true → 계속 ++a</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">종료</span></td>
+                  <td>str[15] == '\0' 감지</td>
+                  <td><strong>15</strong></td>
+                  <td><span class="tag tag-null">'\0'</span></td>
+                  <td>false → 루프 탈출</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">계산</span></td>
+                  <td>a - 2 계산</td>
+                  <td>15 - 2 = <strong>13</strong></td>
+                  <td colspan="2">str[13] 접근</td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="tag tag-result">출력</span></td>
+                  <td>putchar(str[13])</td>
+                  <td>—</td>
+                  <td colspan="2"><strong>str[13] = 'E'</strong> 출력</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ 문자열 인덱스 직접 확인 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 문자열 인덱스 직접 확인</div>
+          <div class="card">
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 13px;
+                line-height: 2.2;
+              "
+            >
+              <span style="color: #7a6650">인덱스 </span>
+              <span style="color: #546e7a">
+                0&nbsp; 1&nbsp; 2&nbsp; 3&nbsp; 4&nbsp; 5&nbsp; 6&nbsp; 7&nbsp;
+                8&nbsp; 9 10 11 12
+              </span>
+              <span style="color: #f0c060; font-weight: bold">13</span>
+              <span style="color: #546e7a"> 14 15</span>
+              <br />
+              <span style="color: #7a6650">문자&nbsp;&nbsp;&nbsp;&nbsp;</span>
+              <span style="color: #e8d5b0">
+                R&nbsp; E&nbsp; P&nbsp; U&nbsp; B&nbsp; L&nbsp; I&nbsp; C&nbsp;
+                O&nbsp; F&nbsp; K&nbsp; O&nbsp; R&nbsp;
+              </span>
+              <span style="color: #f0c060; font-weight: bold">&nbsp;E</span>
+              <span style="color: #e8d5b0">&nbsp;&nbsp; A</span>
+              <span style="color: #ff7675">&nbsp; \0</span>
+              <br /><br />
+              <span style="color: #7a6650"
+                >→ 문자열 길이 = <strong style="color: #e8d5b0">15</strong> (a =
+                15)</span
+              ><br />
+              <span style="color: #7a6650"
+                >→ a - 2 = <strong style="color: #f0c060">13</strong> → str[13]
+                = <strong style="color: #f0c060">'E'</strong></span
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 포인트 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  >루프 종료 후 <span class="mono">a</span>는
+                  <span class="hl">'\0'의 인덱스 = 문자열 길이(15)</span>입니다.
+                  마지막 유효 문자 인덱스는
+                  <span class="mono">a - 1 = 14</span>이고, 뒤에서 두 번째는
+                  <span class="mono">a - 2 = 13</span>입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  ><strong>++a(전위 증가)</strong>를 사용합니다.
+                  <span class="mono">a++</span>과 결과는 같지만, 단독 문장에서는
+                  동일하게 동작합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span
+                  ><span class="mono">putchar()</span>는
+                  <strong>문자 하나</strong>만 출력합니다.
+                  <span class="mono">printf("%c", ...)</span>와 동일한
+                  결과입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔤</span>
+                <span
+                  >"REPUBLICOFKOREA"에서 뒤에서 두 번째 문자 =
+                  <span class="hl">'E'</span> (…R<strong>E</strong>A
+                  순서).</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">putchar(str[a - 2]) 출력 결과</div>
+          <div class="answer-value">E</div>
+          <div class="answer-desc">a = 15 (문자열 길이) → str[13] = 'E'</div>
+        </div>
+      </div>
+      <!-- /panelExplain -->
+    </div>
+    <!-- /page -->
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

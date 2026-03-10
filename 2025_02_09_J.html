@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.warn {
+        border-left-color: #c0392b;
+        background: rgba(255, 235, 230, 0.4);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+      .exc {
+        color: #ff7675;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 96px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* 흐름도 */
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-step {
+        background: #fde8d8;
+        color: #8b3a0f;
+      }
+      .tag-val {
+        background: #d5e8f0;
+        color: #1e3a6e;
+      }
+      .tag-result {
+        background: #d5f0e0;
+        color: #2d5a3d;
+      }
+      .tag-exc {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1px solid #c0392b;
+      }
+      .tag-ok {
+        background: #1a2d10;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java 함수형 인터페이스 · 람다 · 예외 처리 추적</h1>
+        <div class="meta">
+          Java · Functional Interface · Lambda · try-catch · Exception · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">public class</span> <span class="cls">Main</span> {
+
+    <span class="kw">static interface</span> <span class="cls">F</span> {
+        <span class="kw">int</span> <span class="fn">apply</span>(<span class="kw">int</span> x) <span class="kw">throws</span> <span class="exc">Exception</span>;
+    }
+
+    <span class="kw">public static int</span> <span class="fn">run</span>(<span class="cls">F</span> f) {
+        <span class="kw">try</span> {
+            <span class="ret">return</span> f.<span class="fn">apply</span>(<span class="nl">3</span>);      <span class="cmt">// 항상 x=3 으로 호출</span>
+        } <span class="kw">catch</span> (<span class="exc">Exception</span> e) {
+            <span class="ret">return</span> <span class="nl">7</span>;              <span class="cmt">// 예외 발생 시 7 반환</span>
+        }
+    }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+        <span class="cls">F</span> f = (x) -> {
+            <span class="kw">if</span> (x > <span class="nl">2</span>) {
+                <span class="kw">throw new</span> <span class="exc">Exception</span>();  <span class="cmt">// x=3 → 3>2 → throw!</span>
+            }
+            <span class="ret">return</span> x * <span class="nl">2</span>;
+        };
+        <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="fn">run</span>(f) + <span class="fn">run</span>((<span class="kw">int</span> n) -> n + <span class="nl">9</span>));
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">System.out.print() 출력 결과</div>
+          <div class="answer-value">19</div>
+          <div class="answer-desc">
+            run(f)=7 (예외→catch) + run(n→n+9)=12 → 7+12=19
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >함수형 인터페이스(람다)와 try-catch 예외 처리가 결합된 실행
+                흐름 추적 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>함수형 인터페이스</strong> — 추상 메서드가 하나뿐인
+                  인터페이스. 람다로 구현 가능합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><span class="mono">run(F f)</span>은
+                  <span class="hl">항상 x=3으로 호출</span>하며, 예외 발생 시
+                  <span class="mono">7</span>을 반환합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  >두 번의 <span class="mono">run()</span> 반환값을
+                  <strong>더해서</strong> 출력합니다. 각각 독립적으로 추적해야
+                  합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 실행 흐름 SVG -->
+        <div class="sub-section">
+          <div class="sub-title">② 두 번의 run() 호출 흐름</div>
+          <div class="flow-wrap">
+            <svg
+              width="660"
+              height="260"
+              viewBox="0 0 660 260"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- ── 왼쪽: run(f) ── -->
+              <text
+                x="20"
+                y="18"
+                fill="#8b3a0f"
+                font-size="12"
+                font-weight="bold"
+              >
+                ① run(f) — 예외 발생 경로
+              </text>
+
+              <rect
+                x="20"
+                y="26"
+                width="140"
+                height="36"
+                rx="5"
+                fill="#1a1208"
+                stroke="#1e3a6e"
+                stroke-width="1.5"
+              />
+              <text
+                x="90"
+                y="40"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="10"
+              >
+                f.apply(3) 호출
+              </text>
+              <text
+                x="90"
+                y="56"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="11"
+              >
+                x = 3
+              </text>
+
+              <line
+                x1="90"
+                y1="62"
+                x2="90"
+                y2="78"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+              <polygon points="83,76 97,76 90,86" fill="#c8b89a" />
+
+              <rect
+                x="20"
+                y="86"
+                width="140"
+                height="36"
+                rx="5"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="2"
+              />
+              <text
+                x="90"
+                y="100"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="10"
+              >
+                3 &gt; 2 → true
+              </text>
+              <text
+                x="90"
+                y="116"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="12"
+                font-weight="bold"
+              >
+                throw Exception()
+              </text>
+
+              <line
+                x1="90"
+                y1="122"
+                x2="90"
+                y2="138"
+                stroke="#ff7675"
+                stroke-width="1.5"
+              />
+              <polygon points="83,136 97,136 90,146" fill="#ff7675" />
+
+              <rect
+                x="20"
+                y="146"
+                width="140"
+                height="36"
+                rx="5"
+                fill="#2d2010"
+                stroke="#f0c060"
+                stroke-width="2"
+              />
+              <text
+                x="90"
+                y="162"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="10"
+              >
+                catch(Exception e)
+              </text>
+              <text
+                x="90"
+                y="178"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="13"
+                font-weight="bold"
+              >
+                return 7
+              </text>
+
+              <rect
+                x="20"
+                y="202"
+                width="140"
+                height="36"
+                rx="5"
+                fill="#1a1208"
+                stroke="#f0c060"
+                stroke-width="2.5"
+              />
+              <text
+                x="90"
+                y="218"
+                text-anchor="middle"
+                fill="#ffcb6b"
+                font-size="10"
+              >
+                run(f) 결과
+              </text>
+              <text
+                x="90"
+                y="234"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="18"
+                font-weight="bold"
+              >
+                7
+              </text>
+              <line
+                x1="90"
+                y1="182"
+                x2="90"
+                y2="200"
+                stroke="#f0c060"
+                stroke-width="1.5"
+              />
+              <polygon points="83,198 97,198 90,202" fill="#f0c060" />
+
+              <!-- ── 오른쪽: run(n→n+9) ── -->
+              <text
+                x="340"
+                y="18"
+                fill="#8b3a0f"
+                font-size="12"
+                font-weight="bold"
+              >
+                ② run(n→n+9) — 정상 경로
+              </text>
+
+              <rect
+                x="340"
+                y="26"
+                width="160"
+                height="36"
+                rx="5"
+                fill="#1a1208"
+                stroke="#1e3a6e"
+                stroke-width="1.5"
+              />
+              <text
+                x="420"
+                y="40"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="10"
+              >
+                apply(3) 호출
+              </text>
+              <text
+                x="420"
+                y="56"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="11"
+              >
+                n = 3
+              </text>
+
+              <line
+                x1="420"
+                y1="62"
+                x2="420"
+                y2="78"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+              <polygon points="413,76 427,76 420,86" fill="#c8b89a" />
+
+              <rect
+                x="340"
+                y="86"
+                width="160"
+                height="36"
+                rx="5"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="2"
+              />
+              <text
+                x="420"
+                y="100"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="10"
+              >
+                n + 9 계산
+              </text>
+              <text
+                x="420"
+                y="116"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="12"
+                font-weight="bold"
+              >
+                3 + 9 = 12
+              </text>
+
+              <line
+                x1="420"
+                y1="122"
+                x2="420"
+                y2="138"
+                stroke="#c3e88d"
+                stroke-width="1.5"
+              />
+              <polygon points="413,136 427,136 420,146" fill="#c3e88d" />
+
+              <rect
+                x="340"
+                y="146"
+                width="160"
+                height="36"
+                rx="5"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="2"
+              />
+              <text
+                x="420"
+                y="162"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="10"
+              >
+                예외 없음 → try 정상 반환
+              </text>
+              <text
+                x="420"
+                y="178"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="13"
+                font-weight="bold"
+              >
+                return 12
+              </text>
+
+              <rect
+                x="340"
+                y="202"
+                width="160"
+                height="36"
+                rx="5"
+                fill="#1a1208"
+                stroke="#c3e88d"
+                stroke-width="2.5"
+              />
+              <text
+                x="420"
+                y="218"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="10"
+              >
+                run(n→n+9) 결과
+              </text>
+              <text
+                x="420"
+                y="234"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="18"
+                font-weight="bold"
+              >
+                12
+              </text>
+              <line
+                x1="420"
+                y1="182"
+                x2="420"
+                y2="200"
+                stroke="#c3e88d"
+                stroke-width="1.5"
+              />
+              <polygon points="413,198 427,198 420,202" fill="#c3e88d" />
+
+              <!-- 합산 -->
+              <text
+                x="175"
+                y="224"
+                fill="#f0c060"
+                font-size="22"
+                font-weight="bold"
+              >
+                +
+              </text>
+              <text x="214" y="224" fill="#c8b89a" font-size="14">=</text>
+              <rect
+                x="232"
+                y="206"
+                width="90"
+                height="32"
+                rx="5"
+                fill="#2d2010"
+                stroke="#f0c060"
+                stroke-width="2"
+              />
+              <text
+                x="277"
+                y="228"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="16"
+                font-weight="bold"
+              >
+                19
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ③ 단계별 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 단계별 실행 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>호출</th>
+                  <th>x/n 값</th>
+                  <th>람다 내부 동작</th>
+                  <th>예외</th>
+                  <th>반환값</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="mono">run(f)</span></td>
+                  <td><span class="tag tag-val">x = 3</span></td>
+                  <td>
+                    <span class="mono"
+                      >3 &gt; 2 → true → throw Exception()</span
+                    >
+                  </td>
+                  <td><span class="tag tag-exc">발생 O</span></td>
+                  <td><span class="tag tag-exc">catch → 7</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">run(n→n+9)</span></td>
+                  <td><span class="tag tag-val">n = 3</span></td>
+                  <td><span class="mono">3 + 9 = 12</span></td>
+                  <td><span class="tag tag-ok">없음</span></td>
+                  <td><span class="tag tag-ok">12</span></td>
+                </tr>
+                <tr class="hl-row">
+                  <td colspan="4" style="text-align: right; font-weight: 700">
+                    7 + 12 =
+                  </td>
+                  <td><span class="tag tag-result">19</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ 함수형 인터페이스 구조 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 함수형 인터페이스 &amp; 람다 관계</div>
+          <div class="card">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>구성 요소</th>
+                  <th>역할</th>
+                  <th>이 코드에서</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="mono">interface F</span></td>
+                  <td>함수형 인터페이스 선언</td>
+                  <td>
+                    <span class="mono">apply(int x) throws Exception</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="mono">F f = (x) -> {...}</span></td>
+                  <td>람다로 F 구현</td>
+                  <td>x &gt; 2이면 예외, 아니면 x*2 반환</td>
+                </tr>
+                <tr>
+                  <td><span class="mono">(int n) -> n+9</span></td>
+                  <td>익명 람다로 F 구현</td>
+                  <td>n을 받아 n+9 반환 (예외 없음)</td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="mono">run(F f)</span></td>
+                  <td>F를 받아 apply(3) 실행</td>
+                  <td>예외 → 7 반환 / 정상 → 결과값 반환</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  ><span class="mono">run()</span>은
+                  <span class="hl">항상 x=3</span>으로 람다를 호출합니다. 람다
+                  내 매개변수명(x, n)과 무관하게 값은 3입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">💥</span>
+                <span
+                  >첫 번째 람다: <span class="mono">3 &gt; 2</span>는 참이므로
+                  <span class="mono">Exception</span>이 throw됩니다. catch
+                  블록에서 <strong>7 반환</strong>.</span
+                >
+              </li>
+              <li>
+                <span class="icon">✅</span>
+                <span
+                  >두 번째 람다: <span class="mono">n + 9 = 3 + 9 = 12</span>.
+                  예외 없이 정상 반환. <strong>12 반환</strong>.</span
+                >
+              </li>
+              <li>
+                <span class="icon">➕</span>
+                <span
+                  ><span class="mono">run(f) + run(n→n+9)</span> =
+                  <span class="mono">7 + 12</span> = <strong>19</strong></span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span>
+                <span
+                  >람다가 <span class="mono">throws Exception</span>을 선언해도
+                  반드시 던지는 게 아닙니다. <strong>조건에 따라</strong> 예외
+                  발생 여부가 결정됩니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">
+            System.out.print(run(f) + run(n→n+9)) 출력 결과
+          </div>
+          <div class="answer-value">19</div>
+          <div class="answer-desc">
+            run(f) = 7 (Exception → catch) │ run(n→n+9) = 12 │ 7 + 12 = 19
+          </div>
+        </div>
+      </div>
+      <!-- /panelExplain -->
+    </div>
+    <!-- /page -->
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

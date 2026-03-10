@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.warn {
+        border-left-color: #c0392b;
+        background: rgba(255, 235, 230, 0.35);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 96px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      /* 집합 시각화 */
+      .set-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .set-label {
+        color: #7a6650;
+        font-size: 12px;
+        min-width: 80px;
+        text-align: right;
+      }
+      .set-box {
+        background: #1a1208;
+        border: 1.5px solid #546e7a;
+        border-radius: 5px;
+        padding: 5px 14px;
+        color: #e8d5b0;
+        white-space: nowrap;
+      }
+      .set-elem {
+        display: inline-block;
+        padding: 2px 8px;
+        margin: 2px;
+        border-radius: 3px;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .elem-common {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1.5px solid #8b6020;
+      }
+      .elem-only-s {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1.5px solid #c0392b;
+      }
+      .elem-only-d {
+        background: #1a1208;
+        color: #546e7a;
+        border: 1.5px solid #2d2d2d;
+      }
+      .set-op {
+        color: #c792ea;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-step {
+        background: #fde8d8;
+        color: #8b3a0f;
+      }
+      .tag-val {
+        background: #d5e8f0;
+        color: #1e3a6e;
+      }
+      .tag-result {
+        background: #d5f0e0;
+        color: #2d5a3d;
+      }
+      .tag-warn {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1px solid #c0392b;
+      }
+      .tag-note {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Python 딕셔너리 컴프리헨션 &amp; 집합 교집합 추적</h1>
+        <div class="meta">
+          Python · dict comprehension · set · intersection · values() · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Python</span>
+          </div>
+          <pre>lst = [<span class="nl">1</span>, <span class="nl">2</span>, <span class="nl">3</span>]
+dst = {i: i * <span class="nl">2</span> <span class="kw">for</span> i <span class="kw">in</span> lst}     <span class="cmt"># 딕셔너리 컴프리헨션</span>
+s   = <span class="fn">set</span>(dst.<span class="fn">values</span>())             <span class="cmt"># dst 값들로 집합 생성</span>
+
+lst[<span class="nl">0</span>] = <span class="nl">99</span>                          <span class="cmt"># lst 변경 → dst에 영향 없음</span>
+dst[<span class="nl">2</span>] = <span class="nl">7</span>                           <span class="cmt"># dst 직접 수정</span>
+s.<span class="fn">add</span>(<span class="nl">99</span>)                           <span class="cmt"># s에 99 추가</span>
+
+<span class="fn">print</span>(<span class="fn">len</span>(s <span class="kw">&amp;</span> <span class="fn">set</span>(dst.<span class="fn">values</span>())))</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">print() 출력 결과</div>
+          <div class="answer-value">2</div>
+          <div class="answer-desc">
+            s={2,4,6,99} &amp; dst.values()={2,7,6} → 교집합={2,6} → len=2
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >딕셔너리 컴프리헨션 생성 후 독립적인 변수 변경과 집합 교집합
+                연산 결과를 추적하는 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><span class="mono">s = set(dst.values())</span> — 생성 시점의
+                  스냅샷입니다. 이후 <span class="mono">dst</span>가 바뀌어도
+                  <span class="hl"
+                    ><span class="mono">s</span>는 자동으로 바뀌지
+                    않습니다</span
+                  >.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><span class="mono">lst[0] = 99</span> —
+                  <span class="mono">dst</span>는 컴프리헨션으로 생성된 별도
+                  딕셔너리입니다.
+                  <span class="hl">lst 변경은 dst에 영향 없습니다</span>.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><span class="mono">s &amp; set(dst.values())</span> —
+                  <span class="mono">&amp;</span>는 집합 교집합
+                  연산자입니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 단계별 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">② 단계별 변수 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>단계</th>
+                  <th>실행 구문</th>
+                  <th>lst</th>
+                  <th>dst</th>
+                  <th>s</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag-step">①</span></td>
+                  <td><span class="mono">lst = [1, 2, 3]</span></td>
+                  <td><strong>[1, 2, 3]</strong></td>
+                  <td>—</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">②</span></td>
+                  <td><span class="mono">dst = {i: i*2 for i in lst}</span></td>
+                  <td>[1, 2, 3]</td>
+                  <td><strong>{1:2, 2:4, 3:6}</strong></td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">③</span></td>
+                  <td><span class="mono">s = set(dst.values())</span></td>
+                  <td>[1, 2, 3]</td>
+                  <td>{1:2, 2:4, 3:6}</td>
+                  <td><strong>{2, 4, 6}</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-warn">④</span></td>
+                  <td><span class="mono">lst[0] = 99</span></td>
+                  <td><span class="tag tag-warn">[99, 2, 3]</span></td>
+                  <td>{1:2, 2:4, 3:6} <em style="color: #546e7a">불변!</em></td>
+                  <td>{2, 4, 6} <em style="color: #546e7a">불변!</em></td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">⑤</span></td>
+                  <td><span class="mono">dst[2] = 7</span></td>
+                  <td>[99, 2, 3]</td>
+                  <td><span class="tag tag-note">{1:2, 2:7, 3:6}</span></td>
+                  <td>{2, 4, 6} <em style="color: #546e7a">불변!</em></td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">⑥</span></td>
+                  <td><span class="mono">s.add(99)</span></td>
+                  <td>[99, 2, 3]</td>
+                  <td>{1:2, 2:7, 3:6}</td>
+                  <td><span class="tag tag-note">{2, 4, 6, 99}</span></td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="tag tag-result">⑦</span></td>
+                  <td><span class="mono">s &amp; set(dst.values())</span></td>
+                  <td>—</td>
+                  <td>values={2,7,6}</td>
+                  <td>{2,4,6,99}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ③ 집합 교집합 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 교집합(&amp;) 연산 시각화</div>
+          <div class="card">
+            <div class="set-row">
+              <span class="set-label">s =</span>
+              <div>
+                <span class="set-elem elem-common">2</span>
+                <span class="set-elem elem-only-s">4</span>
+                <span class="set-elem elem-common">6</span>
+                <span class="set-elem elem-only-s">99</span>
+              </div>
+            </div>
+            <div class="set-row">
+              <span class="set-label">dst.values() =</span>
+              <div>
+                <span class="set-elem elem-common">2</span>
+                <span class="set-elem elem-only-d">7</span>
+                <span class="set-elem elem-common">6</span>
+              </div>
+            </div>
+            <div
+              style="margin: 12px 0; border-top: 1px dashed var(--line)"
+            ></div>
+            <div class="set-row">
+              <span class="set-label">s &amp; dst =</span>
+              <div>
+                <span class="set-elem elem-common">2</span>
+                <span class="set-elem elem-common">6</span>
+              </div>
+              <span
+                style="
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 13px;
+                  color: #7a6650;
+                  margin-left: 12px;
+                "
+                >← 두 집합 모두에 있는 원소만</span
+              >
+            </div>
+            <div class="set-row" style="margin-top: 8px">
+              <span class="set-label">len() =</span>
+              <span
+                style="
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 20px;
+                  font-weight: bold;
+                  color: #f0c060;
+                "
+                >2</span
+              >
+            </div>
+            <div
+              style="
+                margin-top: 12px;
+                font-size: 12px;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                color: #546e7a;
+              "
+            >
+              <span style="color: #f0c060">■</span> 교집합(공통) &nbsp;
+              <span style="color: #ff7675">■</span> s에만 있음 (4, 99 탈락)
+              &nbsp; <span style="color: #546e7a">■</span> dst에만 있음 (7 탈락)
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ 왜 lst 변경이 dst에 영향 없나 -->
+        <div class="sub-section">
+          <div class="sub-title">
+            ④ 핵심 함정 — lst 변경이 dst에 영향 없는 이유
+          </div>
+          <div class="card warn">
+            <ul class="point-list">
+              <li>
+                <span class="icon">📸</span>
+                <span
+                  >딕셔너리 컴프리헨션
+                  <span class="mono">{i: i*2 for i in lst}</span>은
+                  <span class="hl">생성 시점에 값을 복사</span>합니다. 이후
+                  <span class="mono">lst</span>를 변경해도
+                  <span class="mono">dst</span>는 바뀌지 않습니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📸</span>
+                <span
+                  ><span class="mono">s = set(dst.values())</span>도
+                  마찬가지입니다. 생성 시점의 값들로 독립적인 집합을 만듭니다.
+                  이후 <span class="mono">dst</span>가 바뀌어도
+                  <span class="mono">s</span>는
+                  <strong>자동 반영되지 않습니다</strong>.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  ><span class="mono">dst</span> 생성 후 변경:
+                  <span class="mono">dst[2] = 7</span> → key 2의 값이 4에서 7로
+                  바뀜 →
+                  <span class="mono">dst.values() = {2, 7, 6}</span></span
+                >
+              </li>
+              <li>
+                <span class="icon">➕</span>
+                <span
+                  ><span class="mono">s.add(99)</span> →
+                  <span class="mono">s = {2, 4, 6, 99}</span> (직접 99
+                  추가)</span
+                >
+              </li>
+              <li>
+                <span class="icon">∩</span>
+                <span
+                  >교집합:
+                  <span class="mono">{2, 4, 6, 99} &amp; {2, 7, 6}</span> =
+                  <span class="hl"><span class="mono">{2, 6}</span></span> —
+                  원소 2개</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span
+                  ><span class="mono">len({2, 6})</span> =
+                  <strong>2</strong></span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">
+            print(len(s &amp; set(dst.values()))) 출력 결과
+          </div>
+          <div class="answer-value">2</div>
+          <div class="answer-desc">
+            s={2,4,6,99} &amp; dst.values()={2,7,6} → {2,6} → len=2
+          </div>
+        </div>
+      </div>
+      <!-- /panelExplain -->
+    </div>
+    <!-- /page -->
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

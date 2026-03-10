@@ -1,0 +1,1159 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.gold {
+        border-left-color: #c8860a;
+        background: rgba(255, 245, 200, 0.35);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+      .inc {
+        color: #89ddff;
+      }
+      .op {
+        color: #f0c060;
+        font-weight: bold;
+      }
+
+      /* 버튼 */
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      /* 패널 */
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      /* 정답 박스 */
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 96px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* 연산자 분해 시각화 */
+      .expr-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      /* 트레이스 테이블 */
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+
+      /* 연산자 우선순위 테이블 */
+      .prior-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .prior-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 8px 14px;
+        text-align: center;
+        font-weight: 600;
+      }
+      .prior-table td {
+        padding: 8px 14px;
+        border-bottom: 1px solid var(--aged);
+        text-align: center;
+        vertical-align: middle;
+      }
+      .prior-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 700;
+      }
+      .prior-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-step {
+        background: #fde8d8;
+        color: #8b3a0f;
+      }
+      .tag-true {
+        background: #d5f0e0;
+        color: #2d5a3d;
+      }
+      .tag-false {
+        background: #fde8d8;
+        color: #8b3a0f;
+      }
+      .tag-val {
+        background: #d5e8f0;
+        color: #1e3a6e;
+      }
+      .tag-result {
+        background: #d5f0e0;
+        color: #2d5a3d;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 연산자 우선순위 &amp; 논리 연산 추적</h1>
+        <div class="meta">
+          C · Operator Precedence · Relational · Logical AND · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> x=<span class="nl">7</span>, y=<span class="nl">4</span>, z;
+
+    z = y<span class="op">%</span><span class="nl">3</span> <span class="op">&gt;</span> <span class="nl">1</span>;          <span class="cmt">// ① 나머지 → 비교 → z에 저장</span>
+    z = x<span class="op">&gt;</span><span class="nl">5</span> <span class="op">&amp;&amp;</span> z;         <span class="cmt">// ② 비교 → 논리AND → z에 저장</span>
+
+    <span class="ret">return</span> z;             <span class="cmt">// z의 최종값을 반환</span>
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          프로그램이 종료될 때 <strong>z의 최종값(return z)</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">return z 의 최종값</div>
+          <div class="answer-value">0</div>
+          <div class="answer-desc">
+            y%3=1 &gt; 1 → false(0) │ x&gt;5 &amp;&amp; 0 → 0
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >연산자 우선순위에 따라 식을 올바르게 분해하고, 논리 연산 결과를
+                추적하는 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>연산자 우선순위</strong> —
+                  <span class="mono">%</span>(나머지) &gt;
+                  <span class="mono">&gt;</span>(비교) &gt;
+                  <span class="mono">&amp;&amp;</span>(논리AND) 순서로
+                  평가됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>C의 불리언</strong> — C에서 비교/논리 연산 결과는
+                  참이면 <span class="mono">1</span>, 거짓이면
+                  <span class="mono">0</span> (정수)으로 저장됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>&amp;&amp; 단락 평가</strong> — 왼쪽이
+                  <span class="mono">0</span>(거짓)이면 오른쪽을 평가하지 않고
+                  즉시 <span class="mono">0</span>을 반환합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 연산자 우선순위 표 -->
+        <div class="sub-section">
+          <div class="sub-title">② 이 코드에서 사용된 연산자 우선순위</div>
+          <div style="overflow-x: auto">
+            <table class="prior-table">
+              <thead>
+                <tr>
+                  <th>우선순위</th>
+                  <th>연산자</th>
+                  <th>이름</th>
+                  <th>결합 방향</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="hl-row">
+                  <td>높음 ①</td>
+                  <td><span class="mono">%</span></td>
+                  <td>나머지(모듈로)</td>
+                  <td>좌 → 우</td>
+                </tr>
+                <tr class="hl-row">
+                  <td>②</td>
+                  <td><span class="mono">&gt;</span></td>
+                  <td>크다 (관계 연산자)</td>
+                  <td>좌 → 우</td>
+                </tr>
+                <tr class="hl-row">
+                  <td>낮음 ③</td>
+                  <td><span class="mono">&amp;&amp;</span></td>
+                  <td>논리 AND</td>
+                  <td>좌 → 우</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ③ 식 분해 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 식 분해 시각화</div>
+          <div class="expr-wrap">
+            <svg
+              width="680"
+              height="200"
+              viewBox="0 0 680 200"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- ── 첫 번째 식: z = y%3 > 1 ── -->
+              <text
+                x="20"
+                y="22"
+                fill="#8b3a0f"
+                font-size="12"
+                font-weight="bold"
+              >
+                ① z = y%3 &gt; 1
+              </text>
+
+              <!-- 단계 박스들 -->
+              <rect
+                x="20"
+                y="32"
+                width="80"
+                height="32"
+                rx="5"
+                fill="#1a1208"
+                stroke="#8b3a0f"
+                stroke-width="1.5"
+              />
+              <text
+                x="60"
+                y="53"
+                text-anchor="middle"
+                fill="#f78c6c"
+                font-size="12"
+              >
+                y % 3
+              </text>
+
+              <text x="108" y="53" fill="#c8b89a" font-size="16">→</text>
+
+              <rect
+                x="126"
+                y="32"
+                width="80"
+                height="32"
+                rx="5"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="166"
+                y="53"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="12"
+              >
+                4 % 3
+              </text>
+
+              <text x="214" y="53" fill="#c8b89a" font-size="16">=</text>
+
+              <rect
+                x="232"
+                y="32"
+                width="50"
+                height="32"
+                rx="5"
+                fill="#1a1208"
+                stroke="#2d5a3d"
+                stroke-width="1.5"
+              />
+              <text
+                x="257"
+                y="53"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="14"
+                font-weight="bold"
+              >
+                1
+              </text>
+
+              <text
+                x="290"
+                y="53"
+                fill="#f0c060"
+                font-size="14"
+                font-weight="bold"
+              >
+                &gt;
+              </text>
+
+              <rect
+                x="310"
+                y="32"
+                width="50"
+                height="32"
+                rx="5"
+                fill="#1a1208"
+                stroke="#2d5a3d"
+                stroke-width="1.5"
+              />
+              <text
+                x="335"
+                y="53"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="14"
+                font-weight="bold"
+              >
+                1
+              </text>
+
+              <text x="368" y="53" fill="#c8b89a" font-size="16">=</text>
+
+              <rect
+                x="386"
+                y="28"
+                width="90"
+                height="40"
+                rx="5"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="2"
+              />
+              <text
+                x="431"
+                y="46"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="11"
+              >
+                1 &gt; 1
+              </text>
+              <text
+                x="431"
+                y="61"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="13"
+                font-weight="bold"
+              >
+                false = 0
+              </text>
+
+              <text x="484" y="53" fill="#c8b89a" font-size="16">→</text>
+              <text
+                x="504"
+                y="53"
+                fill="#ff7675"
+                font-size="14"
+                font-weight="bold"
+              >
+                z = 0
+              </text>
+
+              <!-- ── 두 번째 식: z = x>5 && z ── -->
+              <text
+                x="20"
+                y="110"
+                fill="#8b3a0f"
+                font-size="12"
+                font-weight="bold"
+              >
+                ② z = x&gt;5 &amp;&amp; z
+              </text>
+
+              <rect
+                x="20"
+                y="120"
+                width="80"
+                height="32"
+                rx="5"
+                fill="#1a1208"
+                stroke="#8b3a0f"
+                stroke-width="1.5"
+              />
+              <text
+                x="60"
+                y="141"
+                text-anchor="middle"
+                fill="#f78c6c"
+                font-size="12"
+              >
+                x &gt; 5
+              </text>
+
+              <text x="108" y="141" fill="#c8b89a" font-size="16">→</text>
+
+              <rect
+                x="126"
+                y="120"
+                width="80"
+                height="32"
+                rx="5"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="166"
+                y="141"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="12"
+              >
+                7 &gt; 5
+              </text>
+
+              <text x="214" y="141" fill="#c8b89a" font-size="16">=</text>
+
+              <rect
+                x="232"
+                y="116"
+                width="72"
+                height="40"
+                rx="5"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="2"
+              />
+              <text
+                x="268"
+                y="134"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+              >
+                7 &gt; 5
+              </text>
+              <text
+                x="268"
+                y="149"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="13"
+                font-weight="bold"
+              >
+                true = 1
+              </text>
+
+              <text
+                x="312"
+                y="141"
+                fill="#f0c060"
+                font-size="13"
+                font-weight="bold"
+              >
+                &amp;&amp;
+              </text>
+
+              <rect
+                x="336"
+                y="116"
+                width="72"
+                height="40"
+                rx="5"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="2"
+              />
+              <text
+                x="372"
+                y="134"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="11"
+              >
+                z (현재값)
+              </text>
+              <text
+                x="372"
+                y="149"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="13"
+                font-weight="bold"
+              >
+                0
+              </text>
+
+              <text x="416" y="141" fill="#c8b89a" font-size="16">=</text>
+
+              <rect
+                x="434"
+                y="116"
+                width="100"
+                height="40"
+                rx="5"
+                fill="#2d1a1a"
+                stroke="#c0392b"
+                stroke-width="2"
+              />
+              <text
+                x="484"
+                y="134"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="11"
+              >
+                1 &amp;&amp; 0
+              </text>
+              <text
+                x="484"
+                y="149"
+                text-anchor="middle"
+                fill="#ff7675"
+                font-size="13"
+                font-weight="bold"
+              >
+                false = 0
+              </text>
+
+              <text x="542" y="141" fill="#c8b89a" font-size="16">→</text>
+              <text
+                x="562"
+                y="141"
+                fill="#ff7675"
+                font-size="14"
+                font-weight="bold"
+              >
+                z = 0
+              </text>
+
+              <!-- 최종 -->
+              <text
+                x="20"
+                y="192"
+                fill="#8b3a0f"
+                font-size="12"
+                font-weight="bold"
+              >
+                ③ return z
+              </text>
+              <rect
+                x="100"
+                y="180"
+                width="100"
+                height="24"
+                rx="4"
+                fill="#2d1a08"
+                stroke="#f0c060"
+                stroke-width="1.5"
+              />
+              <text
+                x="150"
+                y="197"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="12"
+                font-weight="bold"
+              >
+                최종값 = 0
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ④ 단계별 변수 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 단계별 변수 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>단계</th>
+                  <th>식</th>
+                  <th>분해 순서</th>
+                  <th>결과값</th>
+                  <th>z</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag-step">초기</span></td>
+                  <td><span class="mono">x=7, y=4</span></td>
+                  <td>변수 초기화</td>
+                  <td>—</td>
+                  <td>미초기화</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">①-a</span></td>
+                  <td><span class="mono">y % 3</span></td>
+                  <td>4 % 3</td>
+                  <td><span class="tag tag-val">1</span></td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">①-b</span></td>
+                  <td><span class="mono">1 &gt; 1</span></td>
+                  <td>1 == 1 → 크지 않음</td>
+                  <td><span class="tag tag-false">false = 0</span></td>
+                  <td><strong>0</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">②-a</span></td>
+                  <td><span class="mono">x &gt; 5</span></td>
+                  <td>7 &gt; 5</td>
+                  <td><span class="tag tag-true">true = 1</span></td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">②-b</span></td>
+                  <td><span class="mono">1 &amp;&amp; z</span></td>
+                  <td>1 &amp;&amp; 0</td>
+                  <td><span class="tag tag-false">false = 0</span></td>
+                  <td><strong>0</strong></td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="tag tag-result">종료</span></td>
+                  <td><span class="mono">return z</span></td>
+                  <td>최종 z값 반환</td>
+                  <td><strong>0</strong></td>
+                  <td><strong>0</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">⚖️</span>
+                <span
+                  ><span class="mono">y%3 &gt; 1</span>은
+                  <span class="mono">(y%3) &gt; 1</span>로 파싱됩니다.
+                  <span class="mono">%</span>가
+                  <span class="mono">&gt;</span>보다 우선순위가 높습니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  ><span class="mono">4 % 3 = 1</span>,
+                  <span class="mono">1 &gt; 1</span>은
+                  <span class="hl">거짓(0)</span>입니다. '크다'이지 '이상'이
+                  아님에 주의하세요.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚡</span>
+                <span
+                  ><span class="mono">&amp;&amp;</span>(논리 AND)는 왼쪽이
+                  <span class="mono">1</span>이더라도 오른쪽
+                  <span class="mono">z=0</span>이 있으므로 결과는
+                  <span class="mono">0</span>입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📝</span>
+                <span
+                  >이 코드에는 <span class="mono">printf</span>가 없습니다.
+                  <span class="mono">return z</span>는 OS에
+                  <strong>종료 코드 0</strong>을 반환하며, 화면 출력은
+                  없습니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">z의 최종값 (return z)</div>
+          <div class="answer-value">0</div>
+          <div class="answer-desc">
+            y%3=1 &gt; 1 → 0 │ x&gt;5=1 &amp;&amp; z=0 → 0
+          </div>
+        </div>
+      </div>
+      <!-- /panelExplain -->
+    </div>
+    <!-- /page -->
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

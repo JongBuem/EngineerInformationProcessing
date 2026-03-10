@@ -1,0 +1,1315 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.warn {
+        border-left-color: #c0392b;
+        background: rgba(255, 235, 230, 0.35);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 100px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+      .trace-table tr.zero-row td {
+        color: #546e7a;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-step {
+        background: #fde8d8;
+        color: #8b3a0f;
+      }
+      .tag-odd {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-even {
+        background: #1e1e2d;
+        color: #546e7a;
+        border: 1px solid #2d2d46;
+      }
+      .tag-result {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Python 이진 트리 홀수 레벨 합산 재귀 추적</h1>
+        <div class="meta">
+          Python · Binary Tree · Recursion · Level · Heap Index · Odd-level Sum
+          · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Python</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Node</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="cls">self</span>, value):
+        <span class="cls">self</span>.value    = value
+        <span class="cls">self</span>.children = []
+
+<span class="kw">def</span> <span class="fn">tree</span>(li):
+    nodes = [<span class="cls">Node</span>(i) <span class="kw">for</span> i <span class="kw">in</span> li]
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nl">1</span>, <span class="fn">len</span>(li)):
+        nodes[(i - <span class="nl">1</span>) // <span class="nl">2</span>].children.append(nodes[i])  <span class="cmt"># 힙 인덱스로 부모-자식 연결</span>
+    <span class="kw">return</span> nodes[<span class="nl">0</span>]
+
+<span class="kw">def</span> <span class="fn">calc</span>(node, level=<span class="nl">0</span>):
+    <span class="kw">if</span> node <span class="kw">is None</span>:
+        <span class="ret">return</span> <span class="nl">0</span>
+    <span class="ret">return</span> (node.value <span class="kw">if</span> level % <span class="nl">2</span> == <span class="nl">1</span> <span class="kw">else</span> <span class="nl">0</span>) \
+         + <span class="fn">sum</span>(<span class="fn">calc</span>(n, level + <span class="nl">1</span>) <span class="kw">for</span> n <span class="kw">in</span> node.children)
+
+li   = [<span class="nl">3</span>, <span class="nl">5</span>, <span class="nl">8</span>, <span class="nl">12</span>, <span class="nl">15</span>, <span class="nl">18</span>, <span class="nl">21</span>]
+root = <span class="fn">tree</span>(li)
+<span class="fn">print</span>(<span class="fn">calc</span>(root))</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">print(calc(root)) 출력 결과</div>
+          <div class="answer-value">13</div>
+          <div class="answer-desc">
+            홀수 레벨(level=1)의 노드 값만 합산: 5 + 8 = 13
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >배열을 힙 인덱스 규칙으로 이진 트리에 배치한 뒤, 재귀로 홀수
+                레벨 노드 값만 합산하는 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>힙 인덱스 부모 공식</strong>: 노드 i의 부모 =
+                  <span class="mono">(i-1)//2</span> — 0-based 배열을 완전 이진
+                  트리로 만드는 표준 방식입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>calc 규칙</strong>:
+                  <span class="mono">level % 2 == 1</span>(홀수)이면
+                  <span class="hl">node.value 합산</span>, 짝수이면 0을
+                  더합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  >루트는 <span class="mono">level=0</span>(짝수)이므로 값을
+                  더하지 않습니다. 자식 노드들만 레벨이 올라갑니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 트리 구조 생성 -->
+        <div class="sub-section">
+          <div class="sub-title">② tree() — 힙 인덱스로 이진 트리 생성</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>i</th>
+                  <th>nodes[i].value</th>
+                  <th>부모 인덱스 (i-1)//2</th>
+                  <th>부모 노드</th>
+                  <th>관계</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>5</td>
+                  <td>(1-1)//2 = <strong>0</strong></td>
+                  <td>3 (루트)</td>
+                  <td>3의 왼쪽 자식</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>8</td>
+                  <td>(2-1)//2 = <strong>0</strong></td>
+                  <td>3 (루트)</td>
+                  <td>3의 오른쪽 자식</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>12</td>
+                  <td>(3-1)//2 = <strong>1</strong></td>
+                  <td>5</td>
+                  <td>5의 왼쪽 자식</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>15</td>
+                  <td>(4-1)//2 = <strong>1</strong></td>
+                  <td>5</td>
+                  <td>5의 오른쪽 자식</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>18</td>
+                  <td>(5-1)//2 = <strong>2</strong></td>
+                  <td>8</td>
+                  <td>8의 왼쪽 자식</td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>21</td>
+                  <td>(6-1)//2 = <strong>2</strong></td>
+                  <td>8</td>
+                  <td>8의 오른쪽 자식</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ③ 트리 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 완성된 트리 구조 — 레벨별 합산 여부</div>
+          <div class="flow-wrap">
+            <svg
+              width="580"
+              height="240"
+              viewBox="0 0 580 240"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- 레벨 라벨 -->
+              <text x="10" y="56" fill="#546e7a" font-size="11">level 0</text>
+              <text
+                x="10"
+                y="136"
+                fill="#c3e88d"
+                font-size="11"
+                font-weight="bold"
+              >
+                level 1
+              </text>
+              <text x="10" y="216" fill="#546e7a" font-size="11">level 2</text>
+
+              <!-- 레벨 구분선 -->
+              <line
+                x1="78"
+                y1="74"
+                x2="570"
+                y2="74"
+                stroke="#c8b89a"
+                stroke-width="0.8"
+                stroke-dasharray="3"
+              />
+              <line
+                x1="78"
+                y1="154"
+                x2="570"
+                y2="154"
+                stroke="#c8b89a"
+                stroke-width="0.8"
+                stroke-dasharray="3"
+              />
+
+              <!-- 루트: 3 (level 0, 짝수 → 0) -->
+              <line
+                x1="290"
+                y1="54"
+                x2="185"
+                y2="94"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+              <line
+                x1="290"
+                y1="54"
+                x2="395"
+                y2="94"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+              <circle
+                cx="290"
+                cy="36"
+                r="28"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="290"
+                y="32"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="9"
+              >
+                level 0
+              </text>
+              <text
+                x="290"
+                y="47"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="16"
+                font-weight="bold"
+              >
+                3
+              </text>
+              <text
+                x="290"
+                y="8"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="10"
+              >
+                → 0 (짝수, 합산 안 함)
+              </text>
+
+              <!-- 5 (level 1, 홀수 → 합산) -->
+              <line
+                x1="185"
+                y1="114"
+                x2="125"
+                y2="174"
+                stroke="#2d5a3d"
+                stroke-width="1.5"
+              />
+              <line
+                x1="185"
+                y1="114"
+                x2="245"
+                y2="174"
+                stroke="#2d5a3d"
+                stroke-width="1.5"
+              />
+              <circle
+                cx="185"
+                cy="116"
+                r="28"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="2"
+              />
+              <text
+                x="185"
+                y="112"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="9"
+              >
+                level 1
+              </text>
+              <text
+                x="185"
+                y="127"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="16"
+                font-weight="bold"
+              >
+                5
+              </text>
+              <text
+                x="185"
+                y="88"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="10"
+                font-weight="bold"
+              >
+                +5 ✓
+              </text>
+
+              <!-- 8 (level 1, 홀수 → 합산) -->
+              <line
+                x1="395"
+                y1="114"
+                x2="335"
+                y2="174"
+                stroke="#2d5a3d"
+                stroke-width="1.5"
+              />
+              <line
+                x1="395"
+                y1="114"
+                x2="455"
+                y2="174"
+                stroke="#2d5a3d"
+                stroke-width="1.5"
+              />
+              <circle
+                cx="395"
+                cy="116"
+                r="28"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="2"
+              />
+              <text
+                x="395"
+                y="112"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="9"
+              >
+                level 1
+              </text>
+              <text
+                x="395"
+                y="127"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="16"
+                font-weight="bold"
+              >
+                8
+              </text>
+              <text
+                x="395"
+                y="88"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="10"
+                font-weight="bold"
+              >
+                +8 ✓
+              </text>
+
+              <!-- level 2 노드들 (짝수 → 합산 안 함) -->
+              <circle
+                cx="125"
+                cy="196"
+                r="24"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="125"
+                y="200"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="15"
+                font-weight="bold"
+              >
+                12
+              </text>
+              <text
+                x="125"
+                y="228"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="10"
+              >
+                → 0
+              </text>
+
+              <circle
+                cx="245"
+                cy="196"
+                r="24"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="245"
+                y="200"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="15"
+                font-weight="bold"
+              >
+                15
+              </text>
+              <text
+                x="245"
+                y="228"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="10"
+              >
+                → 0
+              </text>
+
+              <circle
+                cx="335"
+                cy="196"
+                r="24"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="335"
+                y="200"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="15"
+                font-weight="bold"
+              >
+                18
+              </text>
+              <text
+                x="335"
+                y="228"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="10"
+              >
+                → 0
+              </text>
+
+              <circle
+                cx="455"
+                cy="196"
+                r="24"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="455"
+                y="200"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="15"
+                font-weight="bold"
+              >
+                21
+              </text>
+              <text
+                x="455"
+                y="228"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="10"
+              >
+                → 0
+              </text>
+
+              <!-- 결과 -->
+              <rect
+                x="490"
+                y="100"
+                width="82"
+                height="54"
+                rx="6"
+                fill="#1a1208"
+                stroke="#f0c060"
+                stroke-width="2"
+              />
+              <text
+                x="531"
+                y="120"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="11"
+                font-weight="bold"
+              >
+                합산
+              </text>
+              <text
+                x="531"
+                y="144"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="20"
+                font-weight="bold"
+              >
+                5+8
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ④ calc() 재귀 호출 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">④ calc() 재귀 호출 전체 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>호출</th>
+                  <th>node.value</th>
+                  <th>level</th>
+                  <th>level%2</th>
+                  <th>기여값</th>
+                  <th>자식 합</th>
+                  <th>반환</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="zero-row">
+                  <td><span class="mono">calc(12, 2)</span></td>
+                  <td>12</td>
+                  <td>2</td>
+                  <td><span class="tag tag-even">짝수→0</span></td>
+                  <td>0</td>
+                  <td>자식 없음=0</td>
+                  <td>0</td>
+                </tr>
+                <tr class="zero-row">
+                  <td><span class="mono">calc(15, 2)</span></td>
+                  <td>15</td>
+                  <td>2</td>
+                  <td><span class="tag tag-even">짝수→0</span></td>
+                  <td>0</td>
+                  <td>자식 없음=0</td>
+                  <td>0</td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="mono">calc(5, 1)</span></td>
+                  <td>5</td>
+                  <td>1</td>
+                  <td><span class="tag tag-odd">홀수→값</span></td>
+                  <td><strong>5</strong></td>
+                  <td>0+0=0</td>
+                  <td><strong>5</strong></td>
+                </tr>
+                <tr class="zero-row">
+                  <td><span class="mono">calc(18, 2)</span></td>
+                  <td>18</td>
+                  <td>2</td>
+                  <td><span class="tag tag-even">짝수→0</span></td>
+                  <td>0</td>
+                  <td>자식 없음=0</td>
+                  <td>0</td>
+                </tr>
+                <tr class="zero-row">
+                  <td><span class="mono">calc(21, 2)</span></td>
+                  <td>21</td>
+                  <td>2</td>
+                  <td><span class="tag tag-even">짝수→0</span></td>
+                  <td>0</td>
+                  <td>자식 없음=0</td>
+                  <td>0</td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="mono">calc(8, 1)</span></td>
+                  <td>8</td>
+                  <td>1</td>
+                  <td><span class="tag tag-odd">홀수→값</span></td>
+                  <td><strong>8</strong></td>
+                  <td>0+0=0</td>
+                  <td><strong>8</strong></td>
+                </tr>
+                <tr class="zero-row">
+                  <td><span class="mono">calc(3, 0)</span></td>
+                  <td>3</td>
+                  <td>0</td>
+                  <td><span class="tag tag-even">짝수→0</span></td>
+                  <td>0</td>
+                  <td>5+8=13</td>
+                  <td><span class="tag tag-result">13</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 레벨별 합산 규칙 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 레벨별 합산 규칙 요약</div>
+          <div class="flow-wrap">
+            <svg
+              width="540"
+              height="96"
+              viewBox="0 0 540 96"
+              font-family="JetBrains Mono,monospace"
+            >
+              <rect
+                x="10"
+                y="10"
+                width="160"
+                height="76"
+                rx="6"
+                fill="rgba(255,255,255,0.55)"
+                stroke="#c8b89a"
+              />
+              <text
+                x="90"
+                y="30"
+                text-anchor="middle"
+                fill="#8b3a0f"
+                font-size="11"
+                font-weight="bold"
+              >
+                level 0 (루트)
+              </text>
+              <text
+                x="90"
+                y="50"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="11"
+              >
+                노드: 3
+              </text>
+              <text
+                x="90"
+                y="68"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="12"
+                font-weight="bold"
+              >
+                기여: 0 (짝수)
+              </text>
+              <text
+                x="90"
+                y="82"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="9"
+              >
+                합산 제외
+              </text>
+
+              <rect
+                x="190"
+                y="10"
+                width="160"
+                height="76"
+                rx="6"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="2"
+              />
+              <text
+                x="270"
+                y="30"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+                font-weight="bold"
+              >
+                level 1 ★
+              </text>
+              <text
+                x="270"
+                y="50"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+              >
+                노드: 5, 8
+              </text>
+              <text
+                x="270"
+                y="68"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="12"
+                font-weight="bold"
+              >
+                기여: 5+8=13
+              </text>
+              <text
+                x="270"
+                y="82"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="9"
+              >
+                홀수 → 합산!
+              </text>
+
+              <rect
+                x="370"
+                y="10"
+                width="162"
+                height="76"
+                rx="6"
+                fill="rgba(255,255,255,0.55)"
+                stroke="#c8b89a"
+              />
+              <text
+                x="451"
+                y="30"
+                text-anchor="middle"
+                fill="#8b3a0f"
+                font-size="11"
+                font-weight="bold"
+              >
+                level 2 (리프)
+              </text>
+              <text
+                x="451"
+                y="50"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="11"
+              >
+                노드: 12,15,18,21
+              </text>
+              <text
+                x="451"
+                y="68"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="12"
+                font-weight="bold"
+              >
+                기여: 0 (짝수)
+              </text>
+              <text
+                x="451"
+                y="82"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="9"
+              >
+                합산 제외
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🌳</span>
+                <span
+                  ><strong>힙 인덱스 공식</strong>
+                  <span class="mono">(i-1)//2</span>: 1-based가 아닌 0-based
+                  배열에서 완전 이진 트리를 만드는 표준 방법입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  ><span class="mono">level % 2 == 1</span>(홀수)일 때만 값을
+                  더합니다.
+                  <span class="hl"
+                    >루트는 level=0(짝수)이므로 값을 더하지 않습니다.</span
+                  ></span
+                >
+              </li>
+              <li>
+                <span class="icon">🍃</span>
+                <span
+                  >리프 노드(level=2, 짝수)도 기여값이 0이고 자식도 없으므로
+                  모두 0을 반환합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span>합산: level 1의 노드 값 <strong>5 + 8 = 13</strong></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">print(calc(root)) 출력 결과</div>
+          <div class="answer-value">13</div>
+          <div class="answer-desc">홀수 레벨(level=1) 노드 합: 5 + 8 = 13</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

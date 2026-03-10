@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.warn {
+        border-left-color: #c0392b;
+        background: rgba(255, 235, 230, 0.35);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+      .st {
+        color: #f0c060;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 96px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-step {
+        background: #fde8d8;
+        color: #8b3a0f;
+      }
+      .tag-val {
+        background: #d5e8f0;
+        color: #1e3a6e;
+      }
+      .tag-result {
+        background: #d5f0e0;
+        color: #2d5a3d;
+      }
+      .tag-dynamic {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-static {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+      .tag-warn {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1px solid #c0392b;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java 동적 디스패치 vs 정적 메서드 숨김</h1>
+        <div class="meta">
+          Java · OOP · Dynamic Dispatch · Static Hiding · Override · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">public class</span> <span class="cls">Main</span> {
+    <span class="kw">public static class</span> <span class="cls">Parent</span> {
+        <span class="kw">public int</span> <span class="fn">x</span>(<span class="kw">int</span> i)      { <span class="ret">return</span> i + <span class="nl">2</span>; }
+        <span class="kw">public static</span> <span class="cls">String</span> <span class="st">id</span>() { <span class="ret">return</span> <span class="str">"P"</span>; }
+    }
+    <span class="kw">public static class</span> <span class="cls">Child</span> <span class="kw">extends</span> <span class="cls">Parent</span> {
+        <span class="kw">public int</span> <span class="fn">x</span>(<span class="kw">int</span> i)       { <span class="ret">return</span> i + <span class="nl">3</span>; }   <span class="cmt">// 오버라이드</span>
+        <span class="kw">public</span> <span class="cls">String</span> <span class="fn">x</span>(<span class="cls">String</span> s) { <span class="ret">return</span> s + <span class="str">"R"</span>; } <span class="cmt">// 오버로드 (별개)</span>
+        <span class="kw">public static</span> <span class="cls">String</span> <span class="st">id</span>()  { <span class="ret">return</span> <span class="str">"C"</span>; }   <span class="cmt">// 숨김(Hiding)</span>
+    }
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+        <span class="cls">Parent</span> ref = <span class="kw">new</span> <span class="cls">Child</span>();           <span class="cmt">// 선언: Parent, 실제: Child</span>
+        <span class="cls">System</span>.out.<span class="fn">println</span>(ref.<span class="fn">x</span>(<span class="nl">2</span>) + ref.<span class="st">id</span>());
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">System.out.println() 출력 결과</div>
+          <div class="answer-value">5P</div>
+          <div class="answer-desc">
+            ref.x(2) → Child.x(2)=5 (동적) │ ref.id() → Parent.id()="P" (정적
+            숨김)
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >인스턴스 메서드의 동적 디스패치(Dynamic Dispatch)와 static
+                메서드의 정적 바인딩(숨김, Hiding)의 차이를 묻는 추적 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🟢</span
+                ><span
+                  ><strong>인스턴스 메서드</strong> —
+                  <span class="hl">실행 시간(Runtime)에 실제 객체 타입</span>을
+                  기준으로 결정됩니다. (동적 디스패치)</span
+                >
+              </li>
+              <li>
+                <span class="icon">🟡</span
+                ><span
+                  ><strong>static 메서드</strong> —
+                  <span class="hl">컴파일 시간에 참조 변수 타입</span>을
+                  기준으로 결정됩니다. (정적 바인딩 / 메서드 숨김)</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><span class="mono">Parent ref = new Child()</span> — 선언
+                  타입은 <span class="mono">Parent</span>, 실제 객체는
+                  <span class="mono">Child</span>입니다. 이 차이가
+                  핵심입니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 판단 기준 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">
+            ② ref.x(2) vs ref.id() — 어느 클래스 메서드가 호출되나?
+          </div>
+          <div class="flow-wrap">
+            <svg
+              width="660"
+              height="250"
+              viewBox="0 0 660 250"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- 객체 상태 -->
+              <rect
+                x="240"
+                y="10"
+                width="180"
+                height="54"
+                rx="6"
+                fill="#1a1208"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+              <text
+                x="330"
+                y="30"
+                text-anchor="middle"
+                fill="#7a6650"
+                font-size="10"
+              >
+                선언 타입 → Parent
+              </text>
+              <text
+                x="330"
+                y="48"
+                text-anchor="middle"
+                fill="#ffcb6b"
+                font-size="13"
+                font-weight="bold"
+              >
+                ref = new Child()
+              </text>
+              <text
+                x="330"
+                y="60"
+                text-anchor="middle"
+                fill="#7a6650"
+                font-size="10"
+              >
+                실제 객체 → Child
+              </text>
+
+              <!-- 왼쪽: ref.x(2) -->
+              <line
+                x1="240"
+                y1="44"
+                x2="160"
+                y2="90"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+
+              <rect
+                x="20"
+                y="90"
+                width="280"
+                height="50"
+                rx="6"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="2"
+              />
+              <text
+                x="160"
+                y="108"
+                text-anchor="middle"
+                fill="#7a9e7a"
+                font-size="10"
+              >
+                ref.x(2) — 인스턴스 메서드
+              </text>
+              <text
+                x="160"
+                y="128"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="12"
+                font-weight="bold"
+              >
+                🟢 동적 디스패치 → 실제 객체 기준
+              </text>
+
+              <line
+                x1="160"
+                y1="140"
+                x2="160"
+                y2="158"
+                stroke="#c3e88d"
+                stroke-width="1.5"
+              />
+              <polygon points="153,156 167,156 160,166" fill="#c3e88d" />
+
+              <rect
+                x="20"
+                y="166"
+                width="280"
+                height="48"
+                rx="6"
+                fill="#1a2010"
+                stroke="#c3e88d"
+                stroke-width="2.5"
+              />
+              <text
+                x="160"
+                y="186"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+              >
+                Child.x(2) 실행
+              </text>
+              <text
+                x="160"
+                y="204"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="14"
+                font-weight="bold"
+              >
+                2 + 3 = 5
+              </text>
+
+              <!-- 오른쪽: ref.id() -->
+              <line
+                x1="420"
+                y1="44"
+                x2="490"
+                y2="90"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+
+              <rect
+                x="360"
+                y="90"
+                width="280"
+                height="50"
+                rx="6"
+                fill="#2d2010"
+                stroke="#8b6020"
+                stroke-width="2"
+              />
+              <text
+                x="500"
+                y="108"
+                text-anchor="middle"
+                fill="#a08040"
+                font-size="10"
+              >
+                ref.id() — static 메서드
+              </text>
+              <text
+                x="500"
+                y="128"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="12"
+                font-weight="bold"
+              >
+                🟡 정적 바인딩 → 선언 타입 기준
+              </text>
+
+              <line
+                x1="500"
+                y1="140"
+                x2="500"
+                y2="158"
+                stroke="#f0c060"
+                stroke-width="1.5"
+              />
+              <polygon points="493,156 507,156 500,166" fill="#f0c060" />
+
+              <rect
+                x="360"
+                y="166"
+                width="280"
+                height="48"
+                rx="6"
+                fill="#2d2010"
+                stroke="#f0c060"
+                stroke-width="2.5"
+              />
+              <text
+                x="500"
+                y="186"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="11"
+              >
+                Parent.id() 실행 ← Child.id() 아님!
+              </text>
+              <text
+                x="500"
+                y="204"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="14"
+                font-weight="bold"
+              >
+                "P"
+              </text>
+
+              <!-- 최종 합산 -->
+              <text x="260" y="238" fill="#e8d5b0" font-size="13">5</text>
+              <text x="278" y="238" fill="#c8b89a" font-size="13">+</text>
+              <text x="294" y="238" fill="#e8d5b0" font-size="13">"P"</text>
+              <text x="318" y="238" fill="#c8b89a" font-size="13">=</text>
+              <rect
+                x="334"
+                y="224"
+                width="80"
+                height="24"
+                rx="4"
+                fill="#2d2010"
+                stroke="#f0c060"
+                stroke-width="2"
+              />
+              <text
+                x="374"
+                y="241"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="14"
+                font-weight="bold"
+              >
+                "5P"
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ③ 단계별 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 단계별 실행 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>호출</th>
+                  <th>메서드 종류</th>
+                  <th>바인딩 기준</th>
+                  <th>실행 메서드</th>
+                  <th>반환값</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="mono">ref.x(2)</span></td>
+                  <td><span class="tag tag-dynamic">인스턴스 메서드</span></td>
+                  <td>실제 객체 → <strong>Child</strong></td>
+                  <td><span class="mono">Child.x(2) = 2+3</span></td>
+                  <td><span class="tag tag-dynamic">5</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">ref.id()</span></td>
+                  <td><span class="tag tag-static">static 메서드</span></td>
+                  <td>선언 타입 → <strong>Parent</strong></td>
+                  <td><span class="mono">Parent.id() = "P"</span></td>
+                  <td><span class="tag tag-static">"P"</span></td>
+                </tr>
+                <tr class="hl-row">
+                  <td colspan="4" style="text-align: right; font-weight: 700">
+                    5 + "P" =
+                  </td>
+                  <td><span class="tag tag-result">"5P"</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ Override vs Hiding 비교 -->
+        <div class="sub-section">
+          <div class="sub-title">
+            ④ Override(오버라이드) vs Hiding(숨김) 비교
+          </div>
+          <div class="card warn">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>구분</th>
+                  <th>대상</th>
+                  <th>결정 시점</th>
+                  <th>기준</th>
+                  <th>이 코드에서</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag-dynamic">Override</span></td>
+                  <td>인스턴스 메서드</td>
+                  <td>Runtime</td>
+                  <td>실제 객체 타입</td>
+                  <td><span class="mono">x(int)</span> → Child 버전 실행</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-static">Hiding</span></td>
+                  <td>static 메서드</td>
+                  <td>Compile-time</td>
+                  <td>참조 변수 타입</td>
+                  <td><span class="mono">id()</span> → Parent 버전 실행</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-warn">Overload</span></td>
+                  <td>같은 이름, 다른 시그니처</td>
+                  <td>Compile-time</td>
+                  <td>매개변수 타입</td>
+                  <td>
+                    <span class="mono">x(String)</span>는 Parent에 없어 ref로
+                    호출 불가
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  ><span class="mono">Parent ref = new Child()</span> —
+                  <span class="hl"
+                    >선언 타입(Parent)과 실제 객체(Child)가 다릅니다</span
+                  >. 이게 핵심 함정입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🟢</span>
+                <span
+                  ><span class="mono">ref.x(2)</span> — 인스턴스 메서드는
+                  <strong>실제 객체(Child)</strong> 기준.
+                  <span class="mono">Child.x(2) = 2+3 = 5</span></span
+                >
+              </li>
+              <li>
+                <span class="icon">🟡</span>
+                <span
+                  ><span class="mono">ref.id()</span> — static 메서드는
+                  <strong>선언 타입(Parent)</strong> 기준.
+                  <span class="mono">Parent.id() = "P"</span> (Child.id()가
+                  아님!)</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span>
+                <span
+                  ><span class="mono">Child.x(String)</span>는 Parent에 없어
+                  <span class="mono">ref</span>로 호출할 수 없습니다. 오버로드는
+                  별개의 메서드입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span
+                  ><span class="mono">5 + "P"</span> → 정수 5와 문자열 "P"의 +
+                  연산 → <strong>문자열 연결 = "5P"</strong></span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">
+            System.out.println(ref.x(2) + ref.id()) 출력 결과
+          </div>
+          <div class="answer-value">5P</div>
+          <div class="answer-desc">
+            ref.x(2) → Child.x(2)=5 (동적 디스패치) │ ref.id() → Parent.id()="P"
+            (정적 바인딩)
+          </div>
+        </div>
+      </div>
+      <!-- /panelExplain -->
+    </div>
+    <!-- /page -->
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

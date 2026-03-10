@@ -1,0 +1,1222 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 130px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.22);
+        font-weight: 700;
+      }
+      .trace-table tr.step-row td {
+        background: rgba(30, 58, 110, 0.09);
+      }
+      .trace-table tr.dim-row td {
+        opacity: 0.45;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-ptr {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+      .tag-val {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+
+      /* 단계 박스 */
+      .steps-box {
+        display: flex;
+        flex-direction: column;
+        font-family: "JetBrains Mono", monospace;
+        background: #1a1208;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .step-item {
+        display: flex;
+        align-items: stretch;
+        border-bottom: 1px solid #2a1e10;
+      }
+      .step-item:last-child {
+        border-bottom: none;
+      }
+      .si-num {
+        width: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+      .si-body {
+        flex: 1;
+        padding: 14px 18px;
+      }
+      .si-expr {
+        font-size: 15px;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .si-desc {
+        font-size: 12px;
+        color: #8a7a60;
+        line-height: 1.8;
+      }
+      .si-val {
+        font-size: 14px;
+        margin-top: 6px;
+      }
+      .s1 .si-num {
+        background: #2d2010;
+        color: #f0c060;
+      }
+      .s2 .si-num {
+        background: #1a1e2d;
+        color: #82aaff;
+      }
+      .s3 .si-num {
+        background: #1a2010;
+        color: #c3e88d;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 구조체 연결 리스트 포인터 탐색 추적</h1>
+        <div class="meta">
+          C · Struct · Linked List · Arrow Operator(->) · Pointer Chain ·
+          Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+
+<span class="kw">struct</span> <span class="cls">node</span> {
+    <span class="kw">int</span>          n1;   <span class="cmt">// 데이터 필드</span>
+    <span class="kw">struct</span> <span class="cls">node</span> *n2;   <span class="cmt">// 다음 노드 포인터</span>
+};
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">struct</span> <span class="cls">node</span> a = {<span class="nl">10</span>, <span class="nl">0</span>};   <span class="cmt">// a.n1=10, a.n2=NULL</span>
+    <span class="kw">struct</span> <span class="cls">node</span> b = {<span class="nl">20</span>, <span class="nl">0</span>};   <span class="cmt">// b.n1=20, b.n2=NULL</span>
+    <span class="kw">struct</span> <span class="cls">node</span> c = {<span class="nl">30</span>, <span class="nl">0</span>};   <span class="cmt">// c.n1=30, c.n2=NULL</span>
+
+    <span class="kw">struct</span> <span class="cls">node</span> *head = &amp;a;    <span class="cmt">// head → a</span>
+    a.n2 = &amp;b;                 <span class="cmt">// a.n2 → b</span>
+    b.n2 = &amp;c;                 <span class="cmt">// b.n2 → c</span>
+
+    printf(<span class="str">"%d"</span>, head-&gt;n2-&gt;n1);  <span class="cmt">// ← 이 값은?</span>
+
+    <span class="kw">return</span> <span class="nl">0</span>;
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">printf() 출력 결과</div>
+          <div class="answer-value">20</div>
+          <div class="answer-desc">
+            head → a &nbsp;|&nbsp; head-&gt;n2 = a.n2 = &amp;b &nbsp;|&nbsp;
+            b.n1 = 20
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >자기 참조 구조체(Self-referential struct)로 구성한 단방향 연결
+                리스트에서, 화살표 연산자(<code>-&gt;</code>)를 두 번 연쇄
+                적용하여 특정 노드의 값을 읽는 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><span class="mono">ptr-&gt;field</span>는
+                  <span class="mono">(*ptr).field</span>와 완전히 동일합니다.
+                  <strong>포인터가 가리키는 구조체의 멤버</strong>에 한 번에
+                  접근하는 축약 표기입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span
+                ><span
+                  ><span class="hl">함정</span>:
+                  <span class="mono">-&gt;</span>가 두 번 이어져 있으므로 이동은
+                  <strong>두 단계</strong>입니다. head→노드a(1hop)→노드b(2hop).
+                  노드c(30)까지는 도달하지 않습니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 연결 리스트 구조 SVG -->
+        <div class="sub-section">
+          <div class="sub-title">② 연결 리스트 메모리 구조</div>
+          <div class="flow-wrap" style="padding: 28px 12px 20px">
+            <svg
+              width="640"
+              height="156"
+              viewBox="0 0 640 156"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- head -->
+              <rect
+                x="4"
+                y="58"
+                width="76"
+                height="36"
+                rx="5"
+                fill="#2d2010"
+                stroke="#8b6020"
+                stroke-width="2"
+              />
+              <text
+                x="42"
+                y="81"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="13"
+                font-weight="bold"
+              >
+                head
+              </text>
+              <line
+                x1="80"
+                y1="76"
+                x2="108"
+                y2="76"
+                stroke="#f0c060"
+                stroke-width="2.5"
+              />
+              <polygon points="108,71 118,76 108,81" fill="#f0c060" />
+
+              <!-- node a -->
+              <rect
+                x="118"
+                y="38"
+                width="134"
+                height="76"
+                rx="7"
+                fill="#141008"
+                stroke="#c3e88d"
+                stroke-width="2"
+              />
+              <text
+                x="185"
+                y="60"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="12"
+                font-weight="bold"
+              >
+                node a
+              </text>
+              <line
+                x1="118"
+                y1="66"
+                x2="252"
+                y2="66"
+                stroke="#2a2010"
+                stroke-width="1"
+              />
+              <rect
+                x="126"
+                y="72"
+                width="46"
+                height="30"
+                rx="3"
+                fill="#1e1408"
+                stroke="#3a3020"
+                stroke-width="1"
+              />
+              <text
+                x="149"
+                y="92"
+                text-anchor="middle"
+                fill="#f78c6c"
+                font-size="16"
+                font-weight="bold"
+              >
+                10
+              </text>
+              <rect
+                x="182"
+                y="72"
+                width="62"
+                height="30"
+                rx="3"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="1.5"
+              />
+              <text
+                x="213"
+                y="92"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="12"
+              >
+                → &amp;b
+              </text>
+              <text
+                x="149"
+                y="123"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="9"
+              >
+                n1
+              </text>
+              <text
+                x="213"
+                y="123"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="9"
+              >
+                n2
+              </text>
+              <!-- a→b arrow -->
+              <line
+                x1="252"
+                y1="89"
+                x2="272"
+                y2="89"
+                stroke="#c3e88d"
+                stroke-width="2"
+                stroke-dasharray="5,2"
+              />
+              <polygon points="272,84 282,89 272,94" fill="#c3e88d" />
+
+              <!-- node b — gold highlight (answer) -->
+              <rect
+                x="282"
+                y="38"
+                width="134"
+                height="76"
+                rx="7"
+                fill="#141008"
+                stroke="#f0c060"
+                stroke-width="2.5"
+              />
+              <rect
+                x="282"
+                y="38"
+                width="134"
+                height="76"
+                rx="7"
+                fill="rgba(240,192,96,0.05)"
+              />
+              <text
+                x="349"
+                y="60"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="12"
+                font-weight="bold"
+              >
+                node b ✦
+              </text>
+              <line
+                x1="282"
+                y1="66"
+                x2="416"
+                y2="66"
+                stroke="#2a2010"
+                stroke-width="1"
+              />
+              <rect
+                x="290"
+                y="72"
+                width="46"
+                height="30"
+                rx="3"
+                fill="#2d2010"
+                stroke="#f0c060"
+                stroke-width="2"
+              />
+              <text
+                x="313"
+                y="92"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="16"
+                font-weight="bold"
+              >
+                20
+              </text>
+              <rect
+                x="346"
+                y="72"
+                width="62"
+                height="30"
+                rx="3"
+                fill="#1a1e2d"
+                stroke="#1e3a6e"
+                stroke-width="1.5"
+              />
+              <text
+                x="377"
+                y="92"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="12"
+              >
+                → &amp;c
+              </text>
+              <text
+                x="313"
+                y="123"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="9"
+              >
+                n1
+              </text>
+              <text
+                x="377"
+                y="123"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="9"
+              >
+                n2
+              </text>
+              <!-- b→c arrow (dim) -->
+              <line
+                x1="416"
+                y1="89"
+                x2="436"
+                y2="89"
+                stroke="#3a3028"
+                stroke-width="1.5"
+                stroke-dasharray="4,3"
+              />
+              <polygon points="436,85 446,89 436,93" fill="#3a3028" />
+
+              <!-- node c — dim -->
+              <rect
+                x="446"
+                y="38"
+                width="134"
+                height="76"
+                rx="7"
+                fill="#141008"
+                stroke="#3a3028"
+                stroke-width="1.5"
+              />
+              <text
+                x="513"
+                y="60"
+                text-anchor="middle"
+                fill="#546e7a"
+                font-size="12"
+              >
+                node c
+              </text>
+              <line
+                x1="446"
+                y1="66"
+                x2="580"
+                y2="66"
+                stroke="#2a2010"
+                stroke-width="1"
+              />
+              <rect
+                x="454"
+                y="72"
+                width="46"
+                height="30"
+                rx="3"
+                fill="#1e1408"
+                stroke="#3a3020"
+                stroke-width="1"
+              />
+              <text
+                x="477"
+                y="92"
+                text-anchor="middle"
+                fill="#3a3028"
+                font-size="16"
+              >
+                30
+              </text>
+              <rect
+                x="510"
+                y="72"
+                width="62"
+                height="30"
+                rx="3"
+                fill="#1a1208"
+                stroke="#2a1e10"
+                stroke-width="1"
+              />
+              <text
+                x="541"
+                y="92"
+                text-anchor="middle"
+                fill="#2a2018"
+                font-size="11"
+              >
+                NULL
+              </text>
+              <text
+                x="477"
+                y="123"
+                text-anchor="middle"
+                fill="#3a3028"
+                font-size="9"
+              >
+                n1
+              </text>
+              <text
+                x="541"
+                y="123"
+                text-anchor="middle"
+                fill="#3a3028"
+                font-size="9"
+              >
+                n2
+              </text>
+
+              <!-- labels top -->
+              <text
+                x="42"
+                y="28"
+                text-anchor="middle"
+                fill="#8b3a0f"
+                font-size="10"
+                font-weight="bold"
+              >
+                START
+              </text>
+              <text
+                x="185"
+                y="26"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="10"
+              >
+                ① head-&gt;n2
+              </text>
+              <text
+                x="349"
+                y="24"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="11"
+                font-weight="bold"
+              >
+                ② -&gt;n1 = 20 (STOP)
+              </text>
+              <text
+                x="513"
+                y="26"
+                text-anchor="middle"
+                fill="#3a3028"
+                font-size="10"
+              >
+                미도달
+              </text>
+
+              <!-- top path arrows -->
+              <path
+                d="M 80 44 Q 150 18 210 36"
+                fill="none"
+                stroke="#8b3a0f"
+                stroke-width="1.5"
+                stroke-dasharray="3,2"
+              />
+              <path
+                d="M 250 34 Q 296 14 344 32"
+                fill="none"
+                stroke="#8b3a0f"
+                stroke-width="1.5"
+                stroke-dasharray="3,2"
+              />
+              <polygon points="340,28 350,34 342,38" fill="#8b3a0f" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- ③ 포인터 설정 단계 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 포인터 설정 단계 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>구문</th>
+                  <th>의미</th>
+                  <th>결과</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="mono">struct node a = {10, 0}</span></td>
+                  <td>a.n1=10, a.n2=NULL</td>
+                  <td>노드 a 초기화</td>
+                </tr>
+                <tr>
+                  <td><span class="mono">struct node b = {20, 0}</span></td>
+                  <td>b.n1=20, b.n2=NULL</td>
+                  <td>노드 b 초기화</td>
+                </tr>
+                <tr>
+                  <td><span class="mono">struct node c = {30, 0}</span></td>
+                  <td>c.n1=30, c.n2=NULL</td>
+                  <td>노드 c 초기화</td>
+                </tr>
+                <tr class="step-row">
+                  <td><span class="mono">struct node *head = &amp;a</span></td>
+                  <td>head에 a의 주소 저장</td>
+                  <td><span class="tag tag-ptr">head → a</span></td>
+                </tr>
+                <tr class="step-row">
+                  <td><span class="mono">a.n2 = &amp;b</span></td>
+                  <td>a.n2에 b의 주소 저장</td>
+                  <td><span class="tag tag-ptr">a.n2 → b</span></td>
+                </tr>
+                <tr class="step-row">
+                  <td><span class="mono">b.n2 = &amp;c</span></td>
+                  <td>b.n2에 c의 주소 저장</td>
+                  <td><span class="tag tag-ptr">b.n2 → c</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ 체인 단계별 분해 -->
+        <div class="sub-section">
+          <div class="sub-title">④ head-&gt;n2-&gt;n1 체인 단계별 분해</div>
+          <div class="flow-wrap" style="padding: 0; overflow: hidden">
+            <div class="steps-box">
+              <div class="step-item s1">
+                <div class="si-num">①</div>
+                <div class="si-body">
+                  <div class="si-expr" style="color: #f0c060">head</div>
+                  <div class="si-desc">
+                    head 포인터 변수 → &amp;a (노드 a의 메모리 주소 보유)
+                  </div>
+                  <div class="si-val" style="color: #c3e88d">
+                    현재 위치: <strong>노드 a</strong>
+                  </div>
+                </div>
+              </div>
+              <div class="step-item s2">
+                <div class="si-num">②</div>
+                <div class="si-body">
+                  <div class="si-expr" style="color: #82aaff">head-&gt;n2</div>
+                  <div class="si-desc">
+                    = (*head).n2 = a.n2 = &amp;b<br />노드 a의 n2 필드가 담고
+                    있는 주소 = 노드 b의 주소
+                  </div>
+                  <div class="si-val" style="color: #c3e88d">
+                    현재 위치: <strong>노드 b</strong>
+                  </div>
+                </div>
+              </div>
+              <div class="step-item s3">
+                <div class="si-num">③</div>
+                <div class="si-body">
+                  <div class="si-expr" style="color: #c3e88d">
+                    head-&gt;n2-&gt;n1
+                  </div>
+                  <div class="si-desc">
+                    = (*(head-&gt;n2)).n1 = b.n1<br />노드 b의 n1 필드 값을 읽음
+                  </div>
+                  <div
+                    class="si-val"
+                    style="color: #f0c060; font-size: 22px; font-weight: bold"
+                  >
+                    = <strong>20</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ 등가 변환 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 화살표 연산자 등가 변환 비교</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>표현식</th>
+                  <th>(*ptr).field 등가 변환</th>
+                  <th>최종값</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="mono">head-&gt;n2</span></td>
+                  <td><span class="mono">(*head).n2</span></td>
+                  <td>a.n2 = &amp;b</td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="mono">head-&gt;n2-&gt;n1</span></td>
+                  <td><span class="mono">(*(head-&gt;n2)).n1</span></td>
+                  <td>
+                    b.n1 =
+                    <strong style="color: #8b3a0f; font-size: 15px">20</strong>
+                  </td>
+                </tr>
+                <tr class="dim-row">
+                  <td><span class="mono">head-&gt;n2-&gt;n2-&gt;n1</span></td>
+                  <td>한 칸 더 이동하는 경우</td>
+                  <td>c.n1 = 30 (미해당)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">➡️</span>
+                <span
+                  ><span class="hl"
+                    >화살표 연산자 <span class="mono">-&gt;</span></span
+                  >는 <span class="mono">(*ptr).field</span>의 축약입니다.
+                  포인터 없이 구조체 변수에 직접 접근할 때는
+                  <span class="mono">.</span>을 사용합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔗</span>
+                <span
+                  >체인 탐색: head → 노드a → (a.n2=&amp;b) → 노드b → b.n1 =
+                  <strong>20</strong>. <span class="mono">-&gt;</span>가 두
+                  번이므로 딱 한 노드를 건너뜁니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  >만약
+                  <span class="mono">head-&gt;n2-&gt;n2-&gt;n1</span>이었다면
+                  노드 b를 경유해 노드 c까지 이동하여 <strong>30</strong>이
+                  출력됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span>최종 출력: <strong>20</strong></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">printf() 출력 결과</div>
+          <div class="answer-value">20</div>
+          <div class="answer-desc">
+            head→a &nbsp;|&nbsp; head-&gt;n2 = a.n2 = &amp;b &nbsp;|&nbsp; b.n1
+            = 20
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

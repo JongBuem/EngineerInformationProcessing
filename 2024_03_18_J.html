@@ -1,0 +1,1207 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.warn {
+        border-left-color: #c0392b;
+        background: rgba(255, 235, 230, 0.35);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+      .ann {
+        color: #c3e88d;
+      }
+      .eras {
+        color: #ff7675;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 110px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+        letter-spacing: 4px;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+      .trace-table tr.match-row td {
+        background: rgba(44, 90, 60, 0.12);
+      }
+      .trace-table tr.skip-row td {
+        background: rgba(80, 80, 80, 0.07);
+        color: #888;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-obj {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+      .tag-int {
+        background: #1a1e2d;
+        color: #82aaff;
+        border: 1px solid #1e3a6e;
+      }
+      .tag-num {
+        background: #1e1a2d;
+        color: #c792ea;
+        border: 1px solid #5a3a8b;
+      }
+      .tag-match {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-skip {
+        background: #282828;
+        color: #546e7a;
+        border: 1px solid #444;
+      }
+      .tag-eras {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1px solid #c0392b;
+      }
+      .tag-ret {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+
+      /* 타입 계층 */
+      .type-hier {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        line-height: 2.4;
+        padding: 4px 0;
+      }
+
+      /* 비교 카드 */
+      .cmp-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .cmp-card {
+        border-radius: 6px;
+        padding: 14px 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        line-height: 1.9;
+      }
+      .cc-naive {
+        background: #2d1a1a;
+        border: 2px solid #c0392b;
+      }
+      .cc-real {
+        background: #1a2010;
+        border: 2px solid #2d5a3d;
+      }
+      .cc-naive .cc-title {
+        color: #ff7675;
+        font-size: 11px;
+        font-weight: bold;
+        margin-bottom: 6px;
+      }
+      .cc-real .cc-title {
+        color: #c3e88d;
+        font-size: 11px;
+        font-weight: bold;
+        margin-bottom: 6px;
+      }
+
+      /* 흐름 단계 */
+      .flow-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .flow-step {
+        display: flex;
+        align-items: stretch;
+      }
+      .fs-num {
+        width: 36px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .fs-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+      .fs-line {
+        width: 2px;
+        flex: 1;
+        margin: 0 auto;
+        min-height: 14px;
+      }
+      .fs-body {
+        flex: 1;
+        padding: 4px 0 16px 12px;
+      }
+      .fs-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 3px;
+      }
+      .fs-detail {
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .c-step1 {
+        background: #2d2010;
+        border: 2px solid #8b6020;
+        color: #f0c060;
+      }
+      .c-step2 {
+        background: #1a1e2d;
+        border: 2px solid #1e3a6e;
+        color: #82aaff;
+      }
+      .c-step3 {
+        background: #2d1a1a;
+        border: 2px solid #c0392b;
+        color: #ff7675;
+      }
+      .c-step4 {
+        background: #1a2010;
+        border: 2px solid #2d5a3d;
+        color: #c3e88d;
+      }
+      .l-yel {
+        background: #8b6020;
+      }
+      .l-blu {
+        background: #1e3a6e;
+      }
+      .l-red {
+        background: #c0392b;
+      }
+      .l-grn {
+        background: #2d5a3d;
+      }
+
+      .erased-box {
+        background: #1a1208;
+        border: 2px dashed #c0392b;
+        border-radius: 8px;
+        padding: 14px 20px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 2;
+        margin-bottom: 4px;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java 제네릭 타입 소거 + 오버로딩 해석 추적</h1>
+        <div class="meta">
+          Java · Generics · Type Erasure · Overloading · Compile-time · Object ·
+          Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Printer</span> {
+    <span class="kw">void</span> <span class="fn">print</span>(<span class="cls">Integer</span> a) { <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="str">"A"</span> + a); }  <span class="cmt">// ① Integer</span>
+    <span class="kw">void</span> <span class="fn">print</span>(<span class="cls">Object</span>  a) { <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="str">"B"</span> + a); }  <span class="cmt">// ② Object</span>
+    <span class="kw">void</span> <span class="fn">print</span>(<span class="cls">Number</span>  a) { <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="str">"C"</span> + a); }  <span class="cmt">// ③ Number</span>
+}
+
+<span class="kw">public class</span> <span class="cls">Generic</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+        <span class="kw">new</span> <span class="cls">Container</span>&lt;&gt;(<span class="nl">0</span>).<span class="fn">print</span>();   <span class="cmt">// T = Integer로 추론되지만…</span>
+    }
+
+    <span class="kw">public static class</span> <span class="cls">Container</span>&lt;T&gt; {
+        T value;
+        <span class="kw">public</span> <span class="cls">Container</span>(T t) { value = t; }
+        <span class="kw">public void</span> <span class="fn">print</span>() {
+            <span class="kw">new</span> <span class="cls">Printer</span>().<span class="fn">print</span>(value);  <span class="cmt">// 컴파일 시 value의 타입은 Object!</span>
+        }
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">System.out.print() 출력 결과</div>
+          <div class="answer-value">B0</div>
+          <div class="answer-desc">
+            T는 런타임에 Object로 소거 → print(Object) 선택 → "B" + 0
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >Java 제네릭의 타입 소거(Type Erasure)로 인해 컴파일 타임에 T가
+                Object로 처리되어, 오버로딩 해석 시 print(Object)가 선택되는
+                문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">⚠️</span
+                ><span
+                  ><span class="hl">핵심 함정</span>:
+                  <span class="mono">new Container&lt;&gt;(0)</span>으로
+                  T=Integer가 추론되지만, 제네릭
+                  <span class="mono">Container&lt;T&gt;</span> 내부에서
+                  <span class="mono">value</span>의 컴파일 타임 타입은
+                  <strong>Object</strong>입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>오버로딩 해석은 컴파일 타임</strong>에 결정됩니다.
+                  value의 타입이 Object이므로 가장 근접한
+                  <span class="mono">print(Object)</span>가 선택됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  >Integer → Number → Object 계층에서
+                  <span class="mono">print(Integer)</span>,
+                  <span class="mono">print(Number)</span>가 있어도
+                  <span class="hl">컴파일러가 보는 타입은 Object</span>이므로
+                  무시됩니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 타입 소거란? -->
+        <div class="sub-section">
+          <div class="sub-title">
+            ② 타입 소거(Type Erasure) — 제네릭의 핵심 원리
+          </div>
+          <div class="flow-wrap">
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #c0392b;
+                font-weight: bold;
+                margin-bottom: 12px;
+              "
+            >
+              컴파일 후 바이트코드에서 T는 사라지고 Object(또는 상한 경계)로
+              대체됩니다
+            </p>
+            <div class="cmp-grid">
+              <div class="cmp-card cc-naive">
+                <div class="cc-title">❌ 착각하기 쉬운 관점 (소스 코드)</div>
+                <div style="color: #e8d5b0; line-height: 2">
+                  Container&lt;<span style="color: #82aaff">Integer</span>&gt; c
+                  = new Container&lt;&gt;(0);<br />
+                  c.print();<br />
+                  <span style="color: #ff7675"
+                    >→ T = Integer이니까 print(Integer)?</span
+                  >
+                </div>
+              </div>
+              <div class="cmp-card cc-real">
+                <div class="cc-title">✅ 실제 컴파일러 관점 (바이트코드)</div>
+                <div style="color: #e8d5b0; line-height: 2">
+                  Container 내부에서 T →
+                  <span style="color: #ff7675; font-weight: bold">Object</span
+                  ><br />
+                  value의 타입 =
+                  <span style="color: #ff7675; font-weight: bold">Object</span
+                  ><br />
+                  <span style="color: #c3e88d">→ print(Object) 선택!</span>
+                </div>
+              </div>
+            </div>
+            <div class="erased-box" style="margin-top: 14px">
+              <span style="color: #546e7a; font-size: 10px"
+                >// 컴파일 후 Container 클래스 (개념적 바이트코드)</span
+              ><br />
+              <span style="color: #c792ea">class</span>
+              <span style="color: #ffcb6b">Container</span> {<br />
+              &nbsp;&nbsp;<span style="color: #ff7675; font-weight: bold"
+                >Object</span
+              >
+              value;
+              <span style="color: #546e7a; font-size: 11px"
+                >// T → Object 소거</span
+              ><br />
+              &nbsp;&nbsp;<span style="color: #c792ea">void</span>
+              <span style="color: #82aaff">print</span>() {
+              <span style="color: #c792ea">new</span>
+              <span style="color: #ffcb6b">Printer</span>().<span
+                style="color: #82aaff"
+                >print</span
+              >(<span style="color: #ff7675"
+                >(<span style="color: #ff7675">Object</span>)</span
+              >
+              value); }<br />
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ Java 타입 계층 -->
+        <div class="sub-section">
+          <div class="sub-title">③ Java 타입 계층 — 오버로드 후보 분석</div>
+          <div class="flow-wrap">
+            <svg
+              width="560"
+              height="140"
+              viewBox="0 0 560 140"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- Object -->
+              <rect
+                x="200"
+                y="10"
+                width="140"
+                height="38"
+                rx="5"
+                fill="#2d2010"
+                stroke="#f0c060"
+                stroke-width="2"
+              />
+              <text
+                x="270"
+                y="25"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="12"
+                font-weight="bold"
+              >
+                Object
+              </text>
+              <text
+                x="270"
+                y="41"
+                text-anchor="middle"
+                fill="#8b6020"
+                font-size="10"
+              >
+                print(Object) ← ✅ 선택
+              </text>
+
+              <!-- 연결 -->
+              <line
+                x1="270"
+                y1="48"
+                x2="270"
+                y2="68"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+
+              <!-- Number -->
+              <rect
+                x="200"
+                y="68"
+                width="140"
+                height="38"
+                rx="5"
+                fill="#1e1a2d"
+                stroke="#5a3a8b"
+                stroke-width="1.5"
+              />
+              <text
+                x="270"
+                y="83"
+                text-anchor="middle"
+                fill="#c792ea"
+                font-size="12"
+                font-weight="bold"
+              >
+                Number
+              </text>
+              <text
+                x="270"
+                y="99"
+                text-anchor="middle"
+                fill="#5a3a8b"
+                font-size="10"
+              >
+                print(Number) ← 더 구체적
+              </text>
+
+              <!-- 연결 -->
+              <line
+                x1="270"
+                y1="106"
+                x2="270"
+                y2="126"
+                stroke="#c8b89a"
+                stroke-width="1.5"
+              />
+
+              <!-- Integer -->
+              <rect
+                x="200"
+                y="104"
+                width="140"
+                height="28"
+                rx="5"
+                fill="#1a1e2d"
+                stroke="#1e3a6e"
+                stroke-width="1.5"
+              />
+              <text
+                x="270"
+                y="122"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="12"
+                font-weight="bold"
+              >
+                Integer
+              </text>
+
+              <!-- 오른쪽 설명 -->
+              <text x="360" y="30" fill="#f0c060" font-size="11">
+                ← 컴파일러가 보는 타입
+              </text>
+              <text x="360" y="90" fill="#546e7a" font-size="10">
+                더 구체적이지만 무시됨
+              </text>
+              <text x="360" y="118" fill="#546e7a" font-size="10">
+                더 구체적이지만 무시됨
+              </text>
+
+              <!-- 왼쪽: 소거 전 -->
+              <text
+                x="10"
+                y="22"
+                fill="#c0392b"
+                font-size="10"
+                font-weight="bold"
+              >
+                소거 후
+              </text>
+              <text x="10" y="36" fill="#ff7675" font-size="10">
+                value 타입
+              </text>
+              <text x="10" y="50" fill="#ff7675" font-size="10">= Object</text>
+
+              <!-- 화살표 -->
+              <line
+                x1="85"
+                y1="30"
+                x2="196"
+                y2="30"
+                stroke="#ff7675"
+                stroke-width="1.5"
+                stroke-dasharray="4,2"
+              />
+              <polygon points="196,26 204,30 196,34" fill="#ff7675" />
+            </svg>
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #7a6650;
+                margin-top: 6px;
+                text-align: center;
+              "
+            >
+              오버로딩 해석 = 컴파일 타임 타입 기준 → value는 Object →
+              print(Object) 선택
+            </p>
+          </div>
+        </div>
+
+        <!-- ④ 단계별 실행 흐름 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 단계별 실행 흐름</div>
+          <div class="flow-wrap">
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="fs-num">
+                  <div
+                    class="fs-circle c-step1"
+                    style="border: 2px solid #8b6020"
+                  >
+                    1
+                  </div>
+                  <div class="fs-line l-yel"></div>
+                </div>
+                <div class="fs-body">
+                  <div class="fs-label" style="color: #f0c060">
+                    new Container&lt;&gt;(0) 생성
+                  </div>
+                  <div class="fs-detail">
+                    0은 int → autoboxing → Integer(0)<br />T = Integer로 추론,
+                    value = Integer(0) 저장
+                  </div>
+                </div>
+              </div>
+
+              <div class="flow-step">
+                <div class="fs-num">
+                  <div
+                    class="fs-circle c-step2"
+                    style="border: 2px solid #1e3a6e"
+                  >
+                    2
+                  </div>
+                  <div class="fs-line l-blu"></div>
+                </div>
+                <div class="fs-body">
+                  <div class="fs-label" style="color: #82aaff">
+                    Container.print() 호출
+                  </div>
+                  <div class="fs-detail">
+                    내부에서 <span class="tag tag-eras">T → Object 소거</span
+                    ><br />value의 컴파일 타임 타입 = <strong>Object</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flow-step">
+                <div class="fs-num">
+                  <div
+                    class="fs-circle c-step3"
+                    style="border: 2px solid #c0392b"
+                  >
+                    3
+                  </div>
+                  <div class="fs-line l-red"></div>
+                </div>
+                <div class="fs-body">
+                  <div class="fs-label" style="color: #ff7675">
+                    오버로딩 해석 (컴파일 타임)
+                  </div>
+                  <div class="fs-detail">
+                    인수 타입 = <strong>Object</strong><br />
+                    → print(Integer): Object는 Integer 아님 ❌<br />
+                    → print(Number) : Object는 Number 아님 ❌<br />
+                    → print(Object) : Object == Object ✅
+                  </div>
+                </div>
+              </div>
+
+              <div class="flow-step">
+                <div class="fs-num">
+                  <div
+                    class="fs-circle c-step4"
+                    style="border: 2px solid #2d5a3d"
+                  >
+                    4
+                  </div>
+                </div>
+                <div class="fs-body">
+                  <div class="fs-label" style="color: #c3e88d">
+                    print(Object a) 실행
+                  </div>
+                  <div class="fs-detail">
+                    System.out.print(<span style="color: #c3e88d">"B"</span> +
+                    a)<br />a = 0 → 출력:
+                    <strong style="color: #f0c060; font-size: 16px">B0</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ 오버로드 후보 매칭표 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 오버로드 후보 매칭 분석</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>후보 메서드</th>
+                  <th>파라미터 타입</th>
+                  <th>인수 타입(소거 후)</th>
+                  <th>매칭 여부</th>
+                  <th>출력</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="skip-row">
+                  <td><span class="mono">print(Integer a)</span></td>
+                  <td><span class="tag tag-int">Integer</span></td>
+                  <td><span class="tag tag-eras">Object</span></td>
+                  <td>
+                    <span class="tag tag-skip">❌ Object → Integer 불가</span>
+                  </td>
+                  <td>—</td>
+                </tr>
+                <tr class="skip-row">
+                  <td><span class="mono">print(Number a)</span></td>
+                  <td><span class="tag tag-num">Number</span></td>
+                  <td><span class="tag tag-eras">Object</span></td>
+                  <td>
+                    <span class="tag tag-skip">❌ Object → Number 불가</span>
+                  </td>
+                  <td>—</td>
+                </tr>
+                <tr class="match-row hl-row">
+                  <td><span class="mono">print(Object a)</span></td>
+                  <td><span class="tag tag-obj">Object</span></td>
+                  <td><span class="tag tag-eras">Object</span></td>
+                  <td><span class="tag tag-match">✅ 정확히 일치</span></td>
+                  <td>
+                    <span class="tag tag-ret" style="font-size: 13px"
+                      ><strong>B0</strong></span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🗑️</span>
+                <span
+                  ><span class="hl">제네릭 타입 소거(Type Erasure)</span>: Java
+                  제네릭은 컴파일 후 타입 정보가 사라집니다. 상한 경계가 없는
+                  <span class="mono">&lt;T&gt;</span>는
+                  <strong>Object</strong>로 소거됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚖️</span>
+                <span
+                  ><span class="hl">오버로딩 해석은 컴파일 타임</span>: 실제
+                  런타임 값(Integer 0)이 아닌, 컴파일러가 보는 정적
+                  타입(Object)을 기준으로 메서드를 선택합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">💡</span>
+                <span
+                  >만약
+                  <span class="mono">Container&lt;T extends Number&gt;</span
+                  >였다면 T → Number로 소거되어
+                  <span class="mono">print(Number)</span>가 선택되고
+                  <strong>C0</strong>이 출력됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span>최종 출력: <strong>B0</strong></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">System.out.print() 출력 결과</div>
+          <div class="answer-value">B0</div>
+          <div class="answer-desc">
+            T 소거 → Object → print(Object) 선택 → "B" + 0 = B0
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

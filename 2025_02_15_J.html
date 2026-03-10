@@ -1,0 +1,1243 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.warn {
+        border-left-color: #c0392b;
+        background: rgba(255, 235, 230, 0.35);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 80px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-step {
+        background: #fde8d8;
+        color: #8b3a0f;
+      }
+      .tag-val {
+        background: #d5e8f0;
+        color: #1e3a6e;
+      }
+      .tag-result {
+        background: #d5f0e0;
+        color: #2d5a3d;
+      }
+      .tag-ref {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+      .tag-chg {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-warn {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1px solid #c0392b;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java 객체 참조 배열 스왑 &amp; 필드 변경 추적</h1>
+        <div class="meta">
+          Java · Object Reference · Array · Swap · Heap · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">public class</span> <span class="cls">Main</span> {
+    <span class="kw">public static class</span> <span class="cls">BO</span> {
+        <span class="kw">public int</span> v;
+        <span class="kw">public</span> <span class="cls">BO</span>(<span class="kw">int</span> v) { <span class="kw">this</span>.v = v; }
+    }
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+        <span class="cls">BO</span> a = <span class="kw">new</span> <span class="cls">BO</span>(<span class="nl">1</span>);
+        <span class="cls">BO</span> b = <span class="kw">new</span> <span class="cls">BO</span>(<span class="nl">2</span>);
+        <span class="cls">BO</span> c = <span class="kw">new</span> <span class="cls">BO</span>(<span class="nl">3</span>);
+        <span class="cls">BO</span>[] arr = {a, b, c};    <span class="cmt">// arr[0]→a객체, arr[1]→b객체, arr[2]→c객체</span>
+
+        <span class="cls">BO</span> t  = arr[<span class="nl">0</span>];          <span class="cmt">// t → a객체</span>
+        arr[<span class="nl">0</span>] = arr[<span class="nl">2</span>];        <span class="cmt">// arr[0] → c객체</span>
+        arr[<span class="nl">2</span>] = t;             <span class="cmt">// arr[2] → a객체  (스왑 완료)</span>
+        arr[<span class="nl">1</span>].v = arr[<span class="nl">0</span>].v;   <span class="cmt">// b객체.v = c객체.v = 3</span>
+
+        <span class="cls">System</span>.out.<span class="fn">println</span>(a.v + <span class="str">" "</span> + b.v + <span class="str">" "</span> + c.v);
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">System.out.println() 출력 결과</div>
+          <div class="answer-value">1 3 3</div>
+          <div class="answer-desc">
+            a.v=1 (불변) │ b.v=3 (arr[0].v=c.v=3으로 변경) │ c.v=3 (불변)
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >객체 참조 배열에서 참조 스왑과 실제 객체 필드 변경을 구별하여
+                추적하는 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>참조 스왑</strong> —
+                  <span class="mono">arr[0]</span>과
+                  <span class="mono">arr[2]</span>가 가리키는 객체를 교환합니다.
+                  원본 변수 <span class="mono">a</span>,
+                  <span class="mono">c</span>는 영향 없습니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>필드 변경</strong> —
+                  <span class="mono">arr[1].v = arr[0].v</span>는
+                  <span class="mono">b</span> 객체의
+                  <span class="mono">v</span> 필드를 직접 수정합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  >출력은 <span class="mono">arr</span>이 아닌
+                  <span class="mono">a, b, c</span> 변수로 합니다.
+                  <span class="hl">참조가 어느 객체를 가리키는지</span> 정확히
+                  추적해야 합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 힙 / 참조 구조 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">
+            ② 메모리 구조 — 스택(참조변수) vs 힙(객체)
+          </div>
+          <div class="flow-wrap">
+            <svg
+              width="660"
+              height="310"
+              viewBox="0 0 660 310"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- 힙 객체들 (고정) -->
+              <text
+                x="360"
+                y="15"
+                fill="#8b3a0f"
+                font-size="12"
+                font-weight="bold"
+              >
+                힙(Heap) — 실제 객체
+              </text>
+
+              <!-- obj_a -->
+              <rect
+                x="360"
+                y="22"
+                width="90"
+                height="44"
+                rx="5"
+                fill="#1a1208"
+                stroke="#82aaff"
+                stroke-width="2"
+              />
+              <text
+                x="405"
+                y="40"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="10"
+              >
+                obj_a
+              </text>
+              <text
+                x="405"
+                y="58"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="14"
+                font-weight="bold"
+              >
+                v = 1
+              </text>
+
+              <!-- obj_b (변경됨) -->
+              <rect
+                x="360"
+                y="88"
+                width="90"
+                height="54"
+                rx="5"
+                fill="#2d1a08"
+                stroke="#f0c060"
+                stroke-width="2.5"
+              />
+              <text
+                x="405"
+                y="106"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="10"
+              >
+                obj_b
+              </text>
+              <text
+                x="405"
+                y="122"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="12"
+              >
+                v=2 →
+              </text>
+              <text
+                x="405"
+                y="136"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="14"
+                font-weight="bold"
+              >
+                v = 3
+              </text>
+
+              <!-- obj_c -->
+              <rect
+                x="360"
+                y="168"
+                width="90"
+                height="44"
+                rx="5"
+                fill="#1a2010"
+                stroke="#c3e88d"
+                stroke-width="2"
+              />
+              <text
+                x="405"
+                y="186"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="10"
+              >
+                obj_c
+              </text>
+              <text
+                x="405"
+                y="204"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="14"
+                font-weight="bold"
+              >
+                v = 3
+              </text>
+
+              <!-- 스택: 변수 a, b, c (불변) -->
+              <text
+                x="20"
+                y="15"
+                fill="#8b3a0f"
+                font-size="12"
+                font-weight="bold"
+              >
+                스택 — 참조 변수 (불변)
+              </text>
+
+              <rect
+                x="20"
+                y="22"
+                width="60"
+                height="30"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="50"
+                y="43"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="12"
+              >
+                a
+              </text>
+              <line
+                x1="80"
+                y1="37"
+                x2="358"
+                y2="44"
+                stroke="#82aaff"
+                stroke-width="1.5"
+                stroke-dasharray="4"
+              />
+              <polygon points="355,38 368,44 355,50" fill="#82aaff" />
+
+              <rect
+                x="20"
+                y="68"
+                width="60"
+                height="30"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="50"
+                y="89"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="12"
+              >
+                b
+              </text>
+              <line
+                x1="80"
+                y1="83"
+                x2="358"
+                y2="115"
+                stroke="#f0c060"
+                stroke-width="1.5"
+                stroke-dasharray="4"
+              />
+              <polygon points="355,109 368,115 355,121" fill="#f0c060" />
+
+              <rect
+                x="20"
+                y="114"
+                width="60"
+                height="30"
+                rx="4"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="50"
+                y="135"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="12"
+              >
+                c
+              </text>
+              <line
+                x1="80"
+                y1="129"
+                x2="358"
+                y2="190"
+                stroke="#c3e88d"
+                stroke-width="1.5"
+                stroke-dasharray="4"
+              />
+              <polygon points="355,184 368,190 355,196" fill="#c3e88d" />
+
+              <!-- 구분선 -->
+              <line
+                x1="160"
+                y1="10"
+                x2="160"
+                y2="250"
+                stroke="#c8b89a"
+                stroke-width="1"
+                stroke-dasharray="4"
+              />
+
+              <!-- arr 배열 — 초기 vs 스왑 후 -->
+              <text
+                x="168"
+                y="15"
+                fill="#8b3a0f"
+                font-size="12"
+                font-weight="bold"
+              >
+                arr[] 참조 변화
+              </text>
+
+              <!-- 초기 arr -->
+              <text x="168" y="36" fill="#546e7a" font-size="10">초기</text>
+              <rect
+                x="168"
+                y="40"
+                width="64"
+                height="26"
+                rx="3"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1"
+              />
+              <text
+                x="200"
+                y="58"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="11"
+              >
+                arr[0]→a
+              </text>
+              <rect
+                x="168"
+                y="70"
+                width="64"
+                height="26"
+                rx="3"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1"
+              />
+              <text
+                x="200"
+                y="88"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="11"
+              >
+                arr[1]→b
+              </text>
+              <rect
+                x="168"
+                y="100"
+                width="64"
+                height="26"
+                rx="3"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1"
+              />
+              <text
+                x="200"
+                y="118"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="11"
+              >
+                arr[2]→c
+              </text>
+
+              <!-- 화살표 -->
+              <text x="244" y="70" fill="#c8b89a" font-size="20">→</text>
+              <text x="244" y="60" fill="#f0c060" font-size="9">스왑 후</text>
+
+              <!-- 스왑 후 arr -->
+              <rect
+                x="272"
+                y="40"
+                width="72"
+                height="26"
+                rx="3"
+                fill="#1a2010"
+                stroke="#c3e88d"
+                stroke-width="1.5"
+              />
+              <text
+                x="308"
+                y="58"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="11"
+              >
+                arr[0]→c
+              </text>
+              <rect
+                x="272"
+                y="70"
+                width="72"
+                height="26"
+                rx="3"
+                fill="#2d2010"
+                stroke="#f0c060"
+                stroke-width="1.5"
+              />
+              <text
+                x="308"
+                y="88"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="11"
+              >
+                arr[1]→b
+              </text>
+              <rect
+                x="272"
+                y="100"
+                width="72"
+                height="26"
+                rx="3"
+                fill="#1a1208"
+                stroke="#82aaff"
+                stroke-width="1.5"
+              />
+              <text
+                x="308"
+                y="118"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="11"
+              >
+                arr[2]→a
+              </text>
+
+              <!-- arr[1].v = arr[0].v 설명 -->
+              <rect
+                x="168"
+                y="148"
+                width="270"
+                height="56"
+                rx="6"
+                fill="rgba(255,255,255,0.55)"
+                stroke="#c8b89a"
+              />
+              <text
+                x="178"
+                y="168"
+                fill="#8b3a0f"
+                font-size="11"
+                font-weight="bold"
+              >
+                arr[1].v = arr[0].v
+              </text>
+              <text x="178" y="184" fill="#e8d5b0" font-size="11">
+                arr[0] → obj_c → c.v = 3
+              </text>
+              <text
+                x="178"
+                y="198"
+                fill="#f0c060"
+                font-size="11"
+                font-weight="bold"
+              >
+                b.v(= arr[1].v) = 3 ← 필드 변경!
+              </text>
+
+              <!-- 최종 결과 -->
+              <rect
+                x="168"
+                y="224"
+                width="270"
+                height="72"
+                rx="6"
+                fill="#1a1208"
+                stroke="#f0c060"
+                stroke-width="2"
+              />
+              <text
+                x="303"
+                y="244"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="11"
+                font-weight="bold"
+              >
+                최종 출력
+              </text>
+              <text
+                x="303"
+                y="264"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="12"
+              >
+                a.v = 1 (obj_a 불변)
+              </text>
+              <text
+                x="303"
+                y="280"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="12"
+              >
+                b.v = 3 (obj_b.v 변경됨)
+              </text>
+              <text
+                x="303"
+                y="296"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="12"
+              >
+                c.v = 3 (obj_c 불변)
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ③ 단계별 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 단계별 변수 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>단계</th>
+                  <th>실행 구문</th>
+                  <th>arr[0]</th>
+                  <th>arr[1]</th>
+                  <th>arr[2]</th>
+                  <th>a.v</th>
+                  <th>b.v</th>
+                  <th>c.v</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag-step">초기</span></td>
+                  <td><span class="mono">arr = {a, b, c}</span></td>
+                  <td>→ obj_a</td>
+                  <td>→ obj_b</td>
+                  <td>→ obj_c</td>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">①</span></td>
+                  <td><span class="mono">t = arr[0]</span></td>
+                  <td>→ obj_a</td>
+                  <td>→ obj_b</td>
+                  <td>→ obj_c</td>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">②</span></td>
+                  <td><span class="mono">arr[0] = arr[2]</span></td>
+                  <td><span class="tag tag-chg">→ obj_c</span></td>
+                  <td>→ obj_b</td>
+                  <td>→ obj_c</td>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">③</span></td>
+                  <td><span class="mono">arr[2] = t</span></td>
+                  <td>→ obj_c</td>
+                  <td>→ obj_b</td>
+                  <td><span class="tag tag-chg">→ obj_a</span></td>
+                  <td>1</td>
+                  <td>2</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-step">④</span></td>
+                  <td><span class="mono">arr[1].v = arr[0].v</span></td>
+                  <td>→ obj_c</td>
+                  <td>→ obj_b</td>
+                  <td>→ obj_a</td>
+                  <td>1</td>
+                  <td><span class="tag tag-warn">3 ← 변경!</span></td>
+                  <td>3</td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="tag tag-result">출력</span></td>
+                  <td><span class="mono">a.v + b.v + c.v</span></td>
+                  <td colspan="3">—</td>
+                  <td><strong>1</strong></td>
+                  <td><strong>3</strong></td>
+                  <td><strong>3</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ 핵심 함정 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 핵심 함정 — 참조 스왑 vs 필드 변경</div>
+          <div class="card warn">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>연산</th>
+                  <th>무엇이 바뀌나?</th>
+                  <th>원본 변수 영향</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="mono">arr[0] = arr[2]</span></td>
+                  <td>배열 칸이 가리키는 <strong>참조값</strong>만 교체</td>
+                  <td><span class="tag tag-val">없음 (a, c 불변)</span></td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="mono">arr[1].v = arr[0].v</span></td>
+                  <td>obj_b의 <strong>필드 v</strong>를 직접 수정</td>
+                  <td><span class="tag tag-warn">b.v 변경됨 → 3</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  ><span class="mono">arr</span>는 객체를 담는 게 아니라
+                  <span class="hl">참조(주소)를 담습니다</span>. 스왑해도 원본
+                  객체 자체는 변하지 않습니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔄</span>
+                <span
+                  >스왑 후
+                  <span class="mono">arr = {obj_c, obj_b, obj_a}</span> 순서로
+                  재배치됩니다. 그러나 <span class="mono">a</span>,
+                  <span class="mono">b</span>,
+                  <span class="mono">c</span> 변수는
+                  <strong>여전히 원래 객체</strong>를 가리킵니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">✏️</span>
+                <span
+                  ><span class="mono">arr[1].v = arr[0].v</span> —
+                  <span class="mono">arr[1]</span>은
+                  <span class="mono">obj_b</span>(= b가 가리키는 객체)이므로
+                  <span class="hl">b.v가 3으로 변경</span>됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span
+                  >출력: <span class="mono">a.v=1</span> (obj_a 불변),
+                  <span class="mono">b.v=3</span> (필드 변경됨),
+                  <span class="mono">c.v=3</span> (obj_c 불변) →
+                  <strong>"1 3 3"</strong></span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">
+            System.out.println(a.v + " " + b.v + " " + c.v) 출력 결과
+          </div>
+          <div class="answer-value">1 3 3</div>
+          <div class="answer-desc">
+            a.v=1 (불변) │ b.v=3 (arr[1].v 수정) │ c.v=3 (불변)
+          </div>
+        </div>
+      </div>
+      <!-- /panelExplain -->
+    </div>
+    <!-- /page -->
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

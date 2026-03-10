@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.warn {
+        border-left-color: #c0392b;
+        background: rgba(255, 235, 230, 0.35);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+      .inc {
+        color: #89ddff;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 110px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+        letter-spacing: 6px;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+      .trace-table tr.stop-row td {
+        background: rgba(192, 57, 43, 0.07);
+        color: #546e7a;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-swap {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-stop {
+        background: #2d1a1a;
+        color: #ff7675;
+        border: 1px solid #c0392b;
+      }
+      .tag-node {
+        background: #1e1a2d;
+        color: #c792ea;
+        border: 1px solid #5a3a8b;
+      }
+      .tag-out {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      /* 연결 리스트 노드 */
+      .ll-wrap {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-wrap: nowrap;
+      }
+      .ll-node {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .ll-box {
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        width: 62px;
+        height: 62px;
+      }
+      .ll-box .lv {
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .ll-box .lnm {
+        font-size: 9px;
+        margin-top: 2px;
+      }
+      .ll-lbl {
+        font-size: 9px;
+        font-family: "JetBrains Mono", monospace;
+        color: #546e7a;
+        margin-top: 4px;
+      }
+      .lc-normal {
+        background: #1a1208;
+        border: 1.5px solid #546e7a;
+      }
+      .lc-normal .lv {
+        color: #e8d5b0;
+      }
+      .lc-normal .lnm {
+        color: #546e7a;
+      }
+      .lc-swap1 {
+        background: #1a2010;
+        border: 2px solid #2d5a3d;
+      }
+      .lc-swap1 .lv {
+        color: #c3e88d;
+      }
+      .lc-swap1 .lnm {
+        color: #2d5a3d;
+      }
+      .lc-swap2 {
+        background: #2d2010;
+        border: 2px solid #f0c060;
+      }
+      .lc-swap2 .lv {
+        color: #f0c060;
+      }
+      .lc-swap2 .lnm {
+        color: #8b6020;
+      }
+      .lc-curr {
+        background: #1e1a2d;
+        border: 2px solid #5a3a8b;
+      }
+      .lc-curr .lv {
+        color: #c792ea;
+      }
+      .lc-curr .lnm {
+        color: #5a3a8b;
+      }
+      .ll-arr {
+        font-size: 20px;
+        color: #c8b89a;
+        margin-bottom: 16px;
+      }
+      .ll-null {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: #546e7a;
+        margin-bottom: 16px;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 연결 리스트 인접 노드 값 교환 추적</h1>
+        <div class="meta">
+          C · Struct · Linked List · Pairwise Swap · Pointer · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+
+<span class="kw">struct</span> <span class="cls">Node</span> { <span class="kw">int</span> value; <span class="kw">struct</span> <span class="cls">Node</span>* next; };
+
+<span class="kw">void</span> <span class="fn">func</span>(<span class="kw">struct</span> <span class="cls">Node</span>* node) {
+    <span class="kw">while</span> (node != <span class="nl">NULL</span> && node->next != <span class="nl">NULL</span>) {
+        <span class="kw">int</span> t = node->value;
+        node->value       = node->next->value; <span class="cmt">// node와 node→next 값 교환</span>
+        node->next->value = t;
+        node = node->next->next;               <span class="cmt">// 두 칸 이동</span>
+    }
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">struct</span> <span class="cls">Node</span> n1 = {<span class="nl">1</span>, <span class="nl">NULL</span>};
+    <span class="kw">struct</span> <span class="cls">Node</span> n2 = {<span class="nl">2</span>, <span class="nl">NULL</span>};
+    <span class="kw">struct</span> <span class="cls">Node</span> n3 = {<span class="nl">3</span>, <span class="nl">NULL</span>};
+
+    n1.next = &amp;n3;   <span class="cmt">// ← 선언 순서와 다른 연결 순서! 함정</span>
+    n3.next = &amp;n2;
+
+    <span class="fn">func</span>(&amp;n1);
+
+    <span class="kw">struct</span> <span class="cls">Node</span>* current = &amp;n1;
+    <span class="kw">while</span> (current != <span class="nl">NULL</span>) {
+        <span class="fn">printf</span>(<span class="str">"%d"</span>, current->value);
+        current = current->next;
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">printf 출력 결과</div>
+          <div class="answer-value">312</div>
+          <div class="answer-desc">
+            n1(1) → n3(3) → n2(2) 초기 구조에서 n1↔n3 값 교환 후 3→1→2
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >선언 순서와 연결(포인터) 순서가 다른 연결 리스트에서 인접
+                노드의 값을 교환하는 추적 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">⚠️</span
+                ><span
+                  ><span class="hl">핵심 함정</span>: 노드는 n1, n2, n3으로
+                  선언됐지만 연결 순서는 <strong>n1 → n3 → n2</strong>입니다.
+                  선언 순서(1→2→3)로 착각하면 틀립니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><strong>func() 동작</strong>: 현재 노드와 다음 노드의
+                  <span class="mono">value</span>를 교환한 뒤
+                  <span class="mono">node = node→next→next</span>로
+                  <span class="hl">두 칸씩 이동</span>합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  >포인터(next)는 변경하지 않고
+                  <strong>값(value)만 교환</strong>합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 초기 리스트 구조 -->
+        <div class="sub-section">
+          <div class="sub-title">② 초기 연결 리스트 구조 — 연결 순서 주의!</div>
+          <div class="flow-wrap">
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #c0392b;
+                font-weight: bold;
+                margin-bottom: 12px;
+              "
+            >
+              ⚠️ n1.next = &amp;n3 / n3.next = &amp;n2 → 순서: n1 → n3 → n2
+              (n2가 마지막!)
+            </p>
+            <div class="ll-wrap" style="justify-content: center">
+              <div class="ll-node">
+                <div class="ll-box lc-swap1">
+                  <span class="lv">1</span><span class="lnm">n1</span>
+                </div>
+                <div class="ll-lbl">head / node</div>
+              </div>
+              <div class="ll-arr">→</div>
+              <div class="ll-node">
+                <div class="ll-box lc-swap2">
+                  <span class="lv">3</span><span class="lnm">n3</span>
+                </div>
+                <div class="ll-lbl">node→next</div>
+              </div>
+              <div class="ll-arr">→</div>
+              <div class="ll-node">
+                <div class="ll-box lc-normal">
+                  <span class="lv">2</span><span class="lnm">n2</span>
+                </div>
+                <div class="ll-lbl">node→next→next</div>
+              </div>
+              <div class="ll-arr">→</div>
+              <div class="ll-null">NULL</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ func() while 루프 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">③ func() — while 루프 단계별 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>반복</th>
+                  <th>node</th>
+                  <th>node→next</th>
+                  <th>조건 통과?</th>
+                  <th>t (백업)</th>
+                  <th>교환 내용</th>
+                  <th>node 이동</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1회</td>
+                  <td>n1 (value=1)</td>
+                  <td>n3 (value=3)</td>
+                  <td>✅ 둘 다 not NULL</td>
+                  <td>t = 1</td>
+                  <td>
+                    <span class="tag tag-swap">n1.value = 3</span><br />
+                    <span class="tag tag-swap">n3.value = 1</span>
+                  </td>
+                  <td>node = n3→next = <strong>n2</strong></td>
+                </tr>
+                <tr class="stop-row">
+                  <td>2회 시도</td>
+                  <td>n2 (value=2)</td>
+                  <td>n2→next = <strong>NULL</strong></td>
+                  <td>
+                    <span class="tag tag-stop">❌ next==NULL → 루프 종료</span>
+                  </td>
+                  <td colspan="3" style="color: #546e7a">교환 없이 종료</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ 교환 전후 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 값 교환 전후 리스트 시각화</div>
+          <div class="flow-wrap">
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #8b3a0f;
+                font-weight: bold;
+                margin-bottom: 10px;
+              "
+            >
+              교환 전
+            </p>
+            <div
+              class="ll-wrap"
+              style="justify-content: center; opacity: 0.6; margin-bottom: 18px"
+            >
+              <div class="ll-node">
+                <div class="ll-box lc-swap1">
+                  <span class="lv">1</span><span class="lnm">n1</span>
+                </div>
+              </div>
+              <div class="ll-arr">→</div>
+              <div class="ll-node">
+                <div class="ll-box lc-swap2">
+                  <span class="lv">3</span><span class="lnm">n3</span>
+                </div>
+              </div>
+              <div class="ll-arr">→</div>
+              <div class="ll-node">
+                <div class="ll-box lc-normal">
+                  <span class="lv">2</span><span class="lnm">n2</span>
+                </div>
+              </div>
+              <div class="ll-arr">→</div>
+              <div class="ll-null">NULL</div>
+            </div>
+            <p
+              style="
+                text-align: center;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 13px;
+                color: #f0c060;
+                margin-bottom: 10px;
+              "
+            >
+              ↓ n1.value(1) ↔ n3.value(3) 교환 (포인터는 그대로!)
+            </p>
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #2d5a3d;
+                font-weight: bold;
+                margin-bottom: 10px;
+              "
+            >
+              교환 후 (최종)
+            </p>
+            <div class="ll-wrap" style="justify-content: center">
+              <div class="ll-node">
+                <div class="ll-box lc-swap2">
+                  <span class="lv">3</span><span class="lnm">n1</span>
+                </div>
+                <div class="ll-lbl" style="color: #f0c060">출력: 3</div>
+              </div>
+              <div class="ll-arr">→</div>
+              <div class="ll-node">
+                <div class="ll-box lc-swap1">
+                  <span class="lv">1</span><span class="lnm">n3</span>
+                </div>
+                <div class="ll-lbl" style="color: #c3e88d">출력: 1</div>
+              </div>
+              <div class="ll-arr">→</div>
+              <div class="ll-node">
+                <div class="ll-box lc-normal">
+                  <span class="lv">2</span><span class="lnm">n2</span>
+                </div>
+                <div class="ll-lbl">출력: 2</div>
+              </div>
+              <div class="ll-arr">→</div>
+              <div class="ll-null">NULL</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ 출력 순회 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ printf 출력 순회</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>current</th>
+                  <th>value</th>
+                  <th>next</th>
+                  <th>출력</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="hl-row">
+                  <td>&amp;n1</td>
+                  <td><strong>3</strong></td>
+                  <td>&amp;n3</td>
+                  <td><span class="tag tag-out">3</span></td>
+                </tr>
+                <tr>
+                  <td>&amp;n3</td>
+                  <td><strong>1</strong></td>
+                  <td>&amp;n2</td>
+                  <td><span class="tag tag-out">1</span></td>
+                </tr>
+                <tr>
+                  <td>&amp;n2</td>
+                  <td><strong>2</strong></td>
+                  <td>NULL</td>
+                  <td><span class="tag tag-out">2</span></td>
+                </tr>
+                <tr>
+                  <td>NULL</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>루프 종료</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">⚠️</span>
+                <span
+                  ><span class="hl">연결 순서 ≠ 선언 순서</span>:
+                  <span class="mono">n1.next = &amp;n3</span>,
+                  <span class="mono">n3.next = &amp;n2</span>이므로 리스트
+                  순서는 <strong>n1 → n3 → n2</strong>입니다. n1→n2→n3이
+                  아닙니다!</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔄</span>
+                <span
+                  ><strong>값만 교환, 포인터 구조 불변</strong>: func()는
+                  <span class="mono">value</span>만 바꾸고
+                  <span class="mono">next</span> 포인터는 그대로
+                  유지합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⏭️</span>
+                <span
+                  ><span class="mono">node = node→next→next</span>: 두 칸씩
+                  이동합니다. 1회 후 n2에 도달하고 n2→next가 NULL이므로 루프
+                  즉시 종료됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span>최종 출력: <strong>"312"</strong></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">printf 최종 출력 결과</div>
+          <div class="answer-value">312</div>
+          <div class="answer-desc">n1(3) → n3(1) → n2(2) 순서로 순회 출력</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

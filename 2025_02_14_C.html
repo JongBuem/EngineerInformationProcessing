@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+      .inc {
+        color: #89ddff;
+      }
+      .op {
+        color: #f0c060;
+        font-weight: bold;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 68px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.6;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 600;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-step {
+        background: #fde8d8;
+        color: #8b3a0f;
+      }
+      .tag-val {
+        background: #d5e8f0;
+        color: #1e3a6e;
+      }
+      .tag-result {
+        background: #d5f0e0;
+        color: #2d5a3d;
+      }
+      .tag-ptr {
+        background: #2d1e3d;
+        color: #c792ea;
+        border: 1px solid #5a3a8b;
+      }
+      .tag-chg {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      .chain {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .chain-step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .chain-step .step-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .box-expr {
+        background: #1a1208;
+        border: 1.5px solid #546e7a;
+        border-radius: 5px;
+        padding: 5px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: #e8d5b0;
+        white-space: nowrap;
+      }
+      .box-arrow {
+        color: #c8b89a;
+        font-size: 16px;
+      }
+      .box-result {
+        background: #1a1208;
+        border: 2px solid #2d5a3d;
+        border-radius: 5px;
+        padding: 5px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: #c3e88d;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .box-result.gold {
+        border-color: #f0c060;
+        color: #f0c060;
+        background: #2d2010;
+      }
+      .chain-step .note {
+        font-size: 12px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 이중 포인터 &amp; 구조체 배열 추적</h1>
+        <div class="meta">
+          C · Struct · Double Pointer · Array · Dereference · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+
+<span class="kw">struct</span> <span class="cls">dat</span> {
+    <span class="kw">int</span> x;
+    <span class="kw">int</span> y;
+};
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">struct</span> <span class="cls">dat</span> a[] = {{<span class="nl">1</span>,<span class="nl">2</span>}, {<span class="nl">3</span>,<span class="nl">4</span>}, {<span class="nl">5</span>,<span class="nl">6</span>}};
+    <span class="kw">struct</span> <span class="cls">dat</span><span class="op">*</span>  ptr  = a;         <span class="cmt">// ptr → a[0]</span>
+    <span class="kw">struct</span> <span class="cls">dat</span><span class="op">**</span> pptr = &amp;ptr;      <span class="cmt">// pptr → ptr</span>
+
+    (<span class="op">*</span>pptr)[<span class="nl">1</span>] = (<span class="op">*</span>pptr)[<span class="nl">2</span>];     <span class="cmt">// a[1] = a[2]</span>
+    <span class="fn">printf</span>(<span class="str">"%d 그리고 %d"</span>, a[<span class="nl">1</span>].x, a[<span class="nl">1</span>].y);
+
+    <span class="ret">return</span> <span class="nl">0</span>;
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">printf 출력 결과</div>
+          <div class="answer-value">5 그리고 6</div>
+          <div class="answer-desc">
+            (*pptr)[1] = (*pptr)[2] → a[1] = a[2] = {5,6}
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >이중 포인터(double pointer)를 역참조하여 구조체 배열 원소를
+                복사하는 결과를 추적하는 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><span class="mono">*pptr</span> — pptr을 역참조하면
+                  <span class="mono">ptr</span>이 나옵니다.
+                  <span class="mono">ptr</span>은 배열
+                  <span class="mono">a</span>의 시작 주소입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><span class="mono">(*pptr)[n]</span> —
+                  <span class="mono">ptr[n]</span>과 동일 =
+                  <span class="mono">a[n]</span> (구조체 배열 인덱싱)</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  >구조체 배열 대입 <span class="mono">a[1] = a[2]</span> —
+                  구조체 전체(<span class="mono">x</span>,
+                  <span class="mono">y</span> 모두)가 복사됩니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 메모리 / 포인터 구조 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">② 포인터 연결 구조</div>
+          <div class="flow-wrap">
+            <svg
+              width="660"
+              height="200"
+              viewBox="0 0 660 200"
+              font-family="JetBrains Mono,monospace"
+            >
+              <!-- pptr 박스 -->
+              <rect
+                x="20"
+                y="20"
+                width="90"
+                height="50"
+                rx="5"
+                fill="#1a1208"
+                stroke="#c792ea"
+                stroke-width="2"
+              />
+              <text
+                x="65"
+                y="38"
+                text-anchor="middle"
+                fill="#c792ea"
+                font-size="11"
+              >
+                pptr
+              </text>
+              <text
+                x="65"
+                y="58"
+                text-anchor="middle"
+                fill="#c792ea"
+                font-size="11"
+              >
+                dat**
+              </text>
+
+              <!-- pptr → ptr -->
+              <line
+                x1="110"
+                y1="45"
+                x2="150"
+                y2="45"
+                stroke="#c792ea"
+                stroke-width="1.5"
+              />
+              <polygon points="148,39 162,45 148,51" fill="#c792ea" />
+
+              <!-- ptr 박스 -->
+              <rect
+                x="162"
+                y="20"
+                width="90"
+                height="50"
+                rx="5"
+                fill="#1a1208"
+                stroke="#82aaff"
+                stroke-width="2"
+              />
+              <text
+                x="207"
+                y="38"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="11"
+              >
+                ptr
+              </text>
+              <text
+                x="207"
+                y="58"
+                text-anchor="middle"
+                fill="#82aaff"
+                font-size="11"
+              >
+                dat*
+              </text>
+
+              <!-- ptr → a[0] -->
+              <line
+                x1="252"
+                y1="45"
+                x2="300"
+                y2="45"
+                stroke="#82aaff"
+                stroke-width="1.5"
+              />
+              <polygon points="298,39 312,45 298,51" fill="#82aaff" />
+
+              <!-- 배열 a[] -->
+              <text
+                x="312"
+                y="14"
+                fill="#8b3a0f"
+                font-size="11"
+                font-weight="bold"
+              >
+                배열 a[]
+              </text>
+
+              <!-- a[0] -->
+              <rect
+                x="312"
+                y="20"
+                width="90"
+                height="50"
+                rx="5"
+                fill="#1a1208"
+                stroke="#546e7a"
+                stroke-width="1.5"
+              />
+              <text
+                x="357"
+                y="38"
+                text-anchor="middle"
+                fill="#7a6650"
+                font-size="10"
+              >
+                a[0]
+              </text>
+              <text
+                x="357"
+                y="58"
+                text-anchor="middle"
+                fill="#e8d5b0"
+                font-size="13"
+              >
+                {1, 2}
+              </text>
+
+              <!-- a[1] 변경됨 -->
+              <rect
+                x="412"
+                y="14"
+                width="90"
+                height="62"
+                rx="5"
+                fill="#2d1a08"
+                stroke="#f0c060"
+                stroke-width="2.5"
+              />
+              <text
+                x="457"
+                y="32"
+                text-anchor="middle"
+                fill="#7a6650"
+                font-size="10"
+              >
+                a[1]
+              </text>
+              <text
+                x="457"
+                y="54"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="12"
+                font-weight="bold"
+              >
+                {3,4}
+              </text>
+              <text
+                x="457"
+                y="70"
+                text-anchor="middle"
+                fill="#f0c060"
+                font-size="10"
+              >
+                → {5,6} 변경!
+              </text>
+
+              <!-- a[2] -->
+              <rect
+                x="512"
+                y="20"
+                width="90"
+                height="50"
+                rx="5"
+                fill="#1a2010"
+                stroke="#2d5a3d"
+                stroke-width="2"
+              />
+              <text
+                x="557"
+                y="38"
+                text-anchor="middle"
+                fill="#7a6650"
+                font-size="10"
+              >
+                a[2]
+              </text>
+              <text
+                x="557"
+                y="58"
+                text-anchor="middle"
+                fill="#c3e88d"
+                font-size="13"
+              >
+                {5, 6}
+              </text>
+
+              <!-- 복사 화살표 a[2] → a[1] -->
+              <path
+                d="M 557 80 Q 557 110 457 110 Q 400 110 457 110"
+                stroke="#f0c060"
+                stroke-width="2"
+                fill="none"
+                stroke-dasharray="5,3"
+              />
+              <path
+                d="M 557 80 Q 557 110 457 110"
+                stroke="#f0c060"
+                stroke-width="2"
+                fill="none"
+                stroke-dasharray="5,3"
+              />
+              <line
+                x1="457"
+                y1="76"
+                x2="457"
+                y2="110"
+                stroke="#f0c060"
+                stroke-width="2"
+                stroke-dasharray="5,3"
+              />
+              <polygon points="450,108 464,108 457,76" fill="#f0c060" />
+
+              <!-- (*pptr) 분해 설명 -->
+              <rect
+                x="20"
+                y="110"
+                width="270"
+                height="72"
+                rx="6"
+                fill="rgba(255,255,255,0.55)"
+                stroke="#c8b89a"
+              />
+              <text
+                x="30"
+                y="130"
+                fill="#8b3a0f"
+                font-size="11"
+                font-weight="bold"
+              >
+                (*pptr) 분해 과정
+              </text>
+              <text x="30" y="150" fill="#c792ea" font-size="11">
+                *pptr → ptr
+              </text>
+              <text x="30" y="166" fill="#82aaff" font-size="11">
+                ptr → a (배열 시작)
+              </text>
+              <text x="30" y="180" fill="#f0c060" font-size="11">
+                (*pptr)[n] = ptr[n] = a[n]
+              </text>
+
+              <!-- 결론 -->
+              <rect
+                x="310"
+                y="110"
+                width="340"
+                height="72"
+                rx="6"
+                fill="rgba(255,255,255,0.55)"
+                stroke="#c8b89a"
+              />
+              <text
+                x="320"
+                y="130"
+                fill="#8b3a0f"
+                font-size="11"
+                font-weight="bold"
+              >
+                대입 결과
+              </text>
+              <text x="320" y="150" fill="#e8d5b0" font-size="11">
+                (*pptr)[1] = (*pptr)[2]
+              </text>
+              <text x="320" y="166" fill="#e8d5b0" font-size="11">
+                = a[1] = a[2]
+              </text>
+              <text
+                x="320"
+                y="180"
+                fill="#f0c060"
+                font-size="12"
+                font-weight="bold"
+              >
+                = a[1] = {5, 6}
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ③ (*pptr) 연쇄 역참조 분해 -->
+        <div class="sub-section">
+          <div class="sub-title">③ (*pptr)[1] 연쇄 역참조 분해</div>
+          <div class="card">
+            <div class="chain">
+              <div class="chain-step">
+                <span class="step-num">1</span>
+                <span class="box-expr">pptr</span>
+                <span class="box-arrow">→</span>
+                <span
+                  class="box-result"
+                  style="color: #82aaff; border-color: #82aaff"
+                  >ptr의 주소</span
+                >
+                <span class="note">이중 포인터: ptr을 가리킴</span>
+              </div>
+              <div class="chain-step">
+                <span class="step-num">2</span>
+                <span class="box-expr">*pptr</span>
+                <span class="box-arrow">→</span>
+                <span
+                  class="box-result"
+                  style="color: #82aaff; border-color: #82aaff"
+                  >ptr</span
+                >
+                <span class="note">역참조 → ptr 자체 (= a의 시작 주소)</span>
+              </div>
+              <div class="chain-step">
+                <span class="step-num">3</span>
+                <span class="box-expr">(*pptr)[1]</span>
+                <span class="box-arrow">→</span>
+                <span class="box-result">ptr[1] = a[1]</span>
+                <span class="note">인덱스 1 = 두 번째 구조체</span>
+              </div>
+              <div class="chain-step">
+                <span class="step-num">4</span>
+                <span class="box-expr">(*pptr)[2]</span>
+                <span class="box-arrow">→</span>
+                <span class="box-result">ptr[2] = a[2] = {5,6}</span>
+                <span class="note">인덱스 2 = 세 번째 구조체</span>
+              </div>
+              <div class="chain-step">
+                <span class="step-num">5</span>
+                <span class="box-expr">(*pptr)[1] = (*pptr)[2]</span>
+                <span class="box-arrow">→</span>
+                <span class="box-result gold">a[1] = {5, 6}</span>
+                <span class="note">구조체 전체 복사 (x=5, y=6)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ 배열 상태 변화 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 배열 a[] 상태 변화</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>시점</th>
+                  <th>a[0].x / a[0].y</th>
+                  <th>a[1].x / a[1].y</th>
+                  <th>a[2].x / a[2].y</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag-step">초기</span></td>
+                  <td>1 / 2</td>
+                  <td>3 / 4</td>
+                  <td>5 / 6</td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="tag tag-chg">대입 후</span></td>
+                  <td>1 / 2 (불변)</td>
+                  <td><strong>5 / 6 ← 변경!</strong></td>
+                  <td>5 / 6 (원본)</td>
+                </tr>
+                <tr class="hl-row">
+                  <td><span class="tag tag-result">출력</span></td>
+                  <td>—</td>
+                  <td>
+                    <span class="tag tag-result">a[1].x=5, a[1].y=6</span>
+                  </td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔗</span>
+                <span
+                  ><span class="mono">pptr = &amp;ptr</span> →
+                  <span class="mono">*pptr == ptr</span>,
+                  <span class="mono">**pptr == *ptr == a[0]</span>. 역참조를
+                  단계별로 분리하세요.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📐</span>
+                <span
+                  ><span class="mono">(*pptr)[n]</span>은
+                  <span class="hl"
+                    ><span class="mono">ptr[n]</span> =
+                    <span class="mono">a[n]</span></span
+                  >과 완전히 동일합니다. 괄호가 역참조 우선순위를
+                  확보합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📋</span>
+                <span
+                  >C에서 구조체 대입 <span class="mono">a[1] = a[2]</span>는
+                  <span class="hl">멤버 전체를 값 복사</span>합니다.
+                  <span class="mono">x</span>, <span class="mono">y</span> 모두
+                  5, 6으로 덮어씁니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span
+                  ><span class="mono"
+                    >printf("%d 그리고 %d", a[1].x, a[1].y)</span
+                  >
+                  → <strong>5 그리고 6</strong></span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">printf 출력 결과</div>
+          <div class="answer-value">5 그리고 6</div>
+          <div class="answer-desc">
+            (*pptr)[1] = (*pptr)[2] → a[1]={5,6} → a[1].x=5, a[1].y=6
+          </div>
+        </div>
+      </div>
+      <!-- /panelExplain -->
+    </div>
+    <!-- /page -->
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>
