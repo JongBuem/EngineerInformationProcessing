@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>문제 풀이 뷰어</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --highlight: #f0c060;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { height: 100%; overflow: hidden; }
+      body { background: var(--paper); font-family: "Noto Serif KR", serif; display: flex; flex-direction: column; }
+
+      /* ── 네비게이션 바 ── */
+      .nav-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        background: var(--ink);
+        color: var(--paper);
+        border-bottom: 3px solid var(--accent);
+        flex-shrink: 0;
+        flex-wrap: wrap;
+        z-index: 100;
+      }
+
+      /* 홈 버튼 */
+      .nav-home {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 5px;
+        color: var(--paper);
+        font-family: "Noto Serif KR", serif;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+      .nav-home:hover { background: rgba(255,255,255,0.15); }
+
+      /* 문제 정보 */
+      .nav-info {
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+      }
+      .nav-info .ni-main {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--highlight);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .nav-info .ni-sub {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: rgba(255,255,255,0.45);
+        margin-top: 1px;
+      }
+
+      /* 화살표 버튼 */
+      .nav-arrows {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .nav-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 16px;
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 5px;
+        background: rgba(255,255,255,0.06);
+        color: var(--paper);
+        font-family: "Noto Serif KR", serif;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+      .nav-btn:hover:not(:disabled) { background: rgba(255,255,255,0.15); border-color: var(--highlight); }
+      .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+      .nav-btn.random-btn {
+        background: rgba(139,58,15,0.5);
+        border-color: var(--accent);
+        color: var(--highlight);
+      }
+      .nav-btn.random-btn:hover { background: rgba(139,58,15,0.75); }
+
+      /* 진행 바 */
+      .nav-progress {
+        width: 100%;
+        height: 3px;
+        background: rgba(255,255,255,0.1);
+        flex-basis: 100%;
+        order: 99;
+        border-radius: 2px;
+        overflow: hidden;
+        display: none; /* 목록 모드에서만 보임 */
+      }
+      .nav-progress-fill {
+        height: 100%;
+        background: var(--highlight);
+        transition: width 0.3s ease;
+        border-radius: 2px;
+      }
+      .nav-progress.visible { display: block; }
+
+      /* ── iframe ── */
+      .problem-frame {
+        flex: 1;
+        width: 100%;
+        border: none;
+        background: var(--paper);
+      }
+
+      /* ── 카운터 ── */
+      .nav-counter {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: rgba(255,255,255,0.4);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 네비게이션 바 -->
+    <div class="nav-bar">
+      <a class="nav-home" href="index.html">← 목록</a>
+
+      <div class="nav-info">
+        <div class="ni-main" id="navTitle">문제 로딩 중…</div>
+        <div class="ni-sub" id="navSub"></div>
+      </div>
+
+      <span class="nav-counter" id="navCounter"></span>
+
+      <div class="nav-arrows">
+        <button class="nav-btn" id="btnPrev" onclick="navigate(-1)" disabled>‹ 이전</button>
+        <button class="nav-btn random-btn" onclick="navigateRandom()">🎲 랜덤</button>
+        <button class="nav-btn" id="btnNext" onclick="navigate(+1)" disabled>다음 ›</button>
+      </div>
+
+      <div class="nav-progress" id="navProgress">
+        <div class="nav-progress-fill" id="navProgressFill"></div>
+      </div>
+    </div>
+
+    <!-- 문제 iframe -->
+    <iframe class="problem-frame" id="problemFrame" src="about:blank"></iframe>
+
+    <script>
+    // ── URL 파라미터 파싱 ──
+    const params = new URLSearchParams(location.search);
+    const fileParam = params.get("file") || "";
+    const listParam = params.get("list") || "";
+    const idxParam  = parseInt(params.get("idx") || "0", 10);
+    const isRandom  = params.get("random") === "1";
+
+    // ── 언어/유형 레이블 ──
+    const LANG_LABEL = { J: "Java", C: "C언어", P: "Python" };
+    const TYPE_LABEL = { programming: "프로그래밍", essay: "서술형", short: "단답형" };
+
+    // 파일명에서 메타 파싱: YYYY_회차_번호_언어.html
+    function parseMeta(filename) {
+      const m = filename.match(/^(\d{4})_(\d{2})_(\d{2})_([A-Z]+)\.html$/i);
+      if (!m) return { year: "?", round: "?", num: "?", lang: filename };
+      return {
+        year:  m[1],
+        round: parseInt(m[2], 10),
+        num:   parseInt(m[3], 10),
+        lang:  m[4].toUpperCase(),
+      };
+    }
+
+    let fileList = [];
+    let currentIdx = 0;
+
+    function init() {
+      if (!fileParam) {
+        document.getElementById("navTitle").textContent = "파일이 지정되지 않았습니다.";
+        return;
+      }
+
+      fileList = listParam ? listParam.split(",").filter(Boolean) : [fileParam];
+      currentIdx = Math.max(0, Math.min(idxParam, fileList.length - 1));
+
+      loadFile(currentIdx);
+    }
+
+    function loadFile(idx) {
+      currentIdx = idx;
+      const file = fileList[idx];
+      const meta = parseMeta(file);
+      const langLabel = LANG_LABEL[meta.lang] || meta.lang;
+
+      // 타이틀 업데이트
+      document.title = `${meta.year}년 제${meta.round}회 ${meta.num}번 · ${langLabel}`;
+      document.getElementById("navTitle").textContent =
+        `${meta.year}년 제${meta.round}회 실기 — ${meta.num}번 (${langLabel})`;
+      document.getElementById("navSub").textContent = file;
+
+      // 카운터
+      if (fileList.length > 1) {
+        document.getElementById("navCounter").textContent = `${idx + 1} / ${fileList.length}`;
+        const pct = ((idx + 1) / fileList.length) * 100;
+        document.getElementById("navProgress").classList.add("visible");
+        document.getElementById("navProgressFill").style.width = pct + "%";
+      }
+
+      // 버튼 상태
+      document.getElementById("btnPrev").disabled = (idx <= 0);
+      document.getElementById("btnNext").disabled = (idx >= fileList.length - 1);
+
+      // iframe 로드
+      document.getElementById("problemFrame").src = file;
+    }
+
+    function navigate(delta) {
+      const next = currentIdx + delta;
+      if (next < 0 || next >= fileList.length) return;
+      loadFile(next);
+    }
+
+    function navigateRandom() {
+      if (fileList.length <= 1) return;
+      let idx;
+      do { idx = Math.floor(Math.random() * fileList.length); } while (idx === currentIdx);
+      loadFile(idx);
+    }
+
+    // 키보드 단축키
+    document.addEventListener("keydown", e => {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+      if (e.key === "ArrowLeft"  || e.key === ",") navigate(-1);
+      if (e.key === "ArrowRight" || e.key === ".") navigate(+1);
+      if (e.key === "r" || e.key === "R") navigateRandom();
+    });
+
+    init();
+    </script>
+  </body>
+</html>
