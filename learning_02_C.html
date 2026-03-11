@@ -1,0 +1,2000 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C 언어 심화 학습 정리</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+
+      /* ── 헤더 ── */
+      .header {
+        padding-left: 48px;
+        margin-bottom: 52px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* ── TOC ── */
+      .toc {
+        padding-left: 48px;
+        margin-bottom: 52px;
+        animation: fadeSlide 0.6s ease 0.1s both;
+      }
+      .toc-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.15em;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+      }
+      .toc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 8px;
+      }
+      .toc-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        text-decoration: none;
+        color: var(--ink);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+      }
+      .toc-item:hover {
+        background: rgba(240, 192, 96, 0.18);
+        border-color: var(--highlight);
+      }
+      .toc-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: bold;
+        flex-shrink: 0;
+        color: var(--paper);
+      }
+
+      /* ── 섹션 ── */
+      .section {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.08em;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .section-title .num {
+        width: 28px;
+        height: 28px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .section-title .num.green {
+        background: var(--accent2);
+      }
+      .section-title .num.blue {
+        background: var(--accent3);
+      }
+      .section-title .num.gold {
+        background: #8b6020;
+      }
+      .section-title .num.purple {
+        background: #5a3a8b;
+      }
+
+      /* ── 카드 ── */
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 18px 22px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+        margin-bottom: 14px;
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.gold {
+        border-left-color: var(--highlight);
+        background: rgba(240, 192, 96, 0.06);
+      }
+      .card.red {
+        border-left-color: #c0392b;
+        background: rgba(192, 57, 43, 0.05);
+      }
+      .card.purple {
+        border-left-color: #5a3a8b;
+        background: rgba(90, 58, 139, 0.05);
+      }
+
+      p {
+        font-size: 15px;
+        line-height: 2.1;
+        color: #2a1f10;
+      }
+
+      /* ── 서브 제목 ── */
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin: 22px 0 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sub-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: bold;
+        flex-shrink: 0;
+        color: white;
+      }
+
+      /* ── 코드 블록 ── */
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 18px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.95;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .op {
+        color: #89ddff;
+      }
+
+      code {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        background: rgba(26, 18, 8, 0.08);
+        border: 1px solid var(--aged);
+        border-radius: 3px;
+        padding: 1px 6px;
+        color: var(--accent);
+      }
+
+      /* ── 테이블 ── */
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        margin: 12px 0;
+      }
+      .info-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .info-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        line-height: 1.7;
+        vertical-align: middle;
+      }
+      .info-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .info-table tr:hover td {
+        background: rgba(240, 192, 96, 0.1);
+      }
+      .info-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 700;
+      }
+
+      /* ── 포인트 리스트 ── */
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.9;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 3px;
+        flex-shrink: 0;
+      }
+
+      /* ── 플로우 래퍼 ── */
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 20px 18px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin: 12px 0;
+      }
+
+      /* ── 포인터 체인 다이어그램 ── */
+      .ptr-chain {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .pc-box {
+        padding: 8px 14px;
+        border-radius: 5px;
+        font-size: 13px;
+        font-weight: bold;
+        text-align: center;
+        min-width: 72px;
+        line-height: 1.5;
+      }
+      .pc-label {
+        font-size: 9px;
+        font-weight: normal;
+        opacity: 0.65;
+        margin-top: 2px;
+      }
+      .pc-var {
+        background: #2d2010;
+        border: 2px solid #8b6020;
+        color: #f0c060;
+      }
+      .pc-ptr {
+        background: #1e1a2d;
+        border: 2px solid #5a3a8b;
+        color: #c792ea;
+      }
+      .pc-pptr {
+        background: #2d1010;
+        border: 2px solid #8b2020;
+        color: #ff9580;
+      }
+      .pc-deref {
+        background: #1a2010;
+        border: 2px solid #2d5a3d;
+        color: #c3e88d;
+      }
+      .pc-arrow {
+        color: #8b3a0f;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      /* ── 메모리 그리드 ── */
+      .mem-row {
+        display: flex;
+        gap: 3px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+      .mem-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        flex-shrink: 0;
+      }
+      .mem-cell {
+        width: 46px;
+        height: 40px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .mc-norm {
+        background: #1a2010;
+        border: 2px solid #2d5a3d;
+        color: #c3e88d;
+      }
+      .mc-hi {
+        background: #2d2010;
+        border: 2.5px solid #f0c060;
+        color: #f0c060;
+        box-shadow: 0 0 8px rgba(240, 192, 96, 0.3);
+      }
+      .mc-ptr {
+        background: #1e1a2d;
+        border: 2px solid #5a3a8b;
+        color: #c792ea;
+        font-size: 11px;
+      }
+      .mc-null {
+        background: #2d1010;
+        border: 2px solid #6a2020;
+        color: #ff7675;
+        font-size: 11px;
+      }
+      .mem-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        color: #546e7a;
+        text-align: center;
+      }
+
+      /* ── 비트 시각화 ── */
+      .bit-row {
+        display: flex;
+        gap: 2px;
+        align-items: center;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+      .bit-cell {
+        width: 32px;
+        height: 32px;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 14px;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+      .bit-1 {
+        background: #1a2010;
+        border: 1.5px solid #2d5a3d;
+        color: #c3e88d;
+      }
+      .bit-0 {
+        background: #1a1208;
+        border: 1.5px solid #2a1e10;
+        color: #3a3028;
+      }
+      .bit-hi {
+        background: #2d2010;
+        border: 2px solid #8b6020;
+        color: #f0c060;
+      }
+      .bit-sep {
+        width: 12px;
+        text-align: center;
+        color: #546e7a;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+      }
+
+      /* ── 링크드 리스트 패턴 박스 ── */
+      .pattern-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        margin: 12px 0;
+      }
+      .pat-item {
+        background: #1a1208;
+        border-radius: 7px;
+        overflow: hidden;
+        border: 1px solid #3a3028;
+      }
+      .pat-head {
+        padding: 8px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .pat-body {
+        padding: 10px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #c8b080;
+        line-height: 1.8;
+      }
+
+      /* ── 함정 박스 ── */
+      .trap-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 12px 0;
+      }
+      .trap-item {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        background: #1a1208;
+        border: 1px solid #3a3028;
+        border-left: 4px solid #c0392b;
+        border-radius: 0 6px 6px 0;
+        padding: 12px 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trap-num {
+        width: 24px;
+        height: 24px;
+        background: #c0392b;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+      .trap-text {
+        color: #e8d5b0;
+        line-height: 1.8;
+      }
+      .trap-text .tn {
+        color: #ff7675;
+        font-weight: bold;
+      }
+      .trap-text .tg {
+        color: #c3e88d;
+      }
+
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .divider {
+        border: none;
+        border-top: 2px dashed var(--aged);
+        margin: 8px 0 24px;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- ══ 헤더 ══ -->
+      <div class="header">
+        <div class="label">C Language Study Note — Advanced</div>
+        <h1>C 언어 출제 테마별 심화 학습 정리</h1>
+        <div class="meta">
+          Pointer · Array · String · LinkedList · Bitwise · Scope · malloc
+        </div>
+      </div>
+
+      <!-- ══ TOC ══ -->
+      <div class="toc">
+        <div class="toc-title">목차 (7 Themes)</div>
+        <div class="toc-grid">
+          <a class="toc-item" href="#t1">
+            <span class="toc-num" style="background: #8b2a2a">1</span>이중
+            포인터 **
+          </a>
+          <a class="toc-item" href="#t2">
+            <span class="toc-num" style="background: #1e3a6e">2</span>2D 배열 &
+            포인터 관계
+          </a>
+          <a class="toc-item" href="#t3">
+            <span class="toc-num" style="background: #2d5a3d">3</span>문자열 &
+            포인터 산술
+          </a>
+          <a class="toc-item" href="#t4">
+            <span class="toc-num" style="background: #5a3a8b">4</span>연결
+            리스트 패턴
+          </a>
+          <a class="toc-item" href="#t5">
+            <span class="toc-num" style="background: #8b6020">5</span>비트 연산
+          </a>
+          <a class="toc-item" href="#t6">
+            <span class="toc-num" style="background: #2d5a3d">6</span>static &
+            스코프 & switch
+          </a>
+          <a class="toc-item" href="#t7">
+            <span class="toc-num" style="background: #1e3a6e">7</span>malloc &
+            동적 메모리
+          </a>
+        </div>
+      </div>
+
+      <!-- ══ 테마 1: 이중 포인터 ══ -->
+      <div class="section" id="t1">
+        <div class="section-title">
+          <span class="num" style="background: #8b2a2a">1</span>
+          이중 포인터 <code>**</code>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">int</span> a = <span class="nl">10</span>;
+<span class="kw">int</span><span class="op">*</span>  p  = <span class="op">&amp;</span>a;    <span class="cmt">// p  → a  (a의 주소 저장)</span>
+<span class="kw">int</span><span class="op">**</span> pp = <span class="op">&amp;</span>p;    <span class="cmt">// pp → p → a  (p의 주소 저장)</span>
+
+<span class="op">*</span>pp    <span class="cmt">// = p   (주소값)</span>
+<span class="op">**</span>pp   <span class="cmt">// = a   (값 10)</span></pre>
+        </div>
+
+        <!-- 체인 다이어그램 -->
+        <div class="flow-wrap">
+          <div class="ptr-chain">
+            <div class="pc-box pc-pptr">
+              <div>pp</div>
+              <div class="pc-label">int**<br />이중 포인터</div>
+            </div>
+            <div class="pc-arrow">→</div>
+            <div class="pc-box pc-ptr">
+              <div>p = &amp;a</div>
+              <div class="pc-label">int*<br />*pp = p</div>
+            </div>
+            <div class="pc-arrow">→</div>
+            <div class="pc-box pc-var">
+              <div>a = 10</div>
+              <div class="pc-label">int<br />**pp = 10</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #5a3a8b">★</span>포인터
+          배열 <code>parr</code>과의 관계
+        </div>
+        <div class="card purple">
+          <ul class="point-list">
+            <li>
+              <span class="icon">🔷</span
+              ><span
+                ><code>*parr</code> → <code>parr[0]</code> — 포인터 배열의
+                <strong>첫 번째 포인터</strong></span
+              >
+            </li>
+            <li>
+              <span class="icon">🔷</span
+              ><span
+                ><code>**parr</code> → <code>*parr[0]</code> → 첫 번째 포인터가
+                가리키는 <strong>실제 값</strong></span
+              >
+            </li>
+          </ul>
+        </div>
+
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>표현식</th>
+              <th>의미</th>
+              <th>타입</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>pp</code></td>
+              <td>p의 주소를 저장 (이중 포인터)</td>
+              <td>int**</td>
+            </tr>
+            <tr>
+              <td><code>*pp</code></td>
+              <td>pp가 가리키는 포인터 p (= &amp;a)</td>
+              <td>int*</td>
+            </tr>
+            <tr class="hl-row">
+              <td><code>**pp</code></td>
+              <td>pp → p → a의 실제 값</td>
+              <td>int (= 10)</td>
+            </tr>
+            <tr>
+              <td><code>*parr</code></td>
+              <td>parr[0] — 배열의 첫 포인터</td>
+              <td>int*</td>
+            </tr>
+            <tr class="hl-row">
+              <td><code>**parr</code></td>
+              <td>*parr[0] — 첫 포인터가 가리키는 값</td>
+              <td>int</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ══ 테마 2: 2D 배열 ══ -->
+      <div class="section" id="t2">
+        <div class="section-title">
+          <span class="num blue">2</span>2D 배열과 포인터의 관계
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">int</span> arr[<span class="nl">3</span>][<span class="nl">3</span>] = {<span class="nl">1</span>,<span class="nl">2</span>,<span class="nl">3</span>, <span class="nl">4</span>,<span class="nl">5</span>,<span class="nl">6</span>, <span class="nl">7</span>,<span class="nl">8</span>,<span class="nl">9</span>};</pre>
+        </div>
+
+        <!-- 배열 시각화 -->
+        <div class="flow-wrap">
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 6px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+            "
+          >
+            <div style="display: flex; gap: 4px; align-items: center">
+              <div
+                style="
+                  width: 72px;
+                  font-size: 11px;
+                  color: #546e7a;
+                  text-align: right;
+                  padding-right: 8px;
+                "
+              >
+                arr[0]
+              </div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  width: 46px;
+                  height: 40px;
+                  font-size: 14px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                1
+              </div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  width: 46px;
+                  height: 40px;
+                  font-size: 14px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                2
+              </div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  width: 46px;
+                  height: 40px;
+                  font-size: 14px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                3
+              </div>
+              <div style="margin-left: 8px; font-size: 11px; color: #546e7a">
+                ← parr에 포함 안 됨
+              </div>
+            </div>
+            <div style="display: flex; gap: 4px; align-items: center">
+              <div
+                style="
+                  width: 72px;
+                  font-size: 11px;
+                  color: #c3e88d;
+                  text-align: right;
+                  padding-right: 8px;
+                "
+              >
+                arr[1]<br /><span style="color: #546e7a; font-size: 9px"
+                  >parr[0]→</span
+                >
+              </div>
+              <div class="mem-cell mc-hi">4</div>
+              <div class="mem-cell mc-norm">5</div>
+              <div class="mem-cell mc-norm">6</div>
+              <div style="margin-left: 8px; font-size: 11px; color: #c3e88d">
+                parr[0] = arr[1]
+              </div>
+            </div>
+            <div style="display: flex; gap: 4px; align-items: center">
+              <div
+                style="
+                  width: 72px;
+                  font-size: 11px;
+                  color: #82aaff;
+                  text-align: right;
+                  padding-right: 8px;
+                "
+              >
+                arr[2]<br /><span style="color: #546e7a; font-size: 9px"
+                  >parr[1]→</span
+                >
+              </div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1e2d;
+                  border: 2px solid #1e3a6e;
+                  color: #82aaff;
+                  width: 46px;
+                  height: 40px;
+                  font-size: 14px;
+                  font-weight: bold;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                7
+              </div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1e2d;
+                  border: 2px solid #1e3a6e;
+                  color: #82aaff;
+                  width: 46px;
+                  height: 40px;
+                  font-size: 14px;
+                  font-weight: bold;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                8
+              </div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1e2d;
+                  border: 2px solid #1e3a6e;
+                  color: #82aaff;
+                  width: 46px;
+                  height: 40px;
+                  font-size: 14px;
+                  font-weight: bold;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                9
+              </div>
+              <div style="margin-left: 8px; font-size: 11px; color: #82aaff">
+                parr[1] = arr[2]
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>표현</th>
+              <th>의미</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>arr[r]</code></td>
+              <td>r행의 시작 주소 (int*)</td>
+            </tr>
+            <tr>
+              <td><code>arr[r][c]</code></td>
+              <td>r행 c열 값</td>
+            </tr>
+            <tr>
+              <td><code>*(arr[r] + c)</code></td>
+              <td>arr[r][c]와 완전히 동일</td>
+            </tr>
+            <tr>
+              <td><code>int* p = arr[1]</code></td>
+              <td>p는 1행 시작 포인터</td>
+            </tr>
+            <tr class="hl-row">
+              <td><code>p[1]</code></td>
+              <td>arr[1][1] (= 5)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #1e3a6e">★</span>포인터
+          배열 <code>int* parr[]</code>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">int</span><span class="op">*</span> parr[<span class="nl">2</span>] = {arr[<span class="nl">1</span>], arr[<span class="nl">2</span>]};
+
+parr[<span class="nl">0</span>]    <span class="cmt">// → arr[1] 행 시작 → {4,5,6}</span>
+parr[<span class="nl">1</span>]    <span class="cmt">// → arr[2] 행 시작 → {7,8,9}</span>
+<span class="op">*</span>parr      <span class="cmt">// = parr[0] = arr[1]의 주소</span>
+<span class="op">**</span>parr     <span class="cmt">// = *parr[0] = arr[1][0] = 4</span></pre>
+        </div>
+      </div>
+
+      <!-- ══ 테마 3: 문자열 ══ -->
+      <div class="section" id="t3">
+        <div class="section-title">
+          <span class="num green">3</span>문자열과 포인터 산술
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">char</span><span class="op">*</span> s = <span class="str">"BEST"</span>;
+<span class="cmt">// 메모리: 'B' 'E' 'S' 'T' '\0'</span></pre>
+        </div>
+
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>연산</th>
+              <th>결과</th>
+              <th>설명</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl-row">
+              <td><code>*s</code></td>
+              <td><code>'B'</code></td>
+              <td>s가 가리키는 첫 문자</td>
+            </tr>
+            <tr>
+              <td><code>*(s+1)</code></td>
+              <td><code>'E'</code></td>
+              <td>한 칸 앞 문자</td>
+            </tr>
+            <tr>
+              <td><code>s[2]</code></td>
+              <td><code>'S'</code></td>
+              <td>= *(s+2), 첨자 표기</td>
+            </tr>
+            <tr>
+              <td><code>s++</code></td>
+              <td>다음 문자로 이동</td>
+              <td>포인터 주소 +1</td>
+            </tr>
+            <tr>
+              <td><code>*s == '\0'</code></td>
+              <td>문자열 끝 판단</td>
+              <td>while 종료 조건</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="card green">
+          <p
+            style="
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 14px;
+            "
+          >
+            <code>while(*s)</code> ≡ <code>while(*s != '\0')</code><br />
+            <span style="font-size: 12px; color: #546e7a"
+              >→ 문자열 순회의 기본 패턴. '\0'(null)이 나오면 false가 되어 반복
+              종료.</span
+            >
+          </p>
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #2d5a3d">★</span>strcpy
+          직접 구현 패턴
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C — strcpy 구현</span>
+          </div>
+          <pre><span class="kw">while</span> (<span class="op">*</span>src) {
+    <span class="op">*</span>dst = <span class="op">*</span>src;   <span class="cmt">// src 문자를 dst에 복사</span>
+    src<span class="op">++</span>;
+    dst<span class="op">++</span>;
+}
+<span class="op">*</span>dst = <span class="str">'\0'</span>;    <span class="cmt">// ★ null 종단 필수! 빠트리면 쓰레기값 출력</span></pre>
+        </div>
+      </div>
+
+      <!-- ══ 테마 4: 연결 리스트 ══ -->
+      <div class="section" id="t4">
+        <div class="section-title">
+          <span class="num purple" style="background: #5a3a8b">4</span>연결 리스트 핵심 패턴
+        </div>
+
+        <div class="pattern-grid">
+          <div class="pat-item">
+            <div
+              class="pat-head"
+              style="
+                background: #1e1a2d;
+                color: #c792ea;
+                border-bottom: 1px solid #3a3028;
+              "
+            >
+              ① 기본 구조
+            </div>
+            <div class="pat-body">
+              struct node {<br />
+              &nbsp;&nbsp;int data;<br />
+              &nbsp;&nbsp;struct node* next;<br />
+              };
+            </div>
+          </div>
+          <div class="pat-item">
+            <div
+              class="pat-head"
+              style="
+                background: #1a1e2d;
+                color: #82aaff;
+                border-bottom: 1px solid #3a3028;
+              "
+            >
+              ② 순회 (traversal)
+            </div>
+            <div class="pat-body">
+              node* cur = head;<br />
+              while (cur != NULL) {<br />
+              &nbsp;&nbsp;printf("%d ", cur-&gt;data);<br />
+              &nbsp;&nbsp;cur = cur-&gt;next;<br />
+              }
+            </div>
+          </div>
+          <div class="pat-item">
+            <div
+              class="pat-head"
+              style="
+                background: #2d1a1a;
+                color: #ff7675;
+                border-bottom: 1px solid #3a3028;
+              "
+            >
+              ③ 노드 삭제/재연결
+            </div>
+            <div class="pat-body">
+              <span style="color: #546e7a">// target 노드를 건너뜀</span><br />
+              prev-&gt;next<br />
+              &nbsp;&nbsp;= target-&gt;next;
+            </div>
+          </div>
+          <div class="pat-item">
+            <div
+              class="pat-head"
+              style="
+                background: #1a2010;
+                color: #c3e88d;
+                border-bottom: 1px solid #3a3028;
+              "
+            >
+              ④ 헤드 삽입
+            </div>
+            <div class="pat-body">
+              new_node-&gt;next = head;<br />
+              head = new_node;<br />
+              <span style="color: #546e7a; font-size: 10px"
+                >→ 출력: 삽입 역순!</span
+              >
+            </div>
+          </div>
+          <div class="pat-item">
+            <div
+              class="pat-head"
+              style="
+                background: #2d2010;
+                color: #f0c060;
+                border-bottom: 1px solid #3a3028;
+              "
+            >
+              ⑤ 인접 값 교환
+            </div>
+            <div class="pat-body">
+              int tmp = a-&gt;data;<br />
+              a-&gt;data = b-&gt;data;<br />
+              b-&gt;data = tmp;<br />
+              <span style="color: #546e7a; font-size: 10px"
+                >포인터(next)는 그대로!</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="card"
+          style="
+            margin-top: 16px;
+            border-left-color: #f0c060;
+            background: rgba(240, 192, 96, 0.06);
+          "
+        >
+          <ul class="point-list">
+            <li>
+              <span class="icon">⚠️</span>
+              <span
+                ><span class="hl">헤드 삽입(head insert)</span>은 새 노드를 맨
+                앞에 추가합니다. 1→2→3 순으로 삽입하면 출력은
+                <strong>3→2→1</strong> (역순).</span
+              >
+            </li>
+            <li>
+              <span class="icon">⚠️</span>
+              <span
+                ><span class="hl">값만 교환 vs 포인터 교환</span>: 값만 바꾸면
+                연결 순서(next 포인터)는 그대로이므로 출력 순서는 연결 순서
+                기준입니다.</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ══ 테마 5: 비트 연산 ══ -->
+      <div class="section" id="t5">
+        <div class="section-title">
+          <span class="num gold" style="background: #8b6020">5</span>비트 연산 정리
+        </div>
+
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>연산자</th>
+              <th>이름</th>
+              <th>동작</th>
+              <th>용도</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>&amp;</code></td>
+              <td>AND</td>
+              <td>둘 다 1이면 1</td>
+              <td>마스킹, 특정 비트 추출</td>
+            </tr>
+            <tr>
+              <td><code>|</code></td>
+              <td>OR</td>
+              <td>하나라도 1이면 1</td>
+              <td>비트 세팅</td>
+            </tr>
+            <tr class="hl-row">
+              <td><code>^</code></td>
+              <td>XOR</td>
+              <td>다르면 1</td>
+              <td>비트 토글, 값 교환</td>
+            </tr>
+            <tr>
+              <td><code>~</code></td>
+              <td>NOT</td>
+              <td>비트 반전</td>
+              <td>마스크 반전</td>
+            </tr>
+            <tr>
+              <td><code>&lt;&lt;</code></td>
+              <td>LEFT SHIFT</td>
+              <td>비트를 왼쪽으로</td>
+              <td>×2 효과</td>
+            </tr>
+            <tr>
+              <td><code>&gt;&gt;</code></td>
+              <td>RIGHT SHIFT</td>
+              <td>비트를 오른쪽으로</td>
+              <td>÷2 효과</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #8b6020">★</span>AND 마스킹
+          패턴 — 자주 출제
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre>value <span class="op">&amp;</span> <span class="nl">0xA5</span>
+<span class="cmt">// 0xA5 = 1010 0101</span>
+<span class="cmt">// value에서 해당 비트 위치만 추출</span></pre>
+        </div>
+
+        <!-- 0xA5 비트 시각화 -->
+        <div class="flow-wrap">
+          <div
+            style="
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 11px;
+              color: #546e7a;
+              margin-bottom: 8px;
+            "
+          >
+            0xA5 = 1010 0101 (비트 배치)
+          </div>
+          <div class="bit-row">
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #546e7a;
+                margin-right: 6px;
+              "
+            >
+              bit:
+            </div>
+            <div class="bit-cell bit-hi">1</div>
+            <div class="bit-cell bit-0">0</div>
+            <div class="bit-cell bit-hi">1</div>
+            <div class="bit-cell bit-0">0</div>
+            <div class="bit-sep">·</div>
+            <div class="bit-cell bit-0">0</div>
+            <div class="bit-cell bit-hi">1</div>
+            <div class="bit-cell bit-0">0</div>
+            <div class="bit-cell bit-hi">1</div>
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #f0c060;
+                margin-left: 10px;
+              "
+            >
+              = 0xA5 = 165
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 8px;
+              font-size: 11px;
+              color: #546e7a;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+            "
+          >
+            <span style="color: #f0c060">■</span> 1인 비트 위치에서만 value의
+            비트를 추출, 나머지는 0으로 마스킹
+          </div>
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #8b6020">★</span>XOR 특성 —
+          연결 리스트 응용
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre>a <span class="op">^</span> a = <span class="nl">0</span>       <span class="cmt">// 자기 자신과 XOR → 0</span>
+a <span class="op">^</span> <span class="nl">0</span> = a       <span class="cmt">// 0과 XOR → 자기 자신</span>
+a <span class="op">^</span> b <span class="op">^</span> a = b   <span class="cmt">// 교환법칙 성립 → b가 남음</span></pre>
+        </div>
+      </div>
+
+      <!-- ══ 테마 6: static & scope & switch ══ -->
+      <div class="section" id="t6">
+        <div class="section-title">
+          <span class="num green">6</span>static & 스코프 & switch
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #2d5a3d">★</span>static
+          변수의 핵심
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">void</span> <span class="fn">counter</span>() {
+    <span class="kw">static int</span> cnt = <span class="nl">0</span>;  <span class="cmt">// 처음 1회만 초기화</span>
+    cnt<span class="op">++</span>;
+    printf(<span class="str">"%d\n"</span>, cnt);
+}
+<span class="cmt">// 호출할 때마다 cnt가 누적됨: 1, 2, 3, 4 ...</span></pre>
+        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>변수 종류</th>
+              <th>초기화</th>
+              <th>수명</th>
+              <th>스코프</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>일반 지역변수</td>
+              <td>함수 호출마다</td>
+              <td>함수 종료 시 소멸</td>
+              <td>함수 내부</td>
+            </tr>
+            <tr class="hl-row">
+              <td>static 지역변수</td>
+              <td>최초 1회만</td>
+              <td>프로그램 종료까지 유지</td>
+              <td>함수 내부 (값은 보존)</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="card green">
+          <ul class="point-list">
+            <li>
+              <span class="icon">⚠️</span
+              ><span
+                ><span class="hl">동명의 main 변수와 완전히 별개</span> — 이름이
+                같아도 스코프가 다르면 서로 영향을 주지 않습니다.</span
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="sub-title" style="margin-top: 28px">
+          <span class="sub-badge" style="background: #2d5a3d">★</span>switch
+          fall-through 패턴
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">switch</span> (x) {
+    <span class="kw">case</span> <span class="nl">1</span>:
+        <span class="cmt">// break 없으면 아래로 흘러내림 ↓</span>
+    <span class="kw">case</span> <span class="nl">2</span>:
+        printf(<span class="str">"1 또는 2"</span>);
+        <span class="kw">break</span>;
+    <span class="kw">default</span>:
+        printf(<span class="str">"기타"</span>);
+}</pre>
+        </div>
+        <div class="card">
+          <ul class="point-list">
+            <li>
+              <span class="icon">🔴</span
+              ><span
+                ><code>break</code>가 없으면 다음 case가
+                <span class="hl">조건 무관하게 실행</span> (fall-through)</span
+              >
+            </li>
+            <li>
+              <span class="icon">🔵</span
+              ><span
+                ><code>default</code>는 어느 위치에 있어도 어떤 case도 매칭되지
+                않을 때 실행됩니다.</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ══ 테마 7: malloc ══ -->
+      <div class="section" id="t7">
+        <div class="section-title">
+          <span class="num blue">7</span>malloc & 동적 메모리
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">#include</span> &lt;stdlib.h&gt;
+
+<span class="kw">int</span><span class="op">*</span> arr = (<span class="kw">int</span><span class="op">*</span>)<span class="fn">malloc</span>(n <span class="op">*</span> <span class="kw">sizeof</span>(<span class="kw">int</span>));
+<span class="cmt">// 사용 후 반드시 해제!</span>
+<span class="fn">free</span>(arr);</pre>
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #1e3a6e">★</span>2D 배열
+          동적 할당 & 1D 인덱스 공식
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">int</span><span class="op">*</span> arr = (<span class="kw">int</span><span class="op">*</span>)<span class="fn">malloc</span>(rows <span class="op">*</span> cols <span class="op">*</span> <span class="kw">sizeof</span>(<span class="kw">int</span>));
+
+<span class="cmt">// arr[r][c] 접근 → 1D 인덱스 변환</span>
+arr[r <span class="op">*</span> cols <span class="op">+</span> c]</pre>
+        </div>
+
+        <!-- 인덱스 공식 시각화 -->
+        <div class="flow-wrap">
+          <div
+            style="
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 11px;
+              color: #546e7a;
+              margin-bottom: 12px;
+            "
+          >
+            예: rows=3, cols=3 — arr[1][2] = arr[1*3+2] = arr[5]
+          </div>
+          <div
+            style="
+              display: flex;
+              gap: 2px;
+              align-items: flex-end;
+              flex-wrap: nowrap;
+              overflow-x: auto;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3px;
+              "
+            >
+              <div
+                style="
+                  font-size: 9px;
+                  color: #546e7a;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                idx
+              </div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  width: 44px;
+                  height: 38px;
+                  font-size: 11px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                0
+              </div>
+              <div
+                style="
+                  font-size: 9px;
+                  color: #546e7a;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                [0][0]
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3px;
+              "
+            >
+              <div style="font-size: 9px; color: transparent">x</div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  width: 44px;
+                  height: 38px;
+                  font-size: 11px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                1
+              </div>
+              <div
+                style="
+                  font-size: 9px;
+                  color: #546e7a;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                [0][1]
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3px;
+              "
+            >
+              <div style="font-size: 9px; color: transparent">x</div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  width: 44px;
+                  height: 38px;
+                  font-size: 11px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                2
+              </div>
+              <div
+                style="
+                  font-size: 9px;
+                  color: #546e7a;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                [0][2]
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3px;
+              "
+            >
+              <div style="font-size: 9px; color: transparent">x</div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  width: 44px;
+                  height: 38px;
+                  font-size: 11px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                3
+              </div>
+              <div
+                style="
+                  font-size: 9px;
+                  color: #546e7a;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                [1][0]
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3px;
+              "
+            >
+              <div style="font-size: 9px; color: transparent">x</div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  width: 44px;
+                  height: 38px;
+                  font-size: 11px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                4
+              </div>
+              <div
+                style="
+                  font-size: 9px;
+                  color: #546e7a;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                [1][1]
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3px;
+              "
+            >
+              <div
+                style="
+                  font-size: 9px;
+                  color: #f0c060;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                ★
+              </div>
+              <div
+                class="mem-cell mc-hi"
+                style="
+                  width: 44px;
+                  height: 38px;
+                  font-size: 11px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                5
+              </div>
+              <div
+                style="
+                  font-size: 9px;
+                  color: #f0c060;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                [1][2]
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3px;
+              "
+            >
+              <div style="font-size: 9px; color: transparent">x</div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  width: 44px;
+                  height: 38px;
+                  font-size: 11px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                6
+              </div>
+              <div
+                style="
+                  font-size: 9px;
+                  color: #546e7a;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                [2][0]
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3px;
+              "
+            >
+              <div style="font-size: 9px; color: transparent">x</div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  width: 44px;
+                  height: 38px;
+                  font-size: 11px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                7
+              </div>
+              <div
+                style="
+                  font-size: 9px;
+                  color: #546e7a;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                [2][1]
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3px;
+              "
+            >
+              <div style="font-size: 9px; color: transparent">x</div>
+              <div
+                class="mem-cell"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  width: 44px;
+                  height: 38px;
+                  font-size: 11px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                8
+              </div>
+              <div
+                style="
+                  font-size: 9px;
+                  color: #546e7a;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                [2][2]
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 10px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 12px;
+              color: #f0c060;
+            "
+          >
+            arr[1][2] → 1D 인덱스 = 1×3+2 = <strong>5</strong>
+          </div>
+        </div>
+
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>공식</th>
+              <th>설명</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl-row">
+              <td><code>r * cols + c</code></td>
+              <td>2D(r,c) → 1D 인덱스 변환</td>
+            </tr>
+            <tr>
+              <td><code>i / cols</code></td>
+              <td>1D 인덱스 → 행 번호 (r)</td>
+            </tr>
+            <tr>
+              <td><code>i % cols</code></td>
+              <td>1D 인덱스 → 열 번호 (c)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ══ 함정 포인트 ══ -->
+      <div class="section" id="traps">
+        <div class="section-title">
+          <span class="num" style="background: #c0392b">⚠</span>자주 나오는 함정
+          포인트 요약
+        </div>
+
+        <div class="trap-list">
+          <div class="trap-item">
+            <div class="trap-num">1</div>
+            <div class="trap-text">
+              <span class="tn">head insert</span> → 출력은
+              <span class="tg">삽입 역순</span><br />
+              <span style="color: #546e7a; font-size: 11px"
+                >1→2→3 순으로 삽입하면 head에서 순회 시 3→2→1 출력</span
+              >
+            </div>
+          </div>
+          <div class="trap-item">
+            <div class="trap-num">2</div>
+            <div class="trap-text">
+              <span class="tn">**parr</span> ≠ parr[0][0] 혼동 주의 →
+              <span class="tg">*parr[0]</span>이 정확<br />
+              <span style="color: #546e7a; font-size: 11px"
+                >**parr = *(*(parr+0)) = *parr[0] = parr[0][0]는 우연히 같을 수
+                있으나 의미 구분 필요</span
+              >
+            </div>
+          </div>
+          <div class="trap-item">
+            <div class="trap-num">3</div>
+            <div class="trap-text">
+              <span class="tn">swap(a, b)</span> 지역변수 →
+              <span class="tg">main의 값 변경 안 됨</span><br />
+              <span style="color: #546e7a; font-size: 11px"
+                >포인터를 전달(swap(&a, &b))해야 main의 실제 값이 바뀜</span
+              >
+            </div>
+          </div>
+          <div class="trap-item">
+            <div class="trap-num">4</div>
+            <div class="trap-text">
+              <span class="tn">static 변수 동명</span> → 스코프가 달라
+              <span class="tg">별개</span><br />
+              <span style="color: #546e7a; font-size: 11px"
+                >main의 int x와 함수 내 static int x는 완전히 다른 변수</span
+              >
+            </div>
+          </div>
+          <div class="trap-item">
+            <div class="trap-num">5</div>
+            <div class="trap-text">
+              <span class="tn">switch case</span>: break 없으면
+              <span class="tg">다음 case 실행 (fall-through)</span><br />
+              <span style="color: #546e7a; font-size: 11px"
+                >의도치 않은 fall-through가 출제 핵심. 모든 case의 break 유무
+                확인</span
+              >
+            </div>
+          </div>
+          <div class="trap-item">
+            <div class="trap-num">6</div>
+            <div class="trap-text">
+              <span class="tn">strcpy 후</span> null 종단
+              <span class="tg">'\0' 필수</span><br />
+              <span style="color: #546e7a; font-size: 11px"
+                >*dst = '\0'; 를 빠트리면 쓰레기값이 연결되어 출력됨</span
+              >
+            </div>
+          </div>
+          <div class="trap-item">
+            <div class="trap-num">7</div>
+            <div class="trap-text">
+              <span class="tn">&amp;</span> (주소 연산자) vs
+              <span class="tn">&amp;&amp;</span> (논리 AND) 혼동 주의<br />
+              <span style="color: #546e7a; font-size: 11px"
+                >&amp;a = a의 주소 / a &amp;&amp; b = 논리 AND / a &amp; b =
+                비트 AND</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /page -->
+  </body>
+</html>

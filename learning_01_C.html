@@ -1,0 +1,1331 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C 포인터 핵심 개념 정리</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+
+      /* ── 헤더 ── */
+      .header {
+        padding-left: 48px;
+        margin-bottom: 52px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* ── 섹션 ── */
+      .section {
+        padding-left: 48px;
+        margin-bottom: 48px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.08em;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .section-title .num {
+        width: 28px;
+        height: 28px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .section-title .num.green {
+        background: var(--accent2);
+      }
+      .section-title .num.blue {
+        background: var(--accent3);
+      }
+
+      /* ── 카드 ── */
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+        margin-bottom: 16px;
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.gold {
+        border-left-color: var(--highlight);
+        background: rgba(240, 192, 96, 0.06);
+      }
+
+      p {
+        font-size: 15px;
+        line-height: 2.1;
+        color: #2a1f10;
+      }
+
+      /* ── 서브 제목 ── */
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin: 20px 0 12px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sub-title .sub-num {
+        width: 20px;
+        height: 20px;
+        background: var(--accent3);
+        color: white;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+
+      /* ── 코드 블록 ── */
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 14px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 18px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .op {
+        color: #89ddff;
+      }
+
+      /* ── 인라인 코드 ── */
+      code {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        background: rgba(26, 18, 8, 0.08);
+        border: 1px solid var(--aged);
+        border-radius: 3px;
+        padding: 1px 6px;
+        color: var(--accent);
+      }
+
+      /* ── 테이블 ── */
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        margin: 14px 0;
+      }
+      .info-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 16px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .info-table td {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--aged);
+        line-height: 1.7;
+        vertical-align: middle;
+      }
+      .info-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .info-table tr:hover td {
+        background: rgba(240, 192, 96, 0.12);
+      }
+      .info-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 700;
+      }
+
+      /* ── 연산자 뱃지 ── */
+      .op-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 12px;
+        border-radius: 4px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .ob-star {
+        background: #2d1010;
+        border: 2px solid #8b2a2a;
+        color: #ff9580;
+      }
+      .ob-arrow {
+        background: #1a1e2d;
+        border: 2px solid #1e3a6e;
+        color: #82aaff;
+      }
+      .ob-amp {
+        background: #1a2010;
+        border: 2px solid #2d5a3d;
+        color: #c3e88d;
+      }
+
+      /* ── 포인터 다이어그램 ── */
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin: 14px 0;
+      }
+
+      /* ── 메모리 셀 비주얼 ── */
+      .mem-row {
+        display: flex;
+        gap: 3px;
+        align-items: flex-end;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+      .mem-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      .mem-cell {
+        width: 52px;
+        height: 44px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 17px;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+      .mc-char {
+        background: #1a2010;
+        border: 2px solid #2d5a3d;
+        color: #c3e88d;
+      }
+      .mc-null {
+        background: #2d1010;
+        border: 2px solid #6a2020;
+        color: #ff7675;
+        opacity: 0.8;
+      }
+      .mc-addr {
+        background: #1a1e2d;
+        border: 2px solid #1e3a6e;
+        color: #82aaff;
+        font-size: 12px;
+      }
+      .mc-val {
+        background: #2d2010;
+        border: 2px solid #8b6020;
+        color: #f0c060;
+      }
+      .mc-ptr {
+        background: #1e1a2d;
+        border: 2px solid #5a3a8b;
+        color: #c792ea;
+        font-size: 12px;
+      }
+      .mem-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: #546e7a;
+        text-align: center;
+      }
+      .mem-addr-row {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        color: #8a7a60;
+        text-align: center;
+      }
+
+      /* 화살표 연결 */
+      .ptr-chain {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .pc-box {
+        padding: 8px 14px;
+        border-radius: 5px;
+        font-size: 13px;
+        font-weight: bold;
+        text-align: center;
+        min-width: 80px;
+      }
+      .pc-var {
+        background: #2d2010;
+        border: 2px solid #8b6020;
+        color: #f0c060;
+      }
+      .pc-ptr {
+        background: #1e1a2d;
+        border: 2px solid #5a3a8b;
+        color: #c792ea;
+      }
+      .pc-addr {
+        background: #1a1e2d;
+        border: 2px solid #1e3a6e;
+        color: #82aaff;
+      }
+      .pc-deref {
+        background: #1a2010;
+        border: 2px solid #2d5a3d;
+        color: #c3e88d;
+      }
+      .pc-arrow {
+        color: #8b3a0f;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .pc-label {
+        font-size: 10px;
+        opacity: 0.6;
+        margin-top: 3px;
+      }
+
+      /* ── 포인트 리스트 ── */
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.9;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 3px;
+        flex-shrink: 0;
+      }
+
+      /* ── 단계 박스 ── */
+      .steps-box {
+        background: #1a1208;
+        border-radius: 8px;
+        overflow: hidden;
+        font-family: "JetBrains Mono", monospace;
+        margin: 14px 0;
+      }
+      .step-item {
+        display: flex;
+        align-items: stretch;
+        border-bottom: 1px solid #2a1e10;
+      }
+      .step-item:last-child {
+        border-bottom: none;
+      }
+      .si-num {
+        width: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+      .si-body {
+        flex: 1;
+        padding: 13px 18px;
+      }
+      .si-expr {
+        font-size: 15px;
+        font-weight: bold;
+        margin-bottom: 4px;
+      }
+      .si-desc {
+        font-size: 12px;
+        color: #8a7a60;
+        line-height: 1.8;
+      }
+      .s1 .si-num {
+        background: #2d2010;
+        color: #f0c060;
+      }
+      .s2 .si-num {
+        background: #1a1e2d;
+        color: #82aaff;
+      }
+      .s3 .si-num {
+        background: #1a2010;
+        color: #c3e88d;
+      }
+
+      /* ── 비교 박스 (equivalent) ── */
+      .equiv-box {
+        background: #1a1208;
+        border-radius: 8px;
+        padding: 16px 22px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 14px;
+        margin: 14px 0;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .eq-left {
+        color: #82aaff;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .eq-sep {
+        color: #546e7a;
+        font-size: 22px;
+      }
+      .eq-right {
+        color: #c3e88d;
+        font-size: 14px;
+      }
+
+      /* ── 요약 배지 ── */
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 14px;
+        margin-top: 6px;
+      }
+      .sg-item {
+        background: #1a1208;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #3a3028;
+      }
+      .sg-head {
+        padding: 8px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+      }
+      .sg-body {
+        padding: 10px 14px;
+        font-size: 13px;
+        line-height: 1.8;
+        color: #c8b080;
+        font-family: "Gowun Batang", serif;
+      }
+      .sg-star .sg-head {
+        background: #2d1010;
+        color: #ff9580;
+        border-bottom: 1px solid #6a2020;
+      }
+      .sg-arrow .sg-head {
+        background: #1a1e2d;
+        color: #82aaff;
+        border-bottom: 1px solid #1e3a6e;
+      }
+      .sg-amp .sg-head {
+        background: #1a2010;
+        color: #c3e88d;
+        border-bottom: 1px solid #2d5a3d;
+      }
+
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- ══ 헤더 ══ -->
+      <div class="header">
+        <div class="label">C Language Study Note</div>
+        <h1>포인터(Pointer) 핵심 개념 완전 정리</h1>
+        <div class="meta">
+          C · Pointer · * · -> · & · Dereference · Address · Struct
+        </div>
+      </div>
+
+      <!-- ══ 섹션 0: 핵심 연산자 3가지 요약 ══ -->
+      <div class="section">
+        <div class="section-title">
+          <span class="num">★</span>핵심 연산자 3가지 요약
+        </div>
+
+        <div class="summary-grid">
+          <div class="sg-item sg-star">
+            <div class="sg-head">*</div>
+            <div class="sg-body">
+              ① 포인터 변수 <strong>선언</strong><br />
+              ② 포인터가 가리키는<br />실제 값 <strong>접근</strong> (역참조)
+            </div>
+          </div>
+          <div class="sg-item sg-arrow">
+            <div class="sg-head">-&gt;</div>
+            <div class="sg-body">
+              구조체 포인터가<br />
+              가리키는 구조체의<br />
+              <strong>멤버에 접근</strong>
+            </div>
+          </div>
+          <div class="sg-item sg-amp">
+            <div class="sg-head">&amp;</div>
+            <div class="sg-body">
+              변수의<br />
+              <strong>메모리 주소값</strong>을<br />
+              가져옴
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px">
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th>연산자</th>
+                <th>역할</th>
+                <th>예시</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="op-badge ob-star">*</span></td>
+                <td>
+                  ① 포인터 변수 선언 &nbsp;/&nbsp; ② 포인터가 가리키는 실제 값
+                  접근
+                </td>
+                <td><code>int* p;</code> &nbsp;/&nbsp; <code>*p</code></td>
+              </tr>
+              <tr>
+                <td><span class="op-badge ob-arrow">-&gt;</span></td>
+                <td>구조체 포인터가 가리키는 구조체의 멤버에 접근</td>
+                <td><code>n-&gt;val</code></td>
+              </tr>
+              <tr>
+                <td><span class="op-badge ob-amp">&amp;</span></td>
+                <td>변수의 메모리 주소값을 가져옴</td>
+                <td><code>&amp;a</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══ 섹션 1: * ══ -->
+      <div class="section">
+        <div class="section-title">
+          <span class="num">1</span><code>*</code> — 선언과 사용, 두 가지 의미
+        </div>
+
+        <!-- 1-1 선언 -->
+        <div class="sub-title">
+          <span class="sub-num">1</span>선언에서의 <code>*</code> — 포인터 변수
+          선언
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">int</span><span class="op">*</span> a;            <span class="cmt">// a는 int가 저장된 메모리 주소를 들고 있는 변수</span>
+<span class="kw">struct</span> <span class="cls">node</span><span class="op">*</span> p;    <span class="cmt">// p는 struct node를 가리키는 포인터</span>
+<span class="kw">char</span><span class="op">*</span> s;           <span class="cmt">// s는 char를 가리키는 포인터</span></pre>
+        </div>
+        <div class="card blue">
+          <ul class="point-list">
+            <li>
+              <span class="icon">📌</span
+              ><span
+                ><code>a</code>는 int 값 자체가 아니라,
+                <span class="hl">int가 저장된 메모리 주소</span>를 들고 있는
+                변수입니다.</span
+              >
+            </li>
+            <li>
+              <span class="icon">📌</span
+              ><span
+                ><code>p</code>는 struct node 구조체를
+                <strong>가리키는</strong> 포인터 — 구조체 자체가 아닌 주소를
+                보관합니다.</span
+              >
+            </li>
+            <li>
+              <span class="icon">📌</span
+              ><span
+                ><code>s</code>는 char 한 글자를 가리키는 포인터 — 문자열의 현재
+                위치(주소)를 들고 있습니다.</span
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- 1-2 역참조 -->
+        <div class="sub-title" style="margin-top: 28px">
+          <span class="sub-num">2</span>사용에서의 <code>*</code> — 역참조, 실제
+          값 접근
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">while</span> (<span class="op">*</span>s)   <span class="cmt">// s가 가리키는 실제 문자가 '\0'이 아닌 동안 반복</span></pre>
+        </div>
+        <div class="card">
+          <ul class="point-list">
+            <li>
+              <span class="icon">🔷</span
+              ><span><code>s</code> = 현재 문자의 <strong>주소</strong></span>
+            </li>
+            <li>
+              <span class="icon">🔷</span
+              ><span
+                ><code>*s</code> = s가 가리키는 곳에 들어 있는
+                <strong>실제 문자</strong></span
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- 메모리 시각화 -->
+        <p
+          style="
+            margin: 20px 0 10px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          예시: 문자열 <code>"BEST"</code>의 메모리 배치
+        </p>
+        <div class="flow-wrap">
+          <div class="mem-row">
+            <div class="mem-group">
+              <div class="mem-cell mc-addr">100</div>
+              <div class="mem-label">주소</div>
+            </div>
+            <div class="mem-group">
+              <div class="mem-cell mc-addr">101</div>
+              <div class="mem-label">주소</div>
+            </div>
+            <div class="mem-group">
+              <div class="mem-cell mc-addr">102</div>
+              <div class="mem-label">주소</div>
+            </div>
+            <div class="mem-group">
+              <div class="mem-cell mc-addr">103</div>
+              <div class="mem-label">주소</div>
+            </div>
+            <div class="mem-group">
+              <div class="mem-cell mc-addr">104</div>
+              <div class="mem-label">주소</div>
+            </div>
+          </div>
+          <div class="mem-row" style="margin-top: 4px">
+            <div class="mem-group">
+              <div
+                class="mem-cell mc-char"
+                style="box-shadow: 0 0 0 3px #f0c060"
+              >
+                B
+              </div>
+              <div class="mem-label" style="color: #f0c060">*s (s=100)</div>
+            </div>
+            <div class="mem-group">
+              <div class="mem-cell mc-char">E</div>
+              <div class="mem-label">s++ → 101</div>
+            </div>
+            <div class="mem-group">
+              <div class="mem-cell mc-char">S</div>
+              <div class="mem-label">s++ → 102</div>
+            </div>
+            <div class="mem-group">
+              <div class="mem-cell mc-char">T</div>
+              <div class="mem-label">s++ → 103</div>
+            </div>
+            <div class="mem-group">
+              <div class="mem-cell mc-null">\0</div>
+              <div class="mem-label">while(*s) 종료</div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 14px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 12px;
+              line-height: 2;
+              color: #546e7a;
+            "
+          >
+            <span style="color: #f0c060">*s = 'B'</span> (s=100) &nbsp;→&nbsp;
+            s++ 후 <span style="color: #c3e88d">*s = 'E'</span> (s=101)
+            &nbsp;→&nbsp; s++ 후
+            <span style="color: #c3e88d">*s = 'S'</span> &nbsp;→&nbsp; s++ 후
+            <span style="color: #c3e88d">*s = 'T'</span> &nbsp;→&nbsp; s++ 후
+            <span style="color: #ff7675">*s = '\0'</span> → while 종료
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 섹션 2: -> ══ -->
+      <div class="section">
+        <div class="section-title">
+          <span class="num blue" style="background: var(--accent3)">2</span
+          ><code>-&gt;</code> — 구조체 포인터의 멤버 접근
+        </div>
+
+        <p style="margin-bottom: 14px">
+          구조체 <strong>변수</strong>는 <code>.</code>으로 멤버에 바로 접근
+          가능합니다:
+        </p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">struct</span> <span class="cls">node</span> x;
+x.c = <span class="str">'A'</span>;   <span class="cmt">// 구조체 변수 직접 접근 → . 사용 가능</span></pre>
+        </div>
+
+        <p style="margin: 16px 0 10px">
+          그러나 <strong>포인터</strong>는 주소를 들고 있으므로 <code>.</code>을
+          바로 쓸 수 없습니다:
+        </p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">struct</span> <span class="cls">node</span><span class="op">*</span> n;   <span class="cmt">// n은 구조체 자체가 아니라 주소</span>
+n<span class="op">-&gt;</span>c              <span class="cmt">// 포인터를 통한 멤버 접근</span></pre>
+        </div>
+
+        <!-- 등가 표현 -->
+        <p style="margin: 16px 0 10px">
+          <code>n-&gt;c</code>는 아래와
+          <span class="hl">완전히 동일</span>합니다:
+        </p>
+        <div class="equiv-box">
+          <div>
+            <div class="eq-left">n-&gt;c</div>
+            <div style="font-size: 10px; color: #546e7a; margin-top: 3px">
+              축약 표현
+            </div>
+          </div>
+          <div class="eq-sep">≡</div>
+          <div>
+            <div class="eq-right">(*n).c</div>
+            <div style="font-size: 10px; color: #546e7a; margin-top: 3px">
+              풀어쓴 표현
+            </div>
+          </div>
+        </div>
+
+        <!-- 동작 단계 -->
+        <p
+          style="
+            margin: 20px 0 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e3a6e;
+          "
+        >
+          동작 순서 분해:
+        </p>
+        <div class="steps-box">
+          <div class="step-item s1">
+            <div class="si-num">①</div>
+            <div class="si-body">
+              <div class="si-expr" style="color: #f0c060">*n</div>
+              <div class="si-desc">
+                n이 가리키는 실제 구조체를 꺼냄 (역참조)
+              </div>
+            </div>
+          </div>
+          <div class="step-item s2">
+            <div class="si-num">②</div>
+            <div class="si-body">
+              <div class="si-expr" style="color: #82aaff">(*n).c</div>
+              <div class="si-desc">그 구조체의 c 멤버에 접근</div>
+            </div>
+          </div>
+          <div class="step-item s3">
+            <div class="si-num">③</div>
+            <div class="si-body">
+              <div class="si-expr" style="color: #c3e88d">n-&gt;c</div>
+              <div class="si-desc">
+                ① + ② 두 단계를 화살표 연산자 하나로 축약한 것
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card blue" style="margin-top: 14px">
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th>상황</th>
+                <th>사용할 연산자</th>
+                <th>예시</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>구조체 <strong>변수</strong>의 멤버 접근</td>
+                <td><code>.</code></td>
+                <td><code>x.val</code></td>
+              </tr>
+              <tr class="hl-row">
+                <td>구조체 <strong>포인터</strong>의 멤버 접근</td>
+                <td><code>-&gt;</code> (= <code>(*ptr).field</code>)</td>
+                <td><code>n-&gt;val</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══ 섹션 3: & ══ -->
+      <div class="section">
+        <div class="section-title">
+          <span class="num green">3</span><code>&amp;</code> — 변수의 주소를
+          가져오는 연산자
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">int</span> a = <span class="nl">10</span>;
+<span class="kw">int</span><span class="op">*</span> p = <span class="op">&amp;</span>a;   <span class="cmt">// p에 a의 주소를 저장</span></pre>
+        </div>
+
+        <div class="flow-wrap">
+          <div class="ptr-chain">
+            <div class="pc-box pc-var">
+              <div>a = 10</div>
+              <div class="pc-label">값 변수</div>
+            </div>
+            <div class="pc-arrow">⟵</div>
+            <div class="pc-box pc-addr">
+              <div>&amp;a = 0x100</div>
+              <div class="pc-label">a의 주소</div>
+            </div>
+            <div class="pc-arrow">⟵</div>
+            <div class="pc-box pc-ptr">
+              <div>p = 0x100</div>
+              <div class="pc-label">주소 저장 포인터</div>
+            </div>
+            <div class="pc-arrow">→</div>
+            <div class="pc-box pc-deref">
+              <div>*p = 10</div>
+              <div class="pc-label">역참조 → 실제 값</div>
+            </div>
+          </div>
+        </div>
+
+        <table class="info-table" style="margin-top: 16px">
+          <thead>
+            <tr>
+              <th>표현식</th>
+              <th>의미</th>
+              <th>값</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>a</code></td>
+              <td>변수 자체</td>
+              <td><code>10</code></td>
+            </tr>
+            <tr>
+              <td><code>&amp;a</code></td>
+              <td>a의 메모리 주소</td>
+              <td><code>0x100</code> (예시)</td>
+            </tr>
+            <tr>
+              <td><code>p</code></td>
+              <td>주소를 저장한 포인터 변수</td>
+              <td><code>0x100</code></td>
+            </tr>
+            <tr class="hl-row">
+              <td><code>*p</code></td>
+              <td>p가 가리키는 실제 값 (역참조)</td>
+              <td><code>10</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p
+          style="
+            margin: 18px 0 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #2d5a3d;
+          "
+        >
+          전체 흐름 요약:
+        </p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre>a        <span class="cmt">// 값 (10)</span>
+<span class="op">&amp;</span>a       <span class="cmt">// a의 주소 (0x100)</span>
+p = <span class="op">&amp;</span>a   <span class="cmt">// p에 주소 저장</span>
+<span class="op">*</span>p       <span class="cmt">// p가 가리키는 실제 값 → 10</span></pre>
+        </div>
+      </div>
+
+      <!-- ══ 섹션 4: 연계 예시 ══ -->
+      <div class="section">
+        <div class="section-title">
+          <span class="num">4</span>세 연산자 연계 예시
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">struct</span> <span class="cls">node</span> {
+    <span class="kw">int</span> val;
+    <span class="kw">struct</span> <span class="cls">node</span><span class="op">*</span> next;
+};
+
+<span class="kw">struct</span> <span class="cls">node</span> a = {<span class="nl">10</span>, <span class="nl">0</span>};
+<span class="kw">struct</span> <span class="cls">node</span><span class="op">*</span> p = <span class="op">&amp;</span>a;   <span class="cmt">// p에 a의 주소 저장  ← &amp; 사용</span>
+
+p<span class="op">-&gt;</span>val   <span class="cmt">// = (*p).val = a.val = 10  ← -> 사용</span>
+<span class="op">*</span>p       <span class="cmt">// 구조체 a 자체            ← * 역참조</span>
+<span class="op">&amp;</span>a       <span class="cmt">// a의 주소 (p와 동일한 값) ← & 사용</span></pre>
+        </div>
+
+        <!-- 연계 다이어그램 -->
+        <div class="flow-wrap" style="margin-top: 16px">
+          <svg
+            width="580"
+            height="130"
+            viewBox="0 0 580 130"
+            font-family="JetBrains Mono,monospace"
+          >
+            <!-- p 박스 -->
+            <rect
+              x="8"
+              y="44"
+              width="90"
+              height="40"
+              rx="5"
+              fill="#1e1a2d"
+              stroke="#5a3a8b"
+              stroke-width="2"
+            />
+            <text
+              x="53"
+              y="62"
+              text-anchor="middle"
+              fill="#c792ea"
+              font-size="11"
+              font-weight="bold"
+            >
+              p
+            </text>
+            <text
+              x="53"
+              y="77"
+              text-anchor="middle"
+              fill="#c792ea"
+              font-size="10"
+            >
+              = &amp;a
+            </text>
+
+            <!-- &a 라벨 -->
+            <text x="106" y="80" fill="#8a7a60" font-size="10">&amp;a</text>
+
+            <!-- 화살표 p→a -->
+            <line
+              x1="98"
+              y1="64"
+              x2="148"
+              y2="64"
+              stroke="#c792ea"
+              stroke-width="2"
+            />
+            <polygon points="148,59 158,64 148,69" fill="#c792ea" />
+
+            <!-- 구조체 a 박스 -->
+            <rect
+              x="158"
+              y="28"
+              width="160"
+              height="80"
+              rx="7"
+              fill="#141008"
+              stroke="#f0c060"
+              stroke-width="2"
+            />
+            <text
+              x="238"
+              y="50"
+              text-anchor="middle"
+              fill="#f0c060"
+              font-size="12"
+              font-weight="bold"
+            >
+              struct node a
+            </text>
+            <line
+              x1="158"
+              y1="57"
+              x2="318"
+              y2="57"
+              stroke="#2a1e10"
+              stroke-width="1"
+            />
+            <!-- val 필드 -->
+            <rect
+              x="166"
+              y="63"
+              width="60"
+              height="34"
+              rx="3"
+              fill="#2d2010"
+              stroke="#8b6020"
+              stroke-width="1.5"
+            />
+            <text
+              x="196"
+              y="86"
+              text-anchor="middle"
+              fill="#f0c060"
+              font-size="16"
+              font-weight="bold"
+            >
+              10
+            </text>
+            <!-- next 필드 -->
+            <rect
+              x="236"
+              y="63"
+              width="74"
+              height="34"
+              rx="3"
+              fill="#1a1208"
+              stroke="#3a3028"
+              stroke-width="1"
+            />
+            <text
+              x="273"
+              y="85"
+              text-anchor="middle"
+              fill="#546e7a"
+              font-size="11"
+            >
+              NULL
+            </text>
+            <!-- field labels -->
+            <text
+              x="196"
+              y="110"
+              text-anchor="middle"
+              fill="#546e7a"
+              font-size="9"
+            >
+              val
+            </text>
+            <text
+              x="273"
+              y="110"
+              text-anchor="middle"
+              fill="#546e7a"
+              font-size="9"
+            >
+              next
+            </text>
+
+            <!-- *p 라벨 -->
+            <text x="162" y="22" fill="#82aaff" font-size="10">
+              *p = 구조체 a 자체
+            </text>
+
+            <!-- p->val 화살표 -->
+            <path
+              d="M 53 44 Q 53 14 196 28"
+              fill="none"
+              stroke="#82aaff"
+              stroke-width="1.5"
+              stroke-dasharray="4,2"
+            />
+            <polygon points="193,24 200,29 195,35" fill="#82aaff" />
+            <text x="90" y="12" fill="#82aaff" font-size="10">
+              p-&gt;val = 10
+            </text>
+
+            <!-- 오른쪽 주석 -->
+            <text x="338" y="48" fill="#c792ea" font-size="11">
+              &amp;a == p
+            </text>
+            <text x="338" y="66" fill="#82aaff" font-size="11">
+              *p == a (구조체)
+            </text>
+            <text x="338" y="84" fill="#f0c060" font-size="11">
+              p-&gt;val == 10
+            </text>
+            <text x="338" y="102" fill="#c3e88d" font-size="11">
+              (*p).val == 10
+            </text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- ══ 섹션 5: 한 줄 요약 ══ -->
+      <div class="section">
+        <div class="section-title">
+          <span class="num green">5</span>한 줄 요약
+        </div>
+        <div class="card gold">
+          <ul class="point-list">
+            <li>
+              <span class="icon">⭐</span>
+              <span
+                ><strong><code>*</code> 선언</strong> :
+                <span class="hl">"이 변수는 주소를 저장한다"</span></span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span>
+              <span
+                ><strong><code>*</code> 사용</strong> :
+                <span class="hl">"이 주소가 가리키는 실제 값을 꺼낸다"</span>
+                (역참조)</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span>
+              <span
+                ><strong><code>-&gt;</code></strong> :
+                <span class="hl"
+                  >"포인터가 가리키는 구조체의 멤버를 꺼낸다"</span
+                >
+                — <code>(*p).field</code>의 축약</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span>
+              <span
+                ><strong><code>&amp;</code></strong> :
+                <span class="hl"
+                  >"이 변수가 저장된 메모리 주소를 알려준다"</span
+                ></span
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- 최종 정리 코드 -->
+        <div class="code-block" style="margin-top: 20px">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C — 세 연산자 한눈에 보기</span>
+          </div>
+          <pre><span class="kw">int</span> a = <span class="nl">10</span>;
+<span class="kw">int</span><span class="op">*</span> p = <span class="op">&amp;</span>a;   <span class="cmt">// &amp; : a의 주소 가져오기 / * : 포인터 선언</span>
+<span class="op">*</span>p = <span class="nl">20</span>;      <span class="cmt">// * : p가 가리키는 실제 값 변경 → a = 20</span>
+
+<span class="kw">struct</span> <span class="cls">node</span> x = {<span class="nl">42</span>, <span class="nl">0</span>};
+<span class="kw">struct</span> <span class="cls">node</span><span class="op">*</span> q = <span class="op">&amp;</span>x;   <span class="cmt">// & : x의 주소 / * : 포인터 선언</span>
+q<span class="op">-&gt;</span>val;                 <span class="cmt">// -> : 포인터로 구조체 멤버 접근 → 42</span>
+<span class="cmt">// q->val  ≡  (*q).val  ≡  x.val</span></pre>
+        </div>
+      </div>
+    </div>
+    <!-- /page -->
+  </body>
+</html>

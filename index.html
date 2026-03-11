@@ -360,6 +360,108 @@
         animation: fadeSlide 0.6s ease 0.3s both;
       }
 
+      /* ── 클릭 가능한 통계 카드 ── */
+      .stat-card.clickable {
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .stat-card.clickable:hover {
+        border-color: var(--accent);
+        background: rgba(139,58,15,0.07);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      }
+      .stat-card.clickable.active {
+        border-color: var(--accent);
+        background: rgba(139,58,15,0.1);
+        box-shadow: 0 0 0 2px rgba(139,58,15,0.25);
+      }
+      .stat-card.clickable.active .s-label {
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      /* ── 학습 자료 섹션 ── */
+      .learning-section {
+        padding-left: 48px;
+        margin-bottom: 32px;
+        animation: fadeSlide 0.6s ease 0.12s both;
+      }
+      .learning-header {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.08em;
+        margin-bottom: 14px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .learning-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .learn-col {
+        background: rgba(255,255,255,0.4);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .learn-col-header {
+        padding: 8px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: 0.05em;
+      }
+      .lh-j { background: rgba(247,140,108,0.15); color: #c4622a; border-bottom: 1px solid rgba(247,140,108,0.3); }
+      .lh-c { background: rgba(130,170,255,0.15); color: #2d5aaa; border-bottom: 1px solid rgba(130,170,255,0.3); }
+      .lh-p { background: rgba(195,232,141,0.15); color: #3a6a20; border-bottom: 1px solid rgba(195,232,141,0.3); }
+      .learn-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        text-decoration: none;
+        color: var(--ink);
+        border-bottom: 1px solid rgba(200,184,154,0.3);
+        transition: background 0.12s;
+      }
+      .learn-item:last-child { border-bottom: none; }
+      .learn-item:hover { background: rgba(255,255,255,0.85); }
+      .learn-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: #a09070;
+        flex-shrink: 0;
+      }
+      .learn-title {
+        flex: 1;
+        font-family: "Noto Serif KR", serif;
+        font-size: 12px;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .learn-arrow {
+        color: #c8b89a;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+      .learn-empty {
+        padding: 16px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #b0a090;
+        text-align: center;
+      }
+
       @keyframes fadeSlide {
         from { opacity: 0; transform: translateY(14px); }
         to   { opacity: 1; transform: translateY(0); }
@@ -369,10 +471,11 @@
       @media (max-width: 640px) {
         .page { padding: 40px 16px; }
         .page::before { display: none; }
-        .header, .stats-row, .controls, .list-header, .problem-list, .footer {
+        .header, .stats-row, .controls, .list-header, .problem-list, .learning-section, .footer {
           padding-left: 0;
         }
         .p-lang-badge { display: none; }
+        .learning-grid { grid-template-columns: 1fr; }
       }
     </style>
   </head>
@@ -392,15 +495,15 @@
           <div class="s-num" id="statTotal">0</div>
           <div class="s-label">전체 문제</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card clickable" data-lang="J" onclick="filterByLang('J')" title="Java 문제만 보기">
           <div class="s-num" id="statJava">0</div>
           <div class="s-label">Java</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card clickable" data-lang="C" onclick="filterByLang('C')" title="C언어 문제만 보기">
           <div class="s-num" id="statC">0</div>
           <div class="s-label">C언어</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card clickable" data-lang="P" onclick="filterByLang('P')" title="Python 문제만 보기">
           <div class="s-num" id="statPython">0</div>
           <div class="s-label">Python</div>
         </div>
@@ -412,6 +515,12 @@
           <div class="s-num" id="statRounds">0</div>
           <div class="s-label">회차 수</div>
         </div>
+      </div>
+
+      <!-- 학습 자료 -->
+      <div class="learning-section">
+        <div class="learning-header">📚 언어별 학습 자료</div>
+        <div class="learning-grid" id="learningGrid"></div>
       </div>
 
       <!-- 컨트롤 -->
@@ -441,7 +550,7 @@
           <select class="filter-select" id="filterRound" onchange="renderList()">
             <option value="">전체 회차</option>
           </select>
-          <select class="filter-select" id="filterLang" onchange="renderList()">
+          <select class="filter-select" id="filterLang" onchange="syncLangCards(); renderList()">
             <option value="">전체 언어</option>
             <option value="J">Java</option>
             <option value="C">C언어</option>
@@ -482,6 +591,47 @@
     const LANG_BADGE_CLASS = { J: "badge-j", C: "badge-c", P: "badge-p", essay: "badge-essay", short: "badge-short" };
     const LANG_ITEM_CLASS  = { J: "lang-j", C: "lang-c", P: "lang-p", essay: "lang-essay", short: "lang-short" };
     const TYPE_CLASS = { programming: "type-programming", essay: "type-essay", short: "type-short" };
+
+    // ── 언어 필터 단축키 (통계 카드 클릭) ──
+    function filterByLang(lang) {
+      const sel = document.getElementById("filterLang");
+      // 이미 같은 언어면 해제, 아니면 설정
+      sel.value = (sel.value === lang) ? "" : lang;
+      syncLangCards();
+      renderList();
+    }
+
+    // ── 언어 카드 active 상태 동기화 ──
+    function syncLangCards() {
+      const val = document.getElementById("filterLang").value;
+      document.querySelectorAll(".stat-card[data-lang]").forEach(card => {
+        card.classList.toggle("active", card.dataset.lang === val && val !== "");
+      });
+    }
+
+    // ── 학습 자료 렌더 ──
+    function renderLearning() {
+      const LANG_ORDER  = ["J", "C", "P"];
+      const LANG_NAMES  = { J: "Java", C: "C언어", P: "Python" };
+      const HEADER_CLS  = { J: "lh-j", C: "lh-c", P: "lh-p" };
+
+      document.getElementById("learningGrid").innerHTML = LANG_ORDER.map(lang => {
+        const items = LEARNING.filter(l => l.lang === lang);
+        const itemsHtml = items.length
+          ? items.map(l => `
+              <a class="learn-item" href="${l.file}">
+                <span class="learn-num">#${String(l.num).padStart(2, "0")}</span>
+                <span class="learn-title">${l.title}</span>
+                <span class="learn-arrow">›</span>
+              </a>`).join("")
+          : `<div class="learn-empty">준비 중…</div>`;
+        return `
+          <div class="learn-col">
+            <div class="learn-col-header ${HEADER_CLS[lang]}">${LANG_NAMES[lang]}</div>
+            ${itemsHtml}
+          </div>`;
+      }).join("");
+    }
 
     // ── 현재 탭 ──
     let currentTab = "newest";
@@ -678,6 +828,7 @@
     // ── 부트스트랩 ──
     initFilters();
     updateStats();
+    renderLearning();
     renderList();
     </script>
   </body>

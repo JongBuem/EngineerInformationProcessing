@@ -1,19 +1,23 @@
 /**
- * problems.js — 문제 목록 데이터
+ * problems.js — 문제 목록 & 학습 자료 데이터
  *
- * 파일명 규칙: YYYY_회차_문제번호_언어.html
- *   YYYY  : 연도 (예: 2024, 2025)
- *   회차  : 01, 02, 03 …
- *   문제번호: 01–20
- *   언어  : J = Java, C = C언어, P = Python
+ * ── 문제 파일명 규칙: YYYY_회차_문제번호_언어.html ──
+ *   YYYY     : 연도 (예: 2024, 2025)
+ *   회차     : 01, 02, 03 …
+ *   문제번호 : 01–20
+ *   언어     : J = Java, C = C언어, P = Python
  *
  * type 필드:
  *   "programming" — 프로그래밍 출력값 추적
  *   "essay"       — 서술형 (추후 추가)
  *   "short"       — 단답형 (추후 추가)
  *
- * 새 문제 추가 방법:
- *   아래 PROBLEMS 배열에 한 줄 추가 후 해당 HTML 파일을 같은 폴더에 저장.
+ * ── 학습 파일명 규칙: learning_갯수_언어.html ──
+ *   갯수 : 01, 02 … (해당 언어 내 순서)
+ *   언어 : J = Java, C = C언어, P = Python
+ *
+ * 새 문제/학습 자료 추가 방법:
+ *   PROBLEMS 또는 LEARNING 배열에 한 줄 추가 후 HTML 파일을 같은 폴더에 저장.
  */
 const PROBLEMS = [
   // ── 2024년 2회차 ──
@@ -68,4 +72,26 @@ const PROBLEMS = [
   { file: "2025_03_12_J.html", year: 2025, round: 3, num: 12, lang: "J", type: "programming" },
   { file: "2025_03_15_C.html", year: 2025, round: 3, num: 15, lang: "C", type: "programming" },
   { file: "2025_03_17_J.html", year: 2025, round: 3, num: 17, lang: "J", type: "programming" },
+];
+
+/**
+ * LEARNING — 언어별 학습 자료 목록
+ *
+ * 파일명 규칙: learning_갯수_언어.html
+ *   갯수 : 01, 02 … (해당 언어 내 학습자료 순서)
+ *   언어 : J = Java, C = C언어, P = Python
+ *
+ * 새 학습 자료 추가 방법:
+ *   아래 배열에 한 줄 추가 후 해당 HTML 파일을 같은 폴더에 저장.
+ */
+const LEARNING = [
+  // ── C언어 ──
+  { file: "learning_01_C.html", lang: "C", num: 1, title: "포인터(Pointer) 핵심 개념 완전 정리" },
+  { file: "learning_02_C.html", lang: "C", num: 2, title: "언어 출제 테마별 심화 학습 정리" },
+
+  // ── Java (추후 추가) ──
+  // { file: "learning_01_J.html", lang: "J", num: 1, title: "..." },
+
+  // ── Python (추후 추가) ──
+  // { file: "learning_01_P.html", lang: "P", num: 1, title: "..." },
 ];
