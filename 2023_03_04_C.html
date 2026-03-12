@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .hi {
+        color: #ff9580;
+        font-weight: bold;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 130px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 1.8;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 24px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.22);
+        font-weight: 700;
+      }
+      .trace-table tr.ok-row td {
+        background: rgba(45, 90, 61, 0.12);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-ok {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-no {
+        background: #1a1208;
+        color: #546e7a;
+        border: 1px solid #3a3028;
+      }
+      .tag-hi {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      /* 약수 시각화 박스 */
+      .div-box {
+        background: #1a1208;
+        border-radius: 8px;
+        overflow: hidden;
+        font-family: "JetBrains Mono", monospace;
+        margin-bottom: 16px;
+      }
+      .db-head {
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: bold;
+        border-bottom: 1px solid #2a1e10;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .db-body {
+        padding: 12px 16px;
+        font-size: 13px;
+        color: #c8b080;
+        line-height: 2;
+      }
+      .div-chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin: 8px 0;
+      }
+      .div-chip {
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: bold;
+      }
+      .dc-yes {
+        background: #1a2010;
+        border: 2px solid #c3e88d;
+        color: #c3e88d;
+      }
+      .dc-num {
+        background: #1a1208;
+        border: 1px solid #3a3028;
+        color: #8a7a60;
+      }
+
+      /* 완전수 하이라이트 카드 */
+      .perfect-card {
+        background: #1a1208;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 2px solid #c3e88d;
+        margin-bottom: 12px;
+      }
+      .pc-head {
+        background: #1a2010;
+        padding: 10px 20px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: bold;
+        color: #c3e88d;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .pc-body {
+        padding: 14px 20px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: #c8b080;
+        line-height: 2.2;
+      }
+      .pc-eq {
+        color: #f0c060;
+        font-size: 15px;
+        font-weight: bold;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 완전수(Perfect Number) 탐색 — 2~100 합산</h1>
+        <div class="meta">
+          C · Perfect Number · 약수 합산 · for loop · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+
+<span class="kw">int</span> <span class="fn">test</span>(<span class="kw">int</span> n) {
+    <span class="kw">int</span> i, sum = <span class="nl">0</span>;
+    <span class="kw">for</span> (i = <span class="nl">1</span>; i &lt;= n / <span class="nl">2</span>; i++) {   <span class="cmt">// 1 ~ n/2 범위에서 약수 탐색</span>
+        <span class="kw">if</span> (n % i == <span class="nl">0</span>)
+            sum += i;               <span class="cmt">// 약수이면 합산</span>
+    }
+    <span class="kw">if</span> (n == sum)                   <span class="cmt">// 자기 자신 = 약수 합 → 완전수</span>
+        <span class="kw">return</span> <span class="nl">1</span>;
+    <span class="kw">return</span> <span class="nl">0</span>;
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> i, sum = <span class="nl">0</span>;
+    <span class="kw">for</span> (i = <span class="nl">2</span>; i &lt;= <span class="nl">100</span>; i++) {   <span class="cmt">// 2~100 순회</span>
+        <span class="kw">if</span> (<span class="fn">test</span>(i))
+            sum += i;               <span class="cmt">// 완전수이면 누적</span>
+    }
+    printf(<span class="str">"%d "</span>, sum);
+    <span class="kw">return</span> <span class="nl">0</span>;
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">printf() 출력 결과</div>
+          <div class="answer-value">34</div>
+          <div class="answer-desc">2~100 사이의 완전수: 6 + 28 = 34</div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >완전수(Perfect Number)를 판별하는 함수를 이용해 2~100 범위에서
+                완전수를 모두 찾아 합산하는 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">📐</span
+                ><span
+                  ><strong>완전수(Perfect Number)</strong>란, 자기 자신을 제외한
+                  양의 약수들의 합이 자기 자신과 같은 수입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔍</span
+                ><span
+                  ><code>test(n)</code>은 <code>i = 1 ~ n/2</code> 범위에서
+                  약수를 합산합니다.
+                  <span class="hl">n 자체는 포함하지 않으므로</span>
+                  진약수(proper divisor) 합을 구합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">✅</span
+                ><span
+                  >2~100 사이의 완전수는 <strong>6</strong>과
+                  <strong>28</strong> 두 개뿐입니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② test 함수 동작 원리 -->
+        <div class="sub-section">
+          <div class="sub-title">② test() 함수 동작 원리</div>
+          <div class="div-box">
+            <div class="db-head" style="background: #1a1e2d; color: #82aaff">
+              <span>for (i = 1; i &lt;= n/2; i++)</span>
+              <span
+                style="
+                  font-size: 11px;
+                  color: #546e7a;
+                  font-weight: normal;
+                  margin-left: 8px;
+                "
+                >← 왜 n/2까지만?</span
+              >
+            </div>
+            <div class="db-body">
+              n의 약수 중 자기 자신을 제외하면 가장 큰 약수는 최대
+              <strong>n/2</strong>입니다.<br />
+              (예: 28의 진약수 중 최대 = 14 = 28/2)<br />
+              따라서 <code>i &lt;= n/2</code>로 범위를 제한해도 모든 진약수를
+              탐색할 수 있습니다.
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ n=6 완전수 검증 -->
+        <div class="sub-section">
+          <div class="sub-title">③ test(6) — 완전수 검증</div>
+          <div class="perfect-card">
+            <div class="pc-head">
+              <span style="font-size: 20px">6</span>
+              <span>의 진약수 탐색 (i = 1 ~ 3)</span>
+              <span class="tag tag-ok" style="margin-left: auto">✓ 완전수</span>
+            </div>
+            <div class="pc-body">
+              <div class="div-chips">
+                <span class="div-chip dc-yes">1 ✓</span>
+                <span class="div-chip dc-yes">2 ✓</span>
+                <span class="div-chip dc-yes">3 ✓</span>
+              </div>
+              6 % 1 = 0 → sum += 1 &nbsp;&nbsp; sum = 1<br />
+              6 % 2 = 0 → sum += 2 &nbsp;&nbsp; sum = 3<br />
+              6 % 3 = 0 → sum += 3 &nbsp;&nbsp; sum = 6<br />
+              <span class="pc-eq">n(6) == sum(6) → return 1 ✓</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ n=28 완전수 검증 -->
+        <div class="sub-section">
+          <div class="sub-title">④ test(28) — 완전수 검증</div>
+          <div class="perfect-card">
+            <div class="pc-head">
+              <span style="font-size: 20px">28</span>
+              <span>의 진약수 탐색 (i = 1 ~ 14)</span>
+              <span class="tag tag-ok" style="margin-left: auto">✓ 완전수</span>
+            </div>
+            <div class="pc-body">
+              <div class="div-chips">
+                <span class="div-chip dc-yes">1 ✓</span>
+                <span class="div-chip dc-num">2</span>
+                <span class="div-chip dc-num">3</span>
+                <span class="div-chip dc-yes">4 ✓</span>
+                <span class="div-chip dc-num">5</span>
+                <span class="div-chip dc-num">6</span>
+                <span class="div-chip dc-yes">7 ✓</span>
+                <span class="div-chip dc-num">8~13</span>
+                <span class="div-chip dc-yes">14 ✓</span>
+              </div>
+              약수: 1, 2, 4, 7, 14<br />
+              sum = 1 + 2 + 4 + 7 + 14 = <strong>28</strong><br />
+              <span class="pc-eq">n(28) == sum(28) → return 1 ✓</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ 2~100 전체 스캔 결과 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 2~100 범위 완전수 탐색 결과</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>n</th>
+                  <th>진약수 합</th>
+                  <th>완전수?</th>
+                  <th>sum 누적</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2~5</td>
+                  <td>각각 1, 1, 1+3=4(아님), 1</td>
+                  <td><span class="tag tag-no">✗</span></td>
+                  <td>0</td>
+                </tr>
+                <tr class="ok-row">
+                  <td><strong>6</strong></td>
+                  <td>1 + 2 + 3 = <strong>6</strong></td>
+                  <td><span class="tag tag-ok">✓ 완전수</span></td>
+                  <td><strong style="color: #c3e88d">6</strong></td>
+                </tr>
+                <tr>
+                  <td>7~27</td>
+                  <td>각각 불일치</td>
+                  <td><span class="tag tag-no">✗</span></td>
+                  <td>6</td>
+                </tr>
+                <tr class="ok-row">
+                  <td><strong>28</strong></td>
+                  <td>1+2+4+7+14 = <strong>28</strong></td>
+                  <td><span class="tag tag-ok">✓ 완전수</span></td>
+                  <td><strong style="color: #c3e88d">34</strong></td>
+                </tr>
+                <tr>
+                  <td>29~100</td>
+                  <td>각각 불일치</td>
+                  <td><span class="tag tag-no">✗</span></td>
+                  <td>34</td>
+                </tr>
+                <tr class="hl-row">
+                  <td colspan="3">최종 sum</td>
+                  <td>
+                    <strong style="color: #f0c060; font-size: 18px">34</strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑥ 완전수 개념 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 완전수(Perfect Number) 개념</div>
+          <div
+            style="
+              background: #1a1208;
+              border-radius: 8px;
+              overflow: hidden;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+            "
+          >
+            <div
+              style="
+                background: #2d2010;
+                padding: 10px 18px;
+                color: #f0c060;
+                font-size: 13px;
+                font-weight: bold;
+              "
+            >
+              알려진 완전수 목록
+            </div>
+            <div
+              style="
+                padding: 14px 18px;
+                font-size: 13px;
+                color: #c8b080;
+                line-height: 2.4;
+              "
+            >
+              <span style="color: #c3e88d; font-weight: bold">6</span> = 1 + 2 +
+              3<br />
+              <span style="color: #c3e88d; font-weight: bold">28</span> = 1 + 2
+              + 4 + 7 + 14<br />
+              <span style="color: #82aaff; font-weight: bold">496</span> =
+              1+2+4+8+16+31+62+124+248<br />
+              <span style="color: #82aaff; font-weight: bold">8128</span> =
+              ...<br />
+              <span
+                style="
+                  color: #546e7a;
+                  font-size: 11px;
+                  margin-top: 4px;
+                  display: block;
+                "
+                >※ 2~100 범위에는 6과 28만 존재합니다.</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑦ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑦ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  ><code>i &lt;= n/2</code> 조건으로 n 자체를 제외한
+                  <span class="hl">진약수(proper divisor)</span>만 합산합니다. n
+                  자체를 포함하면 항상 sum &gt; n이 되어 어떤 수도 완전수가 되지
+                  않습니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  >2~100 범위에서 완전수는 <strong>6</strong>과
+                  <strong>28</strong> 단 두 개뿐이므로 합은
+                  <strong>6 + 28 = 34</strong>입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span
+                  >최종 출력: <strong>34</strong> (뒤에 공백 포함:
+                  <code>"34 "</code>)</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">printf() 출력 결과</div>
+          <div class="answer-value">34</div>
+          <div class="answer-desc">
+            완전수 6 + 완전수 28 = 34<br />
+            (2~100 범위에서 완전수는 6과 28뿐)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

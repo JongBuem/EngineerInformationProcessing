@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.red {
+        border-left-color: #c0392b;
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+      }
+      pre {
+        padding: 0;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+
+      /* 줄번호 코드 블록 */
+      .lined-code {
+        display: table;
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .code-row {
+        display: table-row;
+      }
+      .code-row:hover .ln {
+        background: #2a1e10;
+      }
+      .code-row:hover .lc {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .ln {
+        display: table-cell;
+        width: 40px;
+        padding: 0 10px;
+        text-align: right;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: #3a3028;
+        background: #150f06;
+        border-right: 1px solid #2a1e10;
+        user-select: none;
+        vertical-align: top;
+        line-height: 1.9;
+      }
+      .lc {
+        display: table-cell;
+        padding: 0 20px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        white-space: pre;
+      }
+      /* 에러 라인 강조 */
+      .code-row.err-row .ln {
+        background: #3a0808;
+        color: #ff5f57;
+        font-weight: bold;
+      }
+      .code-row.err-row .lc {
+        background: rgba(192, 57, 43, 0.15);
+        border-left: 3px solid #ff5f57;
+        padding-left: 17px;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      /* 정답 박스 */
+      .answer-box {
+        background: var(--ink);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+        border: 2px solid #c0392b;
+      }
+      .answer-box::before {
+        content: "⚠";
+        position: absolute;
+        top: -14px;
+        right: 4px;
+        font-size: 110px;
+        color: rgba(192, 57, 43, 0.06);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+        color: #ff9580;
+      }
+      .answer-box .answer-line-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 22px;
+        color: #ff9580;
+        margin-bottom: 6px;
+        letter-spacing: 0.1em;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 20px;
+        font-weight: 600;
+        color: #ff5f57;
+        animation: pulse 2s ease-in-out infinite;
+        background: rgba(192, 57, 43, 0.15);
+        border-radius: 6px;
+        padding: 10px 20px;
+        display: inline-block;
+        margin: 8px 0;
+        letter-spacing: 0.05em;
+      }
+      .answer-box .answer-desc {
+        margin-top: 14px;
+        font-size: 12px;
+        opacity: 0.55;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 1.9;
+        color: #e8d5b0;
+      }
+
+      /* 에러 메시지 박스 */
+      .err-box {
+        background: #1a0808;
+        border: 1px solid #8b2020;
+        border-left: 4px solid #ff5f57;
+        border-radius: 0 6px 6px 0;
+        padding: 14px 18px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: #ff9580;
+        line-height: 2;
+      }
+
+      .compare-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      @media (max-width: 560px) {
+        .compare-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.t-err td {
+        background: rgba(192, 57, 43, 0.1);
+      }
+      .trace-table tr.t-ok td {
+        background: rgba(45, 90, 61, 0.08);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-err {
+        background: #2d1010;
+        color: #ff5f57;
+        border: 1px solid #8b2020;
+      }
+      .tag-ok {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .hl-r {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(192, 57, 43, 0.3) 55%
+        );
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java 에러 발생 라인 찾기 — static & 인스턴스 변수</h1>
+        <div class="meta">
+          Java · static · instance field · Compile Error · non-static context ·
+          Error Line
+        </div>
+      </div>
+
+      <!-- 문제 코드 (줄번호 포함) -->
+      <div class="section">
+        <div class="section-title">
+          <span class="num">Q</span>문제 코드 — 에러가 발생하는 라인은?
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre class="lined-code">
+<div class="code-row"><span class="ln">1</span><span class="lc"><span class="kw">class</span> <span class="cls">Person</span> {</span></div>
+<div class="code-row"><span class="ln">2</span><span class="lc">    <span class="kw">private</span> <span class="cls">String</span> name;</span></div>
+<div class="code-row"><span class="ln">3</span><span class="lc">    <span class="kw">public</span> <span class="cls">Person</span>(<span class="cls">String</span> val) {</span></div>
+<div class="code-row"><span class="ln">4</span><span class="lc">        name = val;</span></div>
+<div class="code-row"><span class="ln">5</span><span class="lc">    }</span></div>
+<div class="code-row"><span class="ln">6</span><span class="lc">    <span class="kw">public static</span> <span class="cls">String</span> <span class="fn">get</span>() {</span></div>
+<div class="code-row err-row"><span class="ln">7</span><span class="lc">        <span class="kw">return</span> name;  <span class="cmt">// ← ?</span></span></div>
+<div class="code-row"><span class="ln">8</span><span class="lc">    }</span></div>
+<div class="code-row"><span class="ln">9</span><span class="lc">    <span class="kw">public void</span> <span class="fn">print</span>() {</span></div>
+<div class="code-row"><span class="ln">10</span><span class="lc">        System.out.<span class="fn">println</span>(name);</span></div>
+<div class="code-row"><span class="ln">11</span><span class="lc">    }</span></div>
+<div class="code-row"><span class="ln">12</span><span class="lc">}</span></div>
+<div class="code-row"><span class="ln">13</span><span class="lc"><span class="kw">public class</span> <span class="cls">main</span> {</span></div>
+<div class="code-row"><span class="ln">14</span><span class="lc">    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {</span></div>
+<div class="code-row"><span class="ln">15</span><span class="lc">        <span class="cls">Person</span> obj = <span class="kw">new</span> <span class="cls">Person</span>(<span class="str">"Kim"</span>);</span></div>
+<div class="code-row"><span class="ln">16</span><span class="lc">        obj.<span class="fn">print</span>();</span></div>
+<div class="code-row"><span class="ln">17</span><span class="lc">    }</span></div>
+<div class="code-row"><span class="ln">18</span><span class="lc">}</span></div>
+          </pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          컴파일 에러가 발생하는 <strong>라인 번호와 이유</strong>를 찾아라.
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">에러 발생 라인</div>
+          <div class="answer-line-num">Line 7</div>
+          <div class="answer-value">return name;</div>
+          <div class="answer-desc">
+            non-static variable name<br />
+            cannot be referenced from a static context<br /><br />
+            static 메서드 get() 에서 인스턴스 변수 name에 접근 불가
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card red">
+            <p>
+              <span class="hl-r"
+                >static 메서드 안에서 인스턴스(non-static) 변수를 참조하는
+                위치를 찾는 컴파일 에러 탐색 문제</span
+              >입니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- ② 에러 위치 상세 -->
+        <div class="sub-section">
+          <div class="sub-title">② 에러 위치 & 컴파일러 메시지</div>
+          <div class="err-box">
+            <span style="color: #ff5f57; font-weight: bold">Line 7:</span>&nbsp;
+            return
+            <span
+              style="
+                color: #ff5f57;
+                font-weight: bold;
+                text-decoration: underline wavy #ff5f57;
+              "
+              >name</span
+            >;<br /><br />
+            <span style="color: #ffcb6b">error:</span> non-static variable
+            <span style="color: #ff9580">name</span><br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cannot be referenced from a
+            static context<br /><br />
+            <span style="color: #546e7a; font-size: 11px"
+              >← Line 6의 public
+              <span style="color: #c792ea">static</span> String get() 가
+              원인</span
+            >
+          </div>
+        </div>
+
+        <!-- ③ 원인 분석 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 원인 분석 — static vs 인스턴스</div>
+          <div class="compare-grid">
+            <div
+              style="
+                background: #1a1208;
+                border: 2px solid #ff5f57;
+                border-radius: 8px;
+                overflow: hidden;
+              "
+            >
+              <div
+                style="
+                  background: #2d1010;
+                  padding: 10px 16px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 12px;
+                  font-weight: bold;
+                  color: #ff5f57;
+                "
+              >
+                Line 6 — static 메서드
+              </div>
+              <div
+                style="
+                  padding: 12px 16px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 12px;
+                  color: #e8d5b0;
+                  line-height: 2.2;
+                "
+              >
+                <span style="color: #c792ea">public static</span> String
+                get()<br />
+                클래스 레벨 — 객체 없이 존재<br />
+                <span style="color: #ff5f57">→ 어느 객체의 name?</span><br />
+                <span style="color: #ff5f57; font-weight: bold"
+                  >알 수 없음 ✕</span
+                >
+              </div>
+            </div>
+            <div
+              style="
+                background: #1a1208;
+                border: 2px solid #c3e88d;
+                border-radius: 8px;
+                overflow: hidden;
+              "
+            >
+              <div
+                style="
+                  background: #1a2010;
+                  padding: 10px 16px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 12px;
+                  font-weight: bold;
+                  color: #c3e88d;
+                "
+              >
+                Line 2 — 인스턴스 변수
+              </div>
+              <div
+                style="
+                  padding: 12px 16px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 12px;
+                  color: #e8d5b0;
+                  line-height: 2.2;
+                "
+              >
+                <span style="color: #c792ea">private</span> String name<br />
+                객체 레벨 — 객체마다 존재<br />
+                <span style="color: #c3e88d">→ new Person() 후 생성</span><br />
+                <span style="color: #c3e88d; font-weight: bold"
+                  >객체 귀속 ✓</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ 라인별 정상/에러 분류표 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 라인별 정상 / 에러 분류</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>라인</th>
+                  <th>코드</th>
+                  <th>name 접근</th>
+                  <th>판정</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="t-ok">
+                  <td>4</td>
+                  <td><code>name = val</code></td>
+                  <td>생성자(인스턴스 문맥)</td>
+                  <td><span class="tag tag-ok">정상</span></td>
+                </tr>
+                <tr class="t-err">
+                  <td><strong>7</strong></td>
+                  <td><code>return name</code></td>
+                  <td>
+                    <strong style="color: #ff5f57">static 메서드 내부</strong>
+                  </td>
+                  <td><span class="tag tag-err">컴파일 에러 ★</span></td>
+                </tr>
+                <tr class="t-ok">
+                  <td>10</td>
+                  <td><code>println(name)</code></td>
+                  <td>인스턴스 메서드 내부</td>
+                  <td><span class="tag tag-ok">정상</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 수정 방법 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 수정 방법</div>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span
+              ><span class="dot dot-g"></span>
+              <span class="lang">Java — 수정안</span>
+            </div>
+            <pre
+              style="padding: 20px 24px; line-height: 1.9"
+            ><span class="cmt">// 방법 1: static 제거 (가장 권장)</span>
+<span class="kw">public</span> <span class="cls">String</span> <span class="fn">get</span>() { <span class="kw">return</span> name; }
+
+<span class="cmt">// 방법 2: name도 static으로 변경</span>
+<span class="kw">private static</span> <span class="cls">String</span> name;</pre>
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 규칙</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🚫</span>
+                <span
+                  ><span class="hl-r"
+                    >static 메서드 → 인스턴스 변수 직접 접근 불가</span
+                  >
+                  (어느 객체의 변수인지 특정할 수 없음)</span
+                >
+              </li>
+              <li>
+                <span class="icon">✅</span>
+                <span
+                  >인스턴스 메서드 → static 변수 / 인스턴스 변수
+                  <span class="hl">모두 접근 가능</span></span
+                >
+              </li>
+              <li>
+                <span class="icon">📍</span>
+                <span
+                  >에러 라인: <strong>Line 7</strong> —
+                  <code>return name;</code> (static get() 내부)</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">에러 발생 라인</div>
+          <div class="answer-line-num">Line 7</div>
+          <div class="answer-value">return name;</div>
+          <div class="answer-desc">
+            non-static variable name<br />
+            cannot be referenced from a static context<br /><br />
+            static 메서드 get() 에서 인스턴스 변수 name에 접근 불가
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer"),
+          btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain"),
+          btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain"),
+          btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer"),
+          btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>
