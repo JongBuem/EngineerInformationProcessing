@@ -1,0 +1,1034 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .op {
+        color: #89ddff;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 56px;
+        font-weight: 600;
+        line-height: 1.2;
+        animation: pulse 2s ease-in-out infinite;
+        letter-spacing: 1px;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 1.8;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 24px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.22);
+        font-weight: 700;
+      }
+      .trace-table tr.key-row td {
+        background: rgba(44, 90, 60, 0.1);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-t {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-f {
+        background: #2d1010;
+        color: #ff9580;
+        border: 1px solid #8b2020;
+      }
+      .tag-val {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+      .tag-fn {
+        background: #1a1e2d;
+        color: #82aaff;
+        border: 1px solid #1e3a6e;
+      }
+
+      /* 구조체 시각화 */
+      .struct-box {
+        background: #1a1208;
+        border-radius: 8px;
+        overflow: hidden;
+        font-family: "JetBrains Mono", monospace;
+        min-width: 220px;
+      }
+      .sb-head {
+        padding: 8px 16px;
+        font-size: 13px;
+        font-weight: bold;
+        border-bottom: 1px solid #2a1e10;
+      }
+      .sb-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border-bottom: 1px solid #2a1e10;
+        font-size: 13px;
+      }
+      .sb-row:last-child {
+        border-bottom: none;
+      }
+      .sb-name {
+        min-width: 72px;
+        color: #c792ea;
+      }
+      .sb-eq {
+        color: #546e7a;
+      }
+      .sb-val {
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .sb-note {
+        font-size: 10px;
+        color: #546e7a;
+        margin-left: auto;
+      }
+
+      /* 함수 호출 흐름 */
+      .call-flow {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        background: #1a1208;
+        border-radius: 8px;
+        overflow: hidden;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .cf-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 12px 18px;
+        border-bottom: 1px solid #2a1e10;
+      }
+      .cf-row:last-child {
+        border-bottom: none;
+      }
+      .cf-step {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .cf-body {
+        flex: 1;
+      }
+      .cf-title {
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 4px;
+      }
+      .cf-detail {
+        font-size: 12px;
+        color: #8a7a60;
+        line-height: 1.8;
+      }
+      .cf-result {
+        font-size: 13px;
+        color: #f0c060;
+        font-weight: bold;
+        margin-top: 4px;
+      }
+
+      /* 복리 계산 시각화 */
+      .compound-steps {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .comp-cell {
+        background: #1a1208;
+        border: 2px solid #3a3028;
+        border-radius: 6px;
+        padding: 10px 14px;
+        text-align: center;
+        min-width: 88px;
+      }
+      .comp-label {
+        font-size: 10px;
+        color: #546e7a;
+        margin-bottom: 4px;
+      }
+      .comp-val {
+        font-size: 15px;
+        font-weight: bold;
+      }
+      .comp-arrow {
+        color: #8b3a0f;
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 구조체 포인터 · 출금/입금 분기 · 복리 계산 추적</h1>
+        <div class="meta">
+          C · struct · typedef · Pointer · Function · sim_pow · Compound
+          Interest · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+
+<span class="kw">typedef struct</span> {
+    <span class="kw">int</span>    accNum;
+    <span class="kw">double</span> bal;
+} <span class="cls">BankAcc</span>;
+
+<span class="kw">double</span> <span class="fn">sim_pow</span>(<span class="kw">double</span> base, <span class="kw">int</span> year) {
+    <span class="kw">double</span> r = <span class="nl">1.0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nl">0</span>; i &lt; year; i++) r = r <span class="op">*</span> base;
+    <span class="kw">return</span> r;
+}
+
+<span class="kw">void</span> <span class="fn">initAcc</span>(<span class="cls">BankAcc</span> <span class="op">*</span>acc, <span class="kw">int</span> x, <span class="kw">double</span> y) {
+    acc<span class="op">-></span>accNum = x;
+    acc<span class="op">-></span>bal   = y;
+}
+
+<span class="kw">void</span> <span class="fn">xxx</span>(<span class="cls">BankAcc</span> <span class="op">*</span>acc, <span class="kw">double</span> <span class="op">*</span>en) {  <span class="cmt">// 출금 or 입금</span>
+    <span class="kw">if</span> (<span class="op">*</span>en <span class="op">></span> <span class="nl">0</span> <span class="op">&&</span> <span class="op">*</span>en <span class="op">&lt;</span> acc<span class="op">-></span>bal)
+        acc<span class="op">-></span>bal = acc<span class="op">-></span>bal <span class="op">-</span> <span class="op">*</span>en;  <span class="cmt">// 출금</span>
+    <span class="kw">else</span>
+        acc<span class="op">-></span>bal = acc<span class="op">-></span>bal <span class="op">+</span> <span class="op">*</span>en;  <span class="cmt">// 입금</span>
+}
+
+<span class="kw">void</span> <span class="fn">yyy</span>(<span class="cls">BankAcc</span> <span class="op">*</span>acc) {              <span class="cmt">// 3년 10% 복리</span>
+    acc<span class="op">-></span>bal = acc<span class="op">-></span>bal <span class="op">*</span> <span class="fn">sim_pow</span>((<span class="nl">1</span><span class="op">+</span><span class="nl">0.1</span>), <span class="nl">3</span>);
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="cls">BankAcc</span> myAcc;
+    <span class="fn">initAcc</span>(<span class="op">&</span>myAcc, <span class="nl">9981</span>, <span class="nl">2200.0</span>);
+    <span class="kw">double</span> amount = <span class="nl">100.0</span>;
+    <span class="fn">xxx</span>(<span class="op">&</span>myAcc, <span class="op">&</span>amount);
+    <span class="fn">yyy</span>(<span class="op">&</span>myAcc);
+    printf(<span class="str">"%d and %.2f"</span>, myAcc.accNum, myAcc.bal);
+    <span class="kw">return</span> <span class="nl">0</span>;
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">printf() 출력 결과</div>
+          <div class="answer-value">9981 and 2795.10</div>
+          <div class="answer-desc">
+            initAcc → bal=2200 | xxx: 2200-100=2100 | yyy: 2100×1.1³=2795.10
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >구조체 포인터를 여러 함수에 전달하며 필드 값이 단계적으로
+                변경되는 상태 추적 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🏦</span
+                ><span
+                  ><code>initAcc</code>: 초기화 / <code>xxx</code>: 출금 or 입금
+                  조건 분기 / <code>yyy</code>: 3년 복리 계산의 3단계 함수
+                  체인입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span
+                ><span
+                  ><span class="hl">함정 — xxx 조건 분기</span>:
+                  <code>*en &gt; 0 &amp;&amp; *en &lt; acc-&gt;bal</code> 두
+                  조건을 모두 확인해야 출금/입금 여부가 결정됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span
+                ><span
+                  ><code>sim_pow(1.1, 3)</code>은 1.1³ =
+                  <strong>1.331</strong>을 반환합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② initAcc -->
+        <div class="sub-section">
+          <div class="sub-title">② initAcc(&myAcc, 9981, 2200.0) — 초기화</div>
+          <div class="flow-wrap" style="padding: 0; overflow: hidden">
+            <div class="struct-box">
+              <div class="sb-head" style="background: #1a1e2d; color: #82aaff">
+                myAcc (초기화 후)
+              </div>
+              <div class="sb-row">
+                <div class="sb-name">accNum</div>
+                <div class="sb-eq">=</div>
+                <div class="sb-val" style="color: #82aaff">9981</div>
+                <div class="sb-note">x = 9981</div>
+              </div>
+              <div class="sb-row">
+                <div class="sb-name">bal</div>
+                <div class="sb-eq">=</div>
+                <div class="sb-val" style="color: #c3e88d">2200.0</div>
+                <div class="sb-note">y = 2200.0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ xxx 조건 분기 -->
+        <div class="sub-section">
+          <div class="sub-title">③ xxx(&myAcc, &amount) — 출금/입금 분기</div>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span
+              ><span class="dot dot-g"></span>
+              <span class="lang">조건 평가</span>
+            </div>
+            <pre><span class="cmt">// *en = amount = 100.0,  acc->bal = 2200.0</span>
+
+<span class="kw">if</span> (*en > <span class="nl">0</span>        →  <span class="nl">100</span> > <span class="nl">0</span>    = <span class="str">true</span>
+ && *en < acc->bal  →  <span class="nl">100</span> < <span class="nl">2200</span> = <span class="str">true</span>)   <span class="cmt">// 두 조건 모두 true</span>
+
+    <span class="cmt">→ 출금 분기 실행</span>
+    acc->bal = <span class="nl">2200.0</span> - <span class="nl">100.0</span> = <span class="nl">2100.0</span></pre>
+          </div>
+          <div style="overflow-x: auto; margin-top: 8px">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>조건</th>
+                  <th>값</th>
+                  <th>결과</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>*en &gt; 0</code></td>
+                  <td>100.0 &gt; 0</td>
+                  <td><span class="tag tag-t">true</span></td>
+                </tr>
+                <tr>
+                  <td><code>*en &lt; acc-&gt;bal</code></td>
+                  <td>100.0 &lt; 2200.0</td>
+                  <td><span class="tag tag-t">true</span></td>
+                </tr>
+                <tr class="hl-row">
+                  <td>두 조건 모두 true → if 실행</td>
+                  <td>bal = 2200.0 - 100.0</td>
+                  <td><span class="tag tag-val">bal = 2100.0</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ sim_pow 계산 -->
+        <div class="sub-section">
+          <div class="sub-title">④ sim_pow(1.1, 3) — 1.1³ 계산</div>
+          <div class="flow-wrap">
+            <div class="compound-steps">
+              <div class="comp-cell">
+                <div class="comp-label">r 초기</div>
+                <div class="comp-val" style="color: #546e7a">1.0</div>
+              </div>
+              <div class="comp-arrow">→</div>
+              <div class="comp-cell">
+                <div class="comp-label">i=0: ×1.1</div>
+                <div class="comp-val" style="color: #c3e88d">1.1</div>
+              </div>
+              <div class="comp-arrow">→</div>
+              <div class="comp-cell">
+                <div class="comp-label">i=1: ×1.1</div>
+                <div class="comp-val" style="color: #c3e88d">1.21</div>
+              </div>
+              <div class="comp-arrow">→</div>
+              <div class="comp-cell">
+                <div class="comp-label">i=2: ×1.1</div>
+                <div
+                  class="comp-val"
+                  style="color: #f0c060; font-size: 18px; font-weight: bold"
+                >
+                  1.331
+                </div>
+              </div>
+              <div class="comp-arrow">→</div>
+              <div class="comp-cell" style="border-color: #8b6020">
+                <div class="comp-label">반환</div>
+                <div class="comp-val" style="color: #f0c060">1.331</div>
+              </div>
+            </div>
+            <div
+              style="
+                margin-top: 10px;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #546e7a;
+              "
+            >
+              1.1³ = 1.1 × 1.1 × 1.1 =
+              <strong style="color: #f0c060">1.331</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ yyy 복리 계산 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ yyy(&myAcc) — 3년 10% 복리 적용</div>
+          <div class="flow-wrap" style="padding: 0; overflow: hidden">
+            <div class="call-flow">
+              <div class="cf-row">
+                <div
+                  class="cf-step"
+                  style="background: #1a2010; color: #c3e88d"
+                >
+                  1
+                </div>
+                <div class="cf-body">
+                  <div class="cf-title" style="color: #c3e88d">yyy() 호출</div>
+                  <div class="cf-detail">
+                    acc-&gt;bal = acc-&gt;bal * sim_pow(1.1, 3)
+                  </div>
+                  <div class="cf-detail">= 2100.0 × 1.331</div>
+                  <div class="cf-result">= 2795.1</div>
+                </div>
+              </div>
+              <div class="cf-row" style="border-bottom: none">
+                <div
+                  class="cf-step"
+                  style="background: #2d2010; color: #f0c060"
+                >
+                  ✓
+                </div>
+                <div class="cf-body">
+                  <div class="cf-title" style="color: #f0c060">
+                    myAcc.bal 최종값
+                  </div>
+                  <div class="cf-detail">
+                    2100.0 × 1.331 =
+                    <strong style="color: #f0c060">2795.1</strong>
+                  </div>
+                  <div class="cf-detail">
+                    %.2f 포맷 → <strong style="color: #f0c060">2795.10</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑥ 전체 흐름 추적표 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 전체 함수 호출 & 상태 변화 요약</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>단계</th>
+                  <th>함수 호출</th>
+                  <th>accNum</th>
+                  <th>bal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>초기</td>
+                  <td>변수 선언</td>
+                  <td>-</td>
+                  <td>-</td>
+                </tr>
+                <tr class="key-row">
+                  <td>1</td>
+                  <td><code>initAcc(&amp;myAcc, 9981, 2200.0)</code></td>
+                  <td><span class="tag tag-fn">9981</span></td>
+                  <td><span class="tag tag-fn">2200.0</span></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><code>amount = 100.0</code></td>
+                  <td>9981</td>
+                  <td>2200.0</td>
+                </tr>
+                <tr class="key-row">
+                  <td>3</td>
+                  <td>
+                    <code>xxx(&amp;myAcc, &amp;amount)</code> — 출금 (100 &gt; 0
+                    &amp;&amp; 100 &lt; 2200)
+                  </td>
+                  <td>9981</td>
+                  <td><span class="tag tag-val">2100.0</span></td>
+                </tr>
+                <tr class="hl-row">
+                  <td>4</td>
+                  <td><code>yyy(&amp;myAcc)</code> — ×1.331 복리 3년</td>
+                  <td>9981</td>
+                  <td><span class="tag tag-val">2795.10</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            style="
+              background: #1a1208;
+              border-radius: 8px;
+              padding: 16px 22px;
+              margin-top: 12px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 13px;
+              line-height: 2.8;
+            "
+          >
+            <span style="color: #546e7a">printf: </span>
+            <span style="color: #c3e88d">"%d and %.2f"</span><br />
+            <span style="color: #546e7a">accNum = </span
+            ><span style="color: #82aaff; font-size: 16px; font-weight: bold"
+              >9981</span
+            >
+            <span style="color: #546e7a"> &nbsp;bal = </span
+            ><span style="color: #f0c060; font-size: 16px; font-weight: bold"
+              >2795.10</span
+            >
+          </div>
+        </div>
+
+        <!-- ⑦ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑦ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🏦</span>
+                <span
+                  ><span class="hl">xxx 분기 조건</span>:
+                  <code>en &gt; 0 &amp;&amp; en &lt; bal</code>이면
+                  <strong>출금(빼기)</strong>, 그 외면
+                  <strong>입금(더하기)</strong>. amount=100은 두 조건을 모두
+                  통과 → 출금 실행.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📈</span>
+                <span
+                  ><span class="hl">sim_pow(1.1, 3)</span>: 직접 반복문으로
+                  1.1을 3번 곱해 <strong>1.331</strong>을 반환합니다. 10% 복리
+                  3년 이율 계수입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  ><code>%.2f</code>: 소수점 둘째 자리까지 출력 → 2795.1 →
+                  <strong>2795.10</strong></span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span>최종 출력: <strong>9981 and 2795.10</strong></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">printf() 출력 결과</div>
+          <div class="answer-value">9981 and 2795.10</div>
+          <div class="answer-desc">
+            bal: 2200 → (−100) → 2100 → (×1.331) → 2795.10
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

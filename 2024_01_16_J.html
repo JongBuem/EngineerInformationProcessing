@@ -1,0 +1,1099 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 130px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 1.8;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 24px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.22);
+        font-weight: 700;
+      }
+      .trace-table tr.warn-row td {
+        background: rgba(192, 57, 43, 0.07);
+      }
+      .trace-table tr.key-row td {
+        background: rgba(44, 90, 60, 0.1);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-p {
+        background: #1a1e2d;
+        color: #82aaff;
+        border: 1px solid #1e3a6e;
+      }
+      .tag-c {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-w {
+        background: #2d1010;
+        color: #ff9580;
+        border: 1px solid #8b2020;
+      }
+      .tag-ok {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      /* 클래스 다이어그램 */
+      .class-wrap {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+      }
+      .cls-box {
+        border-radius: 8px;
+        overflow: hidden;
+        min-width: 210px;
+        flex: 1;
+      }
+      .cls-head {
+        padding: 10px 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: bold;
+        text-align: center;
+      }
+      .cls-section {
+        padding: 10px 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        line-height: 2;
+        border-top: 1px solid #2a1e10;
+      }
+      .cls-label {
+        font-size: 10px;
+        color: #546e7a;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 4px;
+      }
+      .inherit-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: #8b3a0f;
+        font-weight: bold;
+        padding: 0 4px;
+        align-self: center;
+      }
+
+      /* 동적 디스패치 시각화 */
+      .dispatch-vis {
+        background: #1a1208;
+        border-radius: 8px;
+        overflow: hidden;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .dv-row {
+        display: flex;
+        align-items: stretch;
+        border-bottom: 1px solid #2a1e10;
+      }
+      .dv-row:last-child {
+        border-bottom: none;
+      }
+      .dv-label {
+        width: 120px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: bold;
+        padding: 12px 8px;
+        text-align: center;
+        line-height: 1.4;
+      }
+      .dv-body {
+        flex: 1;
+        padding: 12px 18px;
+        font-size: 13px;
+        line-height: 1.9;
+        color: #e8d5b0;
+      }
+
+      /* 객체 필드 박스 */
+      .obj-box {
+        background: #1a1208;
+        border-radius: 8px;
+        overflow: hidden;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .ob-head {
+        padding: 9px 16px;
+        font-size: 12px;
+        font-weight: bold;
+        border-bottom: 1px solid #2a1e10;
+      }
+      .ob-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 16px;
+        border-bottom: 1px solid #2a1e10;
+        font-size: 13px;
+      }
+      .ob-row:last-child {
+        border-bottom: none;
+      }
+      .ob-name {
+        min-width: 68px;
+        color: #c792ea;
+      }
+      .ob-eq {
+        color: #546e7a;
+      }
+      .ob-val {
+        font-weight: bold;
+        font-size: 15px;
+      }
+      .ob-note {
+        font-size: 10px;
+        color: #546e7a;
+        margin-left: auto;
+      }
+
+      /* 비교표 */
+      .compare-box {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      @media (max-width: 560px) {
+        .compare-box {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+      .notice-box {
+        background: rgba(192, 57, 43, 0.07);
+        border: 1px solid rgba(192, 57, 43, 0.25);
+        border-left: 4px solid #c0392b;
+        border-radius: 0 6px 6px 0;
+        padding: 14px 18px;
+        margin: 12px 0;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java 다형성 — 동적 디스패치(오버라이딩) 추적</h1>
+        <div class="meta">
+          Java · Polymorphism · Dynamic Dispatch · Method Overriding · super() ·
+          Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">classOne</span> {
+    <span class="kw">int</span> a, b;
+
+    <span class="kw">public</span> <span class="cls">classOne</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) {
+        <span class="kw">this</span>.a = a;
+        <span class="kw">this</span>.b = b;
+    }
+
+    <span class="kw">public void</span> <span class="fn">print</span>() {
+        System.out.<span class="fn">println</span>(a + b);     <span class="cmt">// classOne의 print()</span>
+    }
+}
+
+<span class="kw">class</span> <span class="cls">classTwo</span> <span class="kw">extends</span> <span class="cls">classOne</span> {
+    <span class="kw">int</span> po = <span class="nl">3</span>;
+
+    <span class="kw">public</span> <span class="cls">classTwo</span>(<span class="kw">int</span> i) {
+        <span class="kw">super</span>(i, i + <span class="nl">1</span>);              <span class="cmt">// super(10, 11)</span>
+    }
+
+    <span class="kw">public void</span> <span class="fn">print</span>() {             <span class="cmt">// classOne.print() 오버라이딩</span>
+        System.out.<span class="fn">println</span>(po * po);  <span class="cmt">// 3 * 3</span>
+    }
+}
+
+<span class="kw">public class</span> <span class="cls">main</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+        <span class="cls">classOne</span> one = <span class="kw">new</span> <span class="cls">classTwo</span>(<span class="nl">10</span>); <span class="cmt">// 참조 타입: classOne, 실제 타입: classTwo</span>
+        one.<span class="fn">print</span>();                    <span class="cmt">// 어떤 print()가 호출될까?</span>
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">System.out.println() 출력 결과</div>
+          <div class="answer-value">9</div>
+          <div class="answer-desc">
+            참조 타입은 classOne이지만 실제 객체는 classTwo<br />
+            → 동적 디스패치 → classTwo.print() 실행 → po*po = 3*3 = 9
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >참조 변수의 타입(classOne)과 실제 객체의 타입(classTwo)이 다를
+                때, 오버라이딩된 메서드 중 어느 것이 호출되는지를 추적하는
+                다형성(Polymorphism) 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">⚠️</span
+                ><span
+                  ><span class="hl">핵심 함정</span>:
+                  <code>classOne one = new classTwo(10)</code> — 변수 타입이
+                  <code>classOne</code>이어도 실제 객체가
+                  <code>classTwo</code>이면
+                  <strong>classTwo의 print()가 호출</strong>됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔄</span
+                ><span
+                  ><strong>동적 디스패치(Dynamic Dispatch)</strong>: Java는
+                  오버라이딩된 메서드를
+                  <span class="hl"
+                    >실행 시점에 실제 객체 타입 기준으로 결정</span
+                  >합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span
+                ><span
+                  >classTwo의 <code>print()</code>는
+                  <code>po * po = 3 * 3 = 9</code>를 출력합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 클래스 구조 -->
+        <div class="sub-section">
+          <div class="sub-title">② 클래스 상속 구조</div>
+          <div class="class-wrap">
+            <div class="cls-box">
+              <div class="cls-head" style="background: #1a1e2d; color: #82aaff">
+                classOne (부모)
+              </div>
+              <div
+                class="cls-section"
+                style="background: #1a1208; color: #c792ea"
+              >
+                <div class="cls-label">필드</div>
+                <span style="color: #e8d5b0">int a, b</span>
+              </div>
+              <div class="cls-section" style="background: #1a1208">
+                <div class="cls-label">메서드</div>
+                <span style="color: #82aaff">print()</span>
+                <span
+                  style="
+                    color: #546e7a;
+                    font-size: 11px;
+                    display: block;
+                    margin-left: 8px;
+                  "
+                  >→ a + b 출력</span
+                >
+              </div>
+            </div>
+            <div class="inherit-arrow">
+              ↑<br /><span style="font-size: 11px; color: #546e7a"
+                >extends</span
+              >
+            </div>
+            <div class="cls-box">
+              <div class="cls-head" style="background: #1a2010; color: #c3e88d">
+                classTwo (자식)
+              </div>
+              <div
+                class="cls-section"
+                style="background: #1a1208; color: #c792ea"
+              >
+                <div class="cls-label">필드</div>
+                <span style="color: #e8d5b0">int po = 3</span>
+              </div>
+              <div class="cls-section" style="background: #1a1208">
+                <div class="cls-label">메서드</div>
+                <span style="color: #c3e88d; font-weight: bold">print()</span>
+                <span style="color: #f78c6c; font-size: 11px; margin-left: 6px"
+                  >@Override</span
+                >
+                <span
+                  style="
+                    color: #546e7a;
+                    font-size: 11px;
+                    display: block;
+                    margin-left: 8px;
+                  "
+                  >→ po*po 출력</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ 생성자 체인 -->
+        <div class="sub-section">
+          <div class="sub-title">③ new classTwo(10) — 생성자 실행 순서</div>
+          <div class="flow-wrap" style="padding: 0; overflow: hidden">
+            <div class="dispatch-vis">
+              <div class="dv-row">
+                <div
+                  class="dv-label"
+                  style="background: #1a2010; color: #c3e88d"
+                >
+                  classTwo(10)
+                </div>
+                <div class="dv-body">
+                  <code>super(10, 10+1)</code> →
+                  <code>super(10, 11)</code> 호출<br />
+                  <span style="color: #546e7a; font-size: 11px"
+                    >자식 생성자는 반드시 먼저 super()를 호출</span
+                  >
+                </div>
+              </div>
+              <div class="dv-row">
+                <div
+                  class="dv-label"
+                  style="background: #1a1e2d; color: #82aaff"
+                >
+                  classOne(10,11)
+                </div>
+                <div class="dv-body">
+                  <code>this.a = 10</code> &nbsp; <code>this.b = 11</code><br />
+                  <span style="color: #546e7a; font-size: 11px"
+                    >Parent 필드 초기화 완료</span
+                  >
+                </div>
+              </div>
+              <div class="dv-row" style="border-bottom: none">
+                <div
+                  class="dv-label"
+                  style="background: #2d2010; color: #f0c060"
+                >
+                  객체 완성
+                </div>
+                <div class="dv-body">
+                  <code>po = 3</code> (classTwo 필드 기본값)<br />
+                  <span style="color: #546e7a; font-size: 11px"
+                    >int po = 3 은 필드 선언 시 초기화</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 객체 필드 상태 -->
+          <div class="obj-box" style="margin-top: 12px">
+            <div class="ob-head" style="background: #2d2010; color: #f0c060">
+              생성 완료된 classTwo 객체 내부
+            </div>
+            <div class="ob-row">
+              <div class="ob-name">a</div>
+              <div class="ob-eq">=</div>
+              <div class="ob-val" style="color: #82aaff">10</div>
+              <div class="ob-note">classOne 레이어 (super(10,11))</div>
+            </div>
+            <div class="ob-row">
+              <div class="ob-name">b</div>
+              <div class="ob-eq">=</div>
+              <div class="ob-val" style="color: #82aaff">11</div>
+              <div class="ob-note">classOne 레이어 (super(10,11))</div>
+            </div>
+            <div class="ob-row">
+              <div class="ob-name">po</div>
+              <div class="ob-eq">=</div>
+              <div class="ob-val" style="color: #c3e88d">3</div>
+              <div class="ob-note">classTwo 레이어 (필드 선언값)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ 동적 디스패치 -->
+        <div class="sub-section">
+          <div class="sub-title">④ one.print() — 동적 디스패치 결정</div>
+          <div class="notice-box">
+            <span style="color: #82aaff">classOne</span> one =
+            <span style="color: #c3e88d">new classTwo(10)</span><br />
+            <span style="color: #546e7a; font-size: 11px"
+              >참조 타입 ≠ 실제 타입</span
+            >
+          </div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>구분</th>
+                  <th>타입</th>
+                  <th>print() 후보</th>
+                  <th>실제 호출?</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="warn-row">
+                  <td>참조 타입</td>
+                  <td><span class="tag tag-p">classOne</span></td>
+                  <td><code>a + b = 10 + 11 = 21</code></td>
+                  <td><span class="tag tag-w">✗ 호출 안 됨</span></td>
+                </tr>
+                <tr class="hl-row">
+                  <td>실제 객체 타입</td>
+                  <td><span class="tag tag-c">classTwo</span></td>
+                  <td><code>po * po = 3 * 3 = 9</code></td>
+                  <td><span class="tag tag-ok">✓ 동적 디스패치</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            class="card"
+            style="margin-top: 14px; border-left-color: #c3e88d"
+          >
+            <p
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 13px;
+                line-height: 2.2;
+              "
+            >
+              Java의 <span class="hl">동적 디스패치</span>: 오버라이딩된
+              메서드는<br />
+              참조 변수의 타입이 아닌 <strong>실제 객체의 타입</strong>을
+              기준으로 호출됩니다.<br />
+              <span style="color: #546e7a; font-size: 11px"
+                >→ one이 classOne 타입으로 선언되었어도, 객체가 classTwo이므로
+                classTwo.print() 실행</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- ⑤ 오버라이딩 vs 오버로딩 비교 -->
+        <div class="sub-section">
+          <div class="sub-title">
+            ⑤ 오버라이딩 vs 오버로딩 — 이전 문제와 비교
+          </div>
+          <div class="compare-box">
+            <div
+              style="
+                background: #1a1208;
+                border: 2px solid #c3e88d;
+                border-radius: 8px;
+                overflow: hidden;
+              "
+            >
+              <div
+                style="
+                  background: #1a2010;
+                  padding: 10px 16px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 13px;
+                  font-weight: bold;
+                  color: #c3e88d;
+                "
+              >
+                이 문제 — 오버라이딩 ✓
+              </div>
+              <div
+                style="
+                  padding: 12px 16px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 12px;
+                  color: #e8d5b0;
+                  line-height: 2;
+                "
+              >
+                classOne.print()<span style="color: #546e7a">
+                  // 파라미터 없음</span
+                ><br />
+                classTwo.print()<span style="color: #546e7a">
+                  // 파라미터 없음</span
+                ><br />
+                <span style="color: #c3e88d">→ 시그니처 동일 = 오버라이딩</span
+                ><br />
+                <span style="color: #c3e88d">→ 동적 디스패치 발생</span>
+              </div>
+            </div>
+            <div
+              style="
+                background: #1a1208;
+                border: 2px solid #ff9580;
+                border-radius: 8px;
+                overflow: hidden;
+              "
+            >
+              <div
+                style="
+                  background: #2d1010;
+                  padding: 10px 16px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 13px;
+                  font-weight: bold;
+                  color: #ff9580;
+                "
+              >
+                이전 문제 — 오버로딩 ✗
+              </div>
+              <div
+                style="
+                  padding: 12px 16px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 12px;
+                  color: #e8d5b0;
+                  line-height: 2;
+                "
+              >
+                Parent.getT()<span style="color: #546e7a">
+                  // 파라미터 없음</span
+                ><br />
+                Child.getT(int n)<span style="color: #546e7a">
+                  // 파라미터 있음</span
+                ><br />
+                <span style="color: #ff9580">→ 시그니처 다름 = 오버로딩</span
+                ><br />
+                <span style="color: #ff9580">→ 동적 디스패치 없음</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🎯</span>
+                <span
+                  ><span class="hl">오버라이딩 + 다형성</span>: 부모 타입 참조
+                  변수로 자식 객체를 가리킬 때, 오버라이딩된 메서드는
+                  <strong>항상 자식 버전이 호출</strong>됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  ><code>classTwo.print()</code> 실행 →
+                  <code>po * po = 3 * 3 = <strong>9</strong></code></span
+                >
+              </li>
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  >만약 <code>classOne one = new classOne(10, 11)</code>이었다면
+                  <code>a + b = 21</code>이 출력되었을 것입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span>최종 출력: <strong>9</strong></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">System.out.println() 출력 결과</div>
+          <div class="answer-value">9</div>
+          <div class="answer-desc">
+            동적 디스패치 → classTwo.print() → po*po = 3*3 = 9
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

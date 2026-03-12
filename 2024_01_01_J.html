@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.gold {
+        border-left-color: var(--highlight);
+        background: rgba(240, 192, 96, 0.06);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 130px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 24px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 28px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.22);
+        font-weight: 700;
+      }
+      .trace-table tr.key-row td {
+        background: rgba(44, 90, 60, 0.12);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-same {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-ret {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+      .tag-new {
+        background: #2d1010;
+        color: #ff9580;
+        border: 1px solid #8b2020;
+      }
+
+      /* 싱글톤 다이어그램 */
+      .singleton-vis {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .sv-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .sv-var {
+        min-width: 80px;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: bold;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .sv-arrow {
+        font-size: 20px;
+        color: #8b3a0f;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+      .sv-inst {
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: bold;
+        text-align: center;
+      }
+      .sv-note {
+        font-size: 11px;
+        color: #546e7a;
+      }
+
+      /* count 진행 시각화 */
+      .count-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        background: #1a1208;
+        border-radius: 8px;
+        overflow: hidden;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .cs-row {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #2a1e10;
+        padding: 11px 18px;
+        gap: 14px;
+      }
+      .cs-row:last-child {
+        border-bottom: none;
+      }
+      .cs-step {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+      .cs-call {
+        flex: 1;
+        font-size: 13px;
+      }
+      .cs-count {
+        min-width: 60px;
+        text-align: right;
+        font-size: 15px;
+        font-weight: bold;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java 싱글톤 패턴 + 공유 인스턴스 카운트 추적</h1>
+        <div class="meta">
+          Java · Singleton Pattern · static · OOP · Instance · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Connection</span> {
+
+    <span class="kw">private static</span> <span class="cls">Connection</span> _inst = <span class="ret">null</span>;  <span class="cmt">// 유일한 인스턴스</span>
+    <span class="kw">private int</span> count = <span class="nl">0</span>;
+
+    <span class="kw">static public</span> <span class="cls">Connection</span> <span class="fn">get</span>() {
+        <span class="kw">if</span> (_inst == <span class="ret">null</span>) {
+            _inst = <span class="kw">new</span> <span class="cls">Connection</span>();  <span class="cmt">// 최초 1회만 생성</span>
+            <span class="ret">return</span> _inst;
+        }
+        <span class="ret">return</span> _inst;               <span class="cmt">// 이후엔 동일 인스턴스 반환</span>
+    }
+
+    <span class="kw">public void</span> <span class="fn">count</span>()    { count<span class="nl">++</span>; }
+    <span class="kw">public int</span>  <span class="fn">getCount</span>() { <span class="ret">return</span> count; }
+}
+
+<span class="kw">public class</span> <span class="cls">main</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+
+        <span class="cls">Connection</span> conn1 = <span class="cls">Connection</span>.<span class="fn">get</span>();  <span class="cmt">// 최초 생성 → _inst</span>
+        conn1.<span class="fn">count</span>();                       <span class="cmt">// count = 1</span>
+
+        <span class="cls">Connection</span> conn2 = <span class="cls">Connection</span>.<span class="fn">get</span>();  <span class="cmt">// 동일 인스턴스 반환</span>
+        conn2.<span class="fn">count</span>();                       <span class="cmt">// count = 2</span>
+
+        <span class="cls">Connection</span> conn3 = <span class="cls">Connection</span>.<span class="fn">get</span>();  <span class="cmt">// 동일 인스턴스 반환</span>
+        conn3.<span class="fn">count</span>();                       <span class="cmt">// count = 3</span>
+
+        conn1.<span class="fn">count</span>();                       <span class="cmt">// count = 4</span>
+        <span class="cls">System</span>.out.<span class="fn">print</span>(conn1.<span class="fn">getCount</span>()); <span class="cmt">// ?</span>
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">System.out.print() 출력 결과</div>
+          <div class="answer-value">4</div>
+          <div class="answer-desc">
+            conn1 = conn2 = conn3 = 동일 인스턴스 → count() 총 4회 누적
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >싱글톤 패턴(Singleton Pattern)의 동작을 이해하고, 여러 변수가
+                동일한 인스턴스를 참조할 때 상태가 누적되는 것을 추적하는
+                문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔷</span
+                ><span
+                  ><code>static Connection _inst</code> — 클래스 전체에서
+                  <strong>단 하나</strong>만 존재하는 인스턴스
+                  저장소입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span
+                ><span
+                  ><span class="hl">핵심 함정</span>: conn1, conn2, conn3은
+                  <strong>서로 다른 변수처럼 보이지만 모두 같은 인스턴스</strong
+                  >를 가리킵니다. 어느 변수로 count()를 불러도 동일한 count
+                  필드가 증가합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 싱글톤 구조 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">② 싱글톤 인스턴스 공유 구조</div>
+          <div class="flow-wrap">
+            <div class="singleton-vis">
+              <div class="sv-row">
+                <div
+                  class="sv-var"
+                  style="
+                    background: #1a1e2d;
+                    border: 2px solid #1e3a6e;
+                    color: #82aaff;
+                  "
+                >
+                  conn1
+                </div>
+                <div class="sv-arrow">→</div>
+                <div
+                  class="sv-inst"
+                  style="
+                    background: #2d2010;
+                    border: 3px solid #f0c060;
+                    color: #f0c060;
+                    min-width: 180px;
+                  "
+                >
+                  Connection 인스턴스<br />
+                  <span style="font-size: 11px; color: #8a7a60"
+                    >_inst (유일한 객체)</span
+                  ><br />
+                  <span style="font-size: 18px; margin-top: 4px; display: block"
+                    >count = <strong id="countVis">4</strong></span
+                  >
+                </div>
+                <div class="sv-arrow">←</div>
+                <div
+                  class="sv-var"
+                  style="
+                    background: #1a2010;
+                    border: 2px solid #2d5a3d;
+                    color: #c3e88d;
+                  "
+                >
+                  conn3
+                </div>
+              </div>
+              <div
+                class="sv-row"
+                style="justify-content: flex-start; padding-left: 20px"
+              >
+                <div
+                  class="sv-var"
+                  style="
+                    background: #1e1a2d;
+                    border: 2px solid #5a3a8b;
+                    color: #c792ea;
+                  "
+                >
+                  conn2
+                </div>
+                <div class="sv-arrow">↗</div>
+                <div class="sv-note">세 변수 모두 같은 객체 주소 보유</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ get() 동작 분석 -->
+        <div class="sub-section">
+          <div class="sub-title">③ Connection.get() 호출 흐름</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>호출</th>
+                  <th>_inst 상태</th>
+                  <th>동작</th>
+                  <th>반환값</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="key-row">
+                  <td><span class="mono">Connection.get()</span> ← conn1</td>
+                  <td><span style="color: #ff7675">null</span></td>
+                  <td>
+                    <span class="tag tag-new">new Connection() 생성</span> →
+                    _inst에 저장
+                  </td>
+                  <td><span class="tag tag-ret">_inst (새 객체)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">Connection.get()</span> ← conn2</td>
+                  <td><span style="color: #c3e88d">not null</span></td>
+                  <td>if 건너뜀 → 기존 _inst 반환</td>
+                  <td><span class="tag tag-same">_inst (동일 객체)</span></td>
+                </tr>
+                <tr>
+                  <td><span class="mono">Connection.get()</span> ← conn3</td>
+                  <td><span style="color: #c3e88d">not null</span></td>
+                  <td>if 건너뜀 → 기존 _inst 반환</td>
+                  <td><span class="tag tag-same">_inst (동일 객체)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ count 누적 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">④ count() 호출 단계별 누적 추적</div>
+          <div class="flow-wrap" style="padding: 0; overflow: hidden">
+            <div class="count-steps">
+              <div class="cs-row">
+                <div
+                  class="cs-step"
+                  style="background: #1a1e2d; color: #82aaff"
+                >
+                  1
+                </div>
+                <div class="cs-call">
+                  <span style="color: #82aaff; font-weight: bold">conn1</span
+                  >.count()
+                  <span
+                    style="color: #546e7a; font-size: 11px; margin-left: 8px"
+                    >← _inst.count()</span
+                  >
+                </div>
+                <div class="cs-count" style="color: #c3e88d">
+                  count = <strong>1</strong>
+                </div>
+              </div>
+              <div class="cs-row">
+                <div
+                  class="cs-step"
+                  style="background: #1e1a2d; color: #c792ea"
+                >
+                  2
+                </div>
+                <div class="cs-call">
+                  <span style="color: #c792ea; font-weight: bold">conn2</span
+                  >.count()
+                  <span
+                    style="color: #546e7a; font-size: 11px; margin-left: 8px"
+                    >← 동일 _inst.count()</span
+                  >
+                </div>
+                <div class="cs-count" style="color: #c3e88d">
+                  count = <strong>2</strong>
+                </div>
+              </div>
+              <div class="cs-row">
+                <div
+                  class="cs-step"
+                  style="background: #1a2010; color: #c3e88d"
+                >
+                  3
+                </div>
+                <div class="cs-call">
+                  <span style="color: #c3e88d; font-weight: bold">conn3</span
+                  >.count()
+                  <span
+                    style="color: #546e7a; font-size: 11px; margin-left: 8px"
+                    >← 동일 _inst.count()</span
+                  >
+                </div>
+                <div class="cs-count" style="color: #c3e88d">
+                  count = <strong>3</strong>
+                </div>
+              </div>
+              <div
+                class="cs-row"
+                style="
+                  background: rgba(240, 192, 96, 0.08);
+                  border-bottom: none;
+                "
+              >
+                <div
+                  class="cs-step"
+                  style="background: #2d2010; color: #f0c060"
+                >
+                  4
+                </div>
+                <div class="cs-call">
+                  <span style="color: #f0c060; font-weight: bold">conn1</span
+                  >.count()
+                  <span
+                    style="color: #546e7a; font-size: 11px; margin-left: 8px"
+                    >← 동일 _inst.count() (conn1 재호출)</span
+                  >
+                </div>
+                <div class="cs-count" style="color: #f0c060; font-size: 18px">
+                  count = <strong>4</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 10px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 13px;
+              padding: 10px 16px;
+              background: rgba(0, 0, 0, 0.04);
+              border-radius: 6px;
+            "
+          >
+            <span style="color: #82aaff">conn1</span>.getCount()
+            <span style="color: #546e7a; margin: 0 8px">=</span>
+            <span style="color: #c792ea">conn2</span>.getCount()
+            <span style="color: #546e7a; margin: 0 8px">=</span>
+            <span style="color: #c3e88d">conn3</span>.getCount()
+            <span style="color: #546e7a; margin: 0 8px">=</span>
+            <span style="color: #f0c060; font-size: 18px; font-weight: bold"
+              >4</span
+            >
+            <span style="color: #546e7a; font-size: 11px; margin-left: 8px"
+              >← 모두 같은 인스턴스</span
+            >
+          </div>
+        </div>
+
+        <!-- ⑤ 싱글톤 패턴 원리 -->
+        <div class="sub-section">
+          <div class="sub-title">
+            ⑤ 싱글톤 패턴(Singleton Pattern) 핵심 원리
+          </div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>요소</th>
+                  <th>역할</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>private static Connection _inst</code></td>
+                  <td>단 하나의 인스턴스를 저장하는 클래스 변수</td>
+                </tr>
+                <tr>
+                  <td><code>if (_inst == null) new Connection()</code></td>
+                  <td>최초 1회만 인스턴스 생성 (이후 생성 차단)</td>
+                </tr>
+                <tr class="hl-row">
+                  <td><code>return _inst</code></td>
+                  <td>
+                    항상 동일한 객체를 반환 → 모든 변수가 같은 인스턴스 공유
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>private int count</code></td>
+                  <td>공유 인스턴스의 상태 — 누가 호출해도 같은 필드 증가</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔗</span>
+                <span
+                  ><span class="hl">conn1 = conn2 = conn3 = 같은 인스턴스</span>
+                  — Connection.get()은 항상 동일한 _inst를 반환합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  >count() 총 호출 횟수: conn1(1회) + conn2(1회) + conn3(1회) +
+                  conn1(1회) = <strong>4회</strong>. 모두 같은 count 필드를
+                  증가시킵니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">💡</span>
+                <span
+                  >싱글톤 패턴은
+                  <span class="hl">프로그램 전체에서 단 하나의 객체만 사용</span
+                  >하고 싶을 때 씁니다. DB 연결, 설정 관리 등에 자주
+                  활용됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span>최종 출력: <strong>4</strong></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">System.out.print() 출력 결과</div>
+          <div class="answer-value">4</div>
+          <div class="answer-desc">
+            conn1 = conn2 = conn3 = 동일 _inst &nbsp;|&nbsp; count() × 4 = 4
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1231 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 96px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+        letter-spacing: 4px;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 1.8;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 24px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.22);
+        font-weight: 700;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-ch {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-acc {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      /* 문자 분해 배열 */
+      .char-array {
+        display: flex;
+        gap: 3px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+      .ca-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        flex-shrink: 0;
+      }
+      .ca-char {
+        width: 44px;
+        height: 44px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      .cc-norm {
+        background: #1a1208;
+        border: 2px solid #3a3028;
+        color: #e8d5b0;
+      }
+      .cc-hi {
+        background: #1a2010;
+        border: 2.5px solid #c3e88d;
+        color: #c3e88d;
+        box-shadow: 0 0 8px rgba(195, 232, 141, 0.25);
+      }
+      .cc-init {
+        background: #2d2010;
+        border: 2.5px solid #f0c060;
+        color: #f0c060;
+      }
+      .ca-idx {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: #546e7a;
+      }
+
+      /* 누적 문자열 빌더 */
+      .accum-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .acc-plus {
+        color: #8b3a0f;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .acc-char {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .acc-new {
+        background: #1a2010;
+        border: 2px solid #c3e88d;
+        color: #c3e88d;
+      }
+      .acc-old {
+        background: #1a1208;
+        border: 1px solid #3a3028;
+        color: #e8d5b0;
+      }
+      .acc-seed {
+        background: #2d2010;
+        border: 2px solid #f0c060;
+        color: #f0c060;
+      }
+      .acc-result {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 15px;
+        font-weight: bold;
+        color: #f0c060;
+        margin-left: 8px;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Python 리스트 순회 + 문자열 인덱싱 누적 추적</h1>
+        <div class="meta">
+          Python · list · for loop · String Indexing · String Concatenation ·
+          Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Python</span>
+          </div>
+          <pre>a = [<span class="str">"Seoul"</span>, <span class="str">"Kyeonggi"</span>, <span class="str">"Incheon"</span>, <span class="str">"Daejun"</span>, <span class="str">"Daegu"</span>, <span class="str">"Pusan"</span>]
+str = <span class="str">"S"</span>
+
+<span class="kw">for</span> i <span class="kw">in</span> a:
+    str = str + i[<span class="nl">1</span>]    <span class="cmt"># 각 단어의 두 번째 문자(인덱스 1) 추가</span>
+
+<span class="fn">print</span>(str)</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">print() 출력 결과</div>
+          <div class="answer-value">Seynaau</div>
+          <div class="answer-desc">
+            "S" + e + y + n + a + a + u<br />
+            각 도시명의 인덱스[1] 문자를 순서대로 누적
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >리스트의 각 문자열에서 인덱스 1(두 번째 문자)을 추출하여 초기
+                문자열에 순서대로 누적 연결(concatenation)하는 반복 추적
+                문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔤</span
+                ><span
+                  ><code>i[1]</code>은 문자열 <code>i</code>의
+                  <span class="hl">두 번째 문자(인덱스 1)</span>를 의미합니다.
+                  인덱스는 0부터 시작하므로 주의!</span
+                >
+              </li>
+              <li>
+                <span class="icon">➕</span
+                ><span
+                  ><code>str = str + i[1]</code>은 기존 문자열 뒤에 새 문자를
+                  <strong>이어 붙이는</strong> 연산입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span
+                ><span
+                  ><span class="hl">함정</span>: 초기값이 <code>"S"</code>이므로
+                  결과는 <strong>7글자</strong>입니다. 리스트 길이(6) + 초기
+                  1글자 = 7.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 각 단어의 인덱스 1 추출 -->
+        <div class="sub-section">
+          <div class="sub-title">② 각 단어의 인덱스 [1] 문자 확인</div>
+
+          <!-- Seoul -->
+          <div style="margin-bottom: 20px">
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #546e7a;
+                margin-bottom: 8px;
+              "
+            >
+              ① "Seoul"
+            </div>
+            <div class="char-array">
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">S</div>
+                <div class="ca-idx">[0]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-hi">e</div>
+                <div class="ca-idx" style="color: #c3e88d">[1]★</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">o</div>
+                <div class="ca-idx">[2]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">u</div>
+                <div class="ca-idx">[3]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">l</div>
+                <div class="ca-idx">[4]</div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  margin-left: 12px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 13px;
+                "
+              >
+                <span style="color: #546e7a">→ </span
+                ><span
+                  style="
+                    color: #c3e88d;
+                    font-size: 20px;
+                    font-weight: bold;
+                    margin-left: 6px;
+                  "
+                  >'e'</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Kyeonggi -->
+          <div style="margin-bottom: 20px">
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #546e7a;
+                margin-bottom: 8px;
+              "
+            >
+              ② "Kyeonggi"
+            </div>
+            <div class="char-array">
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">K</div>
+                <div class="ca-idx">[0]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-hi">y</div>
+                <div class="ca-idx" style="color: #c3e88d">[1]★</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">e</div>
+                <div class="ca-idx">[2]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">o</div>
+                <div class="ca-idx">[3]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">n</div>
+                <div class="ca-idx">[4]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">g</div>
+                <div class="ca-idx">[5]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">g</div>
+                <div class="ca-idx">[6]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">i</div>
+                <div class="ca-idx">[7]</div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  margin-left: 12px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 13px;
+                "
+              >
+                <span style="color: #546e7a">→ </span
+                ><span
+                  style="
+                    color: #c3e88d;
+                    font-size: 20px;
+                    font-weight: bold;
+                    margin-left: 6px;
+                  "
+                  >'y'</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Incheon -->
+          <div style="margin-bottom: 20px">
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #546e7a;
+                margin-bottom: 8px;
+              "
+            >
+              ③ "Incheon"
+            </div>
+            <div class="char-array">
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">I</div>
+                <div class="ca-idx">[0]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-hi">n</div>
+                <div class="ca-idx" style="color: #c3e88d">[1]★</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">c</div>
+                <div class="ca-idx">[2]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">h</div>
+                <div class="ca-idx">[3]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">e</div>
+                <div class="ca-idx">[4]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">o</div>
+                <div class="ca-idx">[5]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">n</div>
+                <div class="ca-idx">[6]</div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  margin-left: 12px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 13px;
+                "
+              >
+                <span style="color: #546e7a">→ </span
+                ><span
+                  style="
+                    color: #c3e88d;
+                    font-size: 20px;
+                    font-weight: bold;
+                    margin-left: 6px;
+                  "
+                  >'n'</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Daejun -->
+          <div style="margin-bottom: 20px">
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #546e7a;
+                margin-bottom: 8px;
+              "
+            >
+              ④ "Daejun"
+            </div>
+            <div class="char-array">
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">D</div>
+                <div class="ca-idx">[0]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-hi">a</div>
+                <div class="ca-idx" style="color: #c3e88d">[1]★</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">e</div>
+                <div class="ca-idx">[2]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">j</div>
+                <div class="ca-idx">[3]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">u</div>
+                <div class="ca-idx">[4]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">n</div>
+                <div class="ca-idx">[5]</div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  margin-left: 12px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 13px;
+                "
+              >
+                <span style="color: #546e7a">→ </span
+                ><span
+                  style="
+                    color: #c3e88d;
+                    font-size: 20px;
+                    font-weight: bold;
+                    margin-left: 6px;
+                  "
+                  >'a'</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Daegu -->
+          <div style="margin-bottom: 20px">
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #546e7a;
+                margin-bottom: 8px;
+              "
+            >
+              ⑤ "Daegu"
+            </div>
+            <div class="char-array">
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">D</div>
+                <div class="ca-idx">[0]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-hi">a</div>
+                <div class="ca-idx" style="color: #c3e88d">[1]★</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">e</div>
+                <div class="ca-idx">[2]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">g</div>
+                <div class="ca-idx">[3]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">u</div>
+                <div class="ca-idx">[4]</div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  margin-left: 12px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 13px;
+                "
+              >
+                <span style="color: #546e7a">→ </span
+                ><span
+                  style="
+                    color: #c3e88d;
+                    font-size: 20px;
+                    font-weight: bold;
+                    margin-left: 6px;
+                  "
+                  >'a'</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Pusan -->
+          <div style="margin-bottom: 4px">
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #546e7a;
+                margin-bottom: 8px;
+              "
+            >
+              ⑥ "Pusan"
+            </div>
+            <div class="char-array">
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">P</div>
+                <div class="ca-idx">[0]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-hi">u</div>
+                <div class="ca-idx" style="color: #c3e88d">[1]★</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">s</div>
+                <div class="ca-idx">[2]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">a</div>
+                <div class="ca-idx">[3]</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">n</div>
+                <div class="ca-idx">[4]</div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  margin-left: 12px;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 13px;
+                "
+              >
+                <span style="color: #546e7a">→ </span
+                ><span
+                  style="
+                    color: #c3e88d;
+                    font-size: 20px;
+                    font-weight: bold;
+                    margin-left: 6px;
+                  "
+                  >'u'</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ 단계별 누적 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">③ str 누적 변화 단계별 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>반복</th>
+                  <th>i</th>
+                  <th>i[1]</th>
+                  <th>str (누적 결과)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color: #546e7a">초기</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>
+                    <span
+                      class="tag"
+                      style="
+                        background: #2d2010;
+                        color: #f0c060;
+                        border: 1px solid #8b6020;
+                        font-size: 14px;
+                        padding: 3px 10px;
+                      "
+                      >"S"</span
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td><code>"Seoul"</code></td>
+                  <td><span class="tag tag-ch">'e'</span></td>
+                  <td>
+                    <code>"S" + 'e'</code> =
+                    <span class="tag tag-acc">"Se"</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><code>"Kyeonggi"</code></td>
+                  <td><span class="tag tag-ch">'y'</span></td>
+                  <td>
+                    <code>"Se" + 'y'</code> =
+                    <span class="tag tag-acc">"Sey"</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><code>"Incheon"</code></td>
+                  <td><span class="tag tag-ch">'n'</span></td>
+                  <td>
+                    <code>"Sey" + 'n'</code> =
+                    <span class="tag tag-acc">"Seyn"</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td><code>"Daejun"</code></td>
+                  <td><span class="tag tag-ch">'a'</span></td>
+                  <td>
+                    <code>"Seyn" + 'a'</code> =
+                    <span class="tag tag-acc">"Seyna"</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td><code>"Daegu"</code></td>
+                  <td><span class="tag tag-ch">'a'</span></td>
+                  <td>
+                    <code>"Seyna" + 'a'</code> =
+                    <span class="tag tag-acc">"Seynaa"</span>
+                  </td>
+                </tr>
+                <tr class="hl-row">
+                  <td>6</td>
+                  <td><code>"Pusan"</code></td>
+                  <td><span class="tag tag-ch">'u'</span></td>
+                  <td>
+                    <code>"Seynaa" + 'u'</code> =
+                    <span
+                      class="tag tag-acc"
+                      style="font-size: 14px; padding: 3px 10px"
+                      >"Seynaau"</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ 시각적 누적 빌더 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 문자열 누적 시각화</div>
+          <div class="flow-wrap">
+            <!-- 초기 -->
+            <div style="margin-bottom: 14px">
+              <div
+                style="
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 11px;
+                  color: #546e7a;
+                  margin-bottom: 6px;
+                "
+              >
+                초기값
+              </div>
+              <div class="accum-row">
+                <div class="acc-char acc-seed">S</div>
+                <div class="acc-result">= "S"</div>
+              </div>
+            </div>
+            <!-- 최종 -->
+            <div style="margin-top: 8px">
+              <div
+                style="
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 11px;
+                  color: #f0c060;
+                  margin-bottom: 6px;
+                "
+              >
+                최종 결과
+              </div>
+              <div class="accum-row">
+                <div class="acc-char acc-seed">S</div>
+                <div class="acc-plus">+</div>
+                <div class="acc-char acc-new">e</div>
+                <div class="acc-plus">+</div>
+                <div class="acc-char acc-new">y</div>
+                <div class="acc-plus">+</div>
+                <div class="acc-char acc-new">n</div>
+                <div class="acc-plus">+</div>
+                <div class="acc-char acc-new">a</div>
+                <div class="acc-plus">+</div>
+                <div class="acc-char acc-new">a</div>
+                <div class="acc-plus">+</div>
+                <div class="acc-char acc-new">u</div>
+                <div
+                  style="
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                    font-size: 22px;
+                    font-weight: bold;
+                    color: #f0c060;
+                    margin-left: 12px;
+                  "
+                >
+                  = "Seynaau"
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔤</span>
+                <span
+                  ><span class="hl">Python 문자열 인덱스는 0부터 시작</span
+                  >합니다. <code>i[1]</code>은 두 번째 문자입니다.
+                  <code>i[0]</code>이었다면 각 도시의 첫 글자(S, K, I, D, D,
+                  P)가 되었을 것입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  >초기값 <code>str = "S"</code>로 이미 'S'가 포함되어 있으므로
+                  최종 길이는 1 + 6 = <strong>7글자</strong>입니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span>최종 출력: <strong>Seynaau</strong></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">print() 출력 결과</div>
+          <div class="answer-value">Seynaau</div>
+          <div class="answer-desc">
+            "S" + Seoul[1]='e' + Kyeonggi[1]='y' + Incheon[1]='n'<br />
+            + Daejun[1]='a' + Daegu[1]='a' + Pusan[1]='u'
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

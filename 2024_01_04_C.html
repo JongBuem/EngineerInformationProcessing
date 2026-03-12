@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .op {
+        color: #89ddff;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 96px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+        letter-spacing: 4px;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 24px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.22);
+        font-weight: 700;
+      }
+      .trace-table tr.odd-row td {
+        background: rgba(44, 90, 60, 0.12);
+      }
+      .trace-table tr.even-row td {
+        background: rgba(0, 0, 0, 0.04);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-out {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+      .tag-skip {
+        background: #1a1208;
+        color: #546e7a;
+        border: 1px solid #3a3028;
+      }
+      .tag-swap {
+        background: #1a1e2d;
+        color: #82aaff;
+        border: 1px solid #1e3a6e;
+      }
+
+      /* 문자 배열 시각화 */
+      .char-array {
+        display: flex;
+        gap: 3px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+      .ca-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        flex-shrink: 0;
+      }
+      .ca-char {
+        width: 46px;
+        height: 46px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .cc-norm {
+        background: #1a1208;
+        border: 2px solid #3a3028;
+        color: #e8d5b0;
+      }
+      .cc-hi {
+        background: #2d2010;
+        border: 2.5px solid #f0c060;
+        color: #f0c060;
+        box-shadow: 0 0 8px rgba(240, 192, 96, 0.3);
+      }
+      .cc-swap1 {
+        background: #1a1e2d;
+        border: 2.5px solid #82aaff;
+        color: #82aaff;
+      }
+      .cc-swap2 {
+        background: #2d1010;
+        border: 2.5px solid #ff9580;
+        color: #ff9580;
+      }
+      .ca-idx {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: #546e7a;
+      }
+
+      /* 스왑 애니메이션 표 */
+      .swap-steps {
+        background: #1a1208;
+        border-radius: 8px;
+        overflow: hidden;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .ss-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid #2a1e10;
+        padding: 10px 18px;
+      }
+      .ss-row:last-child {
+        border-bottom: none;
+      }
+      .ss-step {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+      .ss-arrows {
+        color: #8b3a0f;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      .ss-result {
+        flex: 1;
+        font-size: 13px;
+        color: #e8d5b0;
+      }
+      .ss-note {
+        font-size: 11px;
+        color: #546e7a;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 문자열 포인터 역순 + 홀수 인덱스 출력 추적</h1>
+        <div class="meta">
+          C · String · Pointer · reverse() · strlen · for loop · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+<span class="kw">#include</span> &lt;string.h&gt;
+
+<span class="kw">void</span> <span class="fn">reverse</span>(<span class="kw">char</span><span class="op">*</span> str) {
+    <span class="kw">int</span> len = <span class="fn">strlen</span>(str);
+    <span class="kw">char</span> temp;
+    <span class="kw">char</span><span class="op">*</span> p1 = str;
+    <span class="kw">char</span><span class="op">*</span> p2 = str + len - <span class="nl">1</span>;   <span class="cmt">// 마지막 문자 주소</span>
+    <span class="kw">while</span> (p1 &lt; p2) {
+        temp = <span class="op">*</span>p1;
+        <span class="op">*</span>p1 = <span class="op">*</span>p2;
+        <span class="op">*</span>p2 = temp;
+        p1<span class="op">++</span>; p2<span class="op">--</span>;            <span class="cmt">// 양끝에서 안쪽으로</span>
+    }
+}
+
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">int</span> argc, <span class="kw">char</span><span class="op">*</span> argv[]) {
+    <span class="kw">char</span> str[<span class="nl">100</span>] = <span class="str">"ABCDEFGH"</span>;
+
+    <span class="fn">reverse</span>(str);              <span class="cmt">// 문자열 역순</span>
+
+    <span class="kw">int</span> len = <span class="fn">strlen</span>(str);
+
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nl">1</span>; i &lt; len; i += <span class="nl">2</span>) {
+        printf(<span class="str">"%c"</span>, str[i]);   <span class="cmt">// 홀수 인덱스만 출력</span>
+    }
+
+    printf(<span class="str">"\n"</span>);
+    <span class="kw">return</span> <span class="nl">0</span>;
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">printf() 출력 결과</div>
+          <div class="answer-value">GECA</div>
+          <div class="answer-desc">
+            역순 "HGFEDCBA" → 홀수 인덱스[1][3][5][7] = G, E, C, A
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >포인터를 이용해 문자열을 제자리(in-place)에서 역순으로 뒤집은
+                뒤, 홀수 인덱스 위치의 문자만 출력하는 2단계 추적 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔄</span
+                ><span
+                  ><strong>1단계</strong>: <code>reverse()</code>가 p1(앞),
+                  p2(뒤) 두 포인터를 안쪽으로 좁히며 문자를 swap.
+                  <code>"ABCDEFGH"</code> → <code>"HGFEDCBA"</code></span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span
+                ><span
+                  ><strong>2단계</strong>: <code>i=1</code>부터
+                  <code>i+=2</code>로
+                  <span class="hl">홀수 인덱스(1,3,5,7)</span>만 순회하여
+                  출력.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span
+                ><span
+                  ><span class="hl">함정</span>: 역순 이후의 배열을 기준으로
+                  인덱스를 읽어야 합니다. 원본 기준으로 잘못 읽으면 오답.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② reverse 동작 -->
+        <div class="sub-section">
+          <div class="sub-title">② reverse() — 포인터 swap 과정</div>
+
+          <!-- 원본 배열 -->
+          <div
+            style="
+              margin-bottom: 8px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 12px;
+              color: #546e7a;
+            "
+          >
+            역순 전: "ABCDEFGH"
+          </div>
+          <div class="flow-wrap" style="padding: 16px 18px">
+            <div class="char-array">
+              <div class="ca-cell">
+                <div class="ca-char cc-swap1">A</div>
+                <div class="ca-idx">idx 0<br />p1→</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">B</div>
+                <div class="ca-idx">idx 1</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">C</div>
+                <div class="ca-idx">idx 2</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">D</div>
+                <div class="ca-idx">idx 3</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">E</div>
+                <div class="ca-idx">idx 4</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">F</div>
+                <div class="ca-idx">idx 5</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">G</div>
+                <div class="ca-idx">idx 6</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-swap2">H</div>
+                <div class="ca-idx">idx 7<br />p2→</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- swap 단계 -->
+          <div class="swap-steps">
+            <div class="ss-row">
+              <div class="ss-step" style="background: #1a1e2d; color: #82aaff">
+                1
+              </div>
+              <div class="ss-arrows">⇄</div>
+              <div class="ss-result">
+                p1=0, p2=7 &nbsp;→&nbsp; <span style="color: #82aaff">A</span> ↔
+                <span style="color: #ff9580">H</span>
+              </div>
+              <div class="ss-note">str: H B C D E F G A</div>
+            </div>
+            <div class="ss-row">
+              <div class="ss-step" style="background: #1a1e2d; color: #82aaff">
+                2
+              </div>
+              <div class="ss-arrows">⇄</div>
+              <div class="ss-result">
+                p1=1, p2=6 &nbsp;→&nbsp; <span style="color: #82aaff">B</span> ↔
+                <span style="color: #ff9580">G</span>
+              </div>
+              <div class="ss-note">str: H G C D E F B A</div>
+            </div>
+            <div class="ss-row">
+              <div class="ss-step" style="background: #1a1e2d; color: #82aaff">
+                3
+              </div>
+              <div class="ss-arrows">⇄</div>
+              <div class="ss-result">
+                p1=2, p2=5 &nbsp;→&nbsp; <span style="color: #82aaff">C</span> ↔
+                <span style="color: #ff9580">F</span>
+              </div>
+              <div class="ss-note">str: H G F D E C B A</div>
+            </div>
+            <div class="ss-row" style="border-bottom: none">
+              <div class="ss-step" style="background: #1a1e2d; color: #82aaff">
+                4
+              </div>
+              <div class="ss-arrows">⇄</div>
+              <div class="ss-result">
+                p1=3, p2=4 &nbsp;→&nbsp; <span style="color: #82aaff">D</span> ↔
+                <span style="color: #ff9580">E</span>
+              </div>
+              <div class="ss-note">
+                str: H G F E D C B A → p1=4 ≥ p2=4, 종료
+              </div>
+            </div>
+          </div>
+
+          <!-- 역순 후 배열 -->
+          <div
+            style="
+              margin-top: 16px;
+              margin-bottom: 8px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 12px;
+              color: #f0c060;
+            "
+          >
+            역순 후: "HGFEDCBA"
+          </div>
+          <div class="flow-wrap" style="padding: 16px 18px">
+            <div class="char-array">
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">H</div>
+                <div class="ca-idx">idx 0</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-hi">G</div>
+                <div class="ca-idx" style="color: #f0c060">idx 1 ★</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">F</div>
+                <div class="ca-idx">idx 2</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-hi">E</div>
+                <div class="ca-idx" style="color: #f0c060">idx 3 ★</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">D</div>
+                <div class="ca-idx">idx 4</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-hi">C</div>
+                <div class="ca-idx" style="color: #f0c060">idx 5 ★</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-norm">B</div>
+                <div class="ca-idx">idx 6</div>
+              </div>
+              <div class="ca-cell">
+                <div class="ca-char cc-hi">A</div>
+                <div class="ca-idx" style="color: #f0c060">idx 7 ★</div>
+              </div>
+            </div>
+            <div
+              style="
+                margin-top: 10px;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #546e7a;
+              "
+            >
+              <span style="color: #f0c060">★</span> = 홀수 인덱스 (i=1, 3, 5, 7)
+              — 출력 대상
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ for 루프 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">
+            ③ for 루프 단계별 추적 (i=1, i&lt;8, i+=2)
+          </div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>i</th>
+                  <th>i &lt; len(8)?</th>
+                  <th>str[i]</th>
+                  <th>출력</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd-row hl-row">
+                  <td>1</td>
+                  <td>✓</td>
+                  <td><strong>str[1] = 'G'</strong></td>
+                  <td><span class="tag tag-out">G 출력</span></td>
+                </tr>
+                <tr class="odd-row hl-row">
+                  <td>3</td>
+                  <td>✓</td>
+                  <td><strong>str[3] = 'E'</strong></td>
+                  <td><span class="tag tag-out">E 출력</span></td>
+                </tr>
+                <tr class="odd-row hl-row">
+                  <td>5</td>
+                  <td>✓</td>
+                  <td><strong>str[5] = 'C'</strong></td>
+                  <td><span class="tag tag-out">C 출력</span></td>
+                </tr>
+                <tr class="odd-row hl-row">
+                  <td>7</td>
+                  <td>✓</td>
+                  <td><strong>str[7] = 'A'</strong></td>
+                  <td><span class="tag tag-out">A 출력</span></td>
+                </tr>
+                <tr>
+                  <td>9</td>
+                  <td style="color: #ff7675">✗ 9≥8 종료</td>
+                  <td>—</td>
+                  <td><span class="tag tag-skip">루프 종료</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ 전체 흐름 요약 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 전체 흐름 요약</div>
+          <div
+            style="
+              background: #1a1208;
+              border-radius: 8px;
+              padding: 20px 24px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 13px;
+              line-height: 2.8;
+            "
+          >
+            <div>
+              <span style="color: #546e7a">원본: </span>
+              <span style="color: #82aaff; letter-spacing: 3px; font-size: 16px"
+                >A B C D E F G H</span
+              >
+            </div>
+            <div>
+              <span style="color: #546e7a">역순: </span>
+              <span style="color: #c3e88d; letter-spacing: 3px; font-size: 16px"
+                >H G F E D C B A</span
+              >
+            </div>
+            <div>
+              <span style="color: #546e7a">홀수idx: </span>
+              <span style="color: #546e7a; letter-spacing: 3px; font-size: 14px"
+                >_
+              </span>
+              <span
+                style="
+                  color: #f0c060;
+                  font-size: 18px;
+                  font-weight: bold;
+                  letter-spacing: 4px;
+                "
+                >G</span
+              >
+              <span
+                style="color: #546e7a; font-size: 14px; letter-spacing: 3px"
+              >
+                _
+              </span>
+              <span
+                style="
+                  color: #f0c060;
+                  font-size: 18px;
+                  font-weight: bold;
+                  letter-spacing: 4px;
+                "
+                >E</span
+              >
+              <span
+                style="color: #546e7a; font-size: 14px; letter-spacing: 3px"
+              >
+                _
+              </span>
+              <span
+                style="
+                  color: #f0c060;
+                  font-size: 18px;
+                  font-weight: bold;
+                  letter-spacing: 4px;
+                "
+                >C</span
+              >
+              <span
+                style="color: #546e7a; font-size: 14px; letter-spacing: 3px"
+              >
+                _
+              </span>
+              <span
+                style="
+                  color: #f0c060;
+                  font-size: 18px;
+                  font-weight: bold;
+                  letter-spacing: 4px;
+                "
+                >A</span
+              >
+            </div>
+            <div
+              style="
+                border-top: 1px solid #2a1e10;
+                padding-top: 12px;
+                margin-top: 4px;
+              "
+            >
+              <span style="color: #546e7a">출력: </span>
+              <span
+                style="
+                  color: #f0c060;
+                  font-size: 22px;
+                  font-weight: bold;
+                  letter-spacing: 4px;
+                "
+                >G E C A</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔄</span>
+                <span
+                  ><span class="hl">reverse()는 원본 배열을 직접 수정</span
+                  >합니다. 포인터를 통해 str을 바꾸므로 main에서도
+                  반영됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  ><code>i=1; i+=2</code>는
+                  <span class="hl">홀수 인덱스(1, 3, 5, 7)</span>만 방문합니다.
+                  <strong>역순 이후의 배열</strong>을 기준으로 읽어야
+                  합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  >역순 후 배열: <code>[H][G][F][E][D][C][B][A]</code> → 홀수
+                  위치 = <strong>G, E, C, A</strong></span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span
+                  >최종 출력: <strong>GECA</strong> (뒤에 개행 \n 포함)</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">printf() 출력 결과</div>
+          <div class="answer-value">GECA</div>
+          <div class="answer-desc">
+            "ABCDEFGH" → reverse → "HGFEDCBA" → idx[1,3,5,7] = G,E,C,A
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

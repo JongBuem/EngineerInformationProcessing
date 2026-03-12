@@ -1,0 +1,1335 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .code-header .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 100px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+        letter-spacing: 6px;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 1.8;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 24px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.22);
+        font-weight: 700;
+      }
+      .trace-table tr.upper-row td {
+        background: rgba(30, 58, 110, 0.08);
+      }
+      .trace-table tr.lower-row td {
+        background: rgba(45, 90, 61, 0.08);
+      }
+      .trace-table tr.digit-row td {
+        background: rgba(139, 96, 32, 0.08);
+      }
+      .trace-table tr.space-row td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-up {
+        background: #1a1e2d;
+        color: #82aaff;
+        border: 1px solid #1e3a6e;
+      }
+      .tag-lo {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-di {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+      .tag-sp {
+        background: #1a1208;
+        color: #546e7a;
+        border: 1px solid #3a3028;
+      }
+      .tag-out {
+        background: #2d1010;
+        color: #ff9580;
+        border: 1px solid #8b2020;
+      }
+
+      /* 변환 공식 카드 */
+      .formula-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 10px;
+        margin: 12px 0;
+      }
+      .formula-item {
+        background: #1a1208;
+        border-radius: 7px;
+        overflow: hidden;
+        border: 1px solid #3a3028;
+      }
+      .fi-head {
+        padding: 8px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .fi-body {
+        padding: 10px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: #c8b080;
+        line-height: 1.9;
+      }
+
+      /* 문자 변환 시각화 */
+      .char-transform {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .ct-box {
+        min-width: 44px;
+        height: 44px;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: bold;
+        padding: 0 6px;
+      }
+      .ct-label {
+        font-size: 9px;
+        font-weight: normal;
+        color: #546e7a;
+        margin-top: 2px;
+      }
+      .ct-arrow {
+        color: #8b3a0f;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      .ct-calc {
+        font-size: 11px;
+        color: #546e7a;
+        padding: 4px 8px;
+        background: #1a1208;
+        border-radius: 4px;
+        border: 1px solid #3a3028;
+        line-height: 1.8;
+      }
+
+      /* 결과 누적 */
+      .result-row {
+        display: flex;
+        gap: 3px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+      .rc-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        flex-shrink: 0;
+      }
+      .rc-char {
+        width: 46px;
+        height: 46px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .rc-up {
+        background: #1a1e2d;
+        border: 2px solid #82aaff;
+        color: #82aaff;
+      }
+      .rc-lo {
+        background: #1a2010;
+        border: 2px solid #c3e88d;
+        color: #c3e88d;
+      }
+      .rc-di {
+        background: #2d2010;
+        border: 2px solid #f0c060;
+        color: #f0c060;
+      }
+      .rc-sp {
+        background: #1a1208;
+        border: 2px solid #3a3028;
+        color: #546e7a;
+        font-size: 12px;
+      }
+      .rc-idx {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: #546e7a;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 문자 분류 + 시프트 인코딩 변환 추적</h1>
+        <div class="meta">
+          C · isupper · islower · isdigit · ASCII · Modulo Shift · ctype.h ·
+          Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+<span class="kw">#include</span> &lt;ctype.h&gt;
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">char</span><span class="op">*</span>p = <span class="str">"It is 8"</span>;
+    <span class="kw">char</span> result[<span class="nl">100</span>];
+    <span class="kw">int</span> i;
+
+    <span class="kw">for</span> (i = <span class="nl">0</span>; p[i] != <span class="str">'\0'</span>; i++) {
+        <span class="kw">if</span> (<span class="fn">isupper</span>(p[i]))
+            result[i] = (p[i] - <span class="str">'A'</span> + <span class="nl">5</span>) % <span class="nl">26</span> + <span class="str">'A'</span>;  <span class="cmt">// 대문자: +5 순환</span>
+        <span class="kw">else if</span> (<span class="fn">islower</span>(p[i]))
+            result[i] = (p[i] - <span class="str">'a'</span> + <span class="nl">10</span>) % <span class="nl">26</span> + <span class="str">'a'</span>; <span class="cmt">// 소문자: +10 순환</span>
+        <span class="kw">else if</span> (<span class="fn">isdigit</span>(p[i]))
+            result[i] = (p[i] - <span class="str">'0'</span> + <span class="nl">3</span>) % <span class="nl">10</span> + <span class="str">'0'</span>;  <span class="cmt">// 숫자: +3 순환</span>
+        <span class="kw">else</span>
+            result[i] = p[i];                          <span class="cmt">// 그 외: 그대로</span>
+    }
+
+    result[i] = <span class="str">'\0'</span>;
+    printf(<span class="str">"%s\n"</span>, result);
+    <span class="kw">return</span> <span class="nl">0</span>;
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">printf() 출력 결과</div>
+          <div class="answer-value">Nd sc 1</div>
+          <div class="answer-desc">
+            I→N &nbsp; t→d &nbsp; ' '→' ' &nbsp; i→s &nbsp; s→c &nbsp; ' '→' '
+            &nbsp; 8→1
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >각 문자의 종류(대문자/소문자/숫자/기타)에 따라 서로 다른
+                모듈러(%) 시프트 인코딩을 적용하는 문자 변환 추적 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔵</span
+                ><span
+                  ><strong>대문자</strong>: 알파벳 위치에 +5를 더한 뒤 26으로
+                  나머지 → 26자 순환</span
+                >
+              </li>
+              <li>
+                <span class="icon">🟢</span
+                ><span
+                  ><strong>소문자</strong>: 알파벳 위치에 +10을 더한 뒤 26으로
+                  나머지 → 26자 순환</span
+                >
+              </li>
+              <li>
+                <span class="icon">🟡</span
+                ><span
+                  ><strong>숫자</strong>: 숫자 값에 +3을 더한 뒤 10으로 나머지 →
+                  0~9 순환</span
+                >
+              </li>
+              <li>
+                <span class="icon">⬜</span
+                ><span><strong>공백/기타</strong>: 변환 없이 그대로 복사</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 변환 공식 -->
+        <div class="sub-section">
+          <div class="sub-title">② 변환 공식 정리</div>
+          <div class="formula-grid">
+            <div class="formula-item">
+              <div class="fi-head" style="background: #1a1e2d; color: #82aaff">
+                대문자 (isupper)
+              </div>
+              <div class="fi-body">
+                (ch - 'A' + 5) % 26 + 'A'<br />
+                <span style="color: #546e7a; font-size: 10px"
+                  >알파벳 순서에서 +5 시프트</span
+                >
+              </div>
+            </div>
+            <div class="formula-item">
+              <div class="fi-head" style="background: #1a2010; color: #c3e88d">
+                소문자 (islower)
+              </div>
+              <div class="fi-body">
+                (ch - 'a' + 10) % 26 + 'a'<br />
+                <span style="color: #546e7a; font-size: 10px"
+                  >알파벳 순서에서 +10 시프트</span
+                >
+              </div>
+            </div>
+            <div class="formula-item">
+              <div class="fi-head" style="background: #2d2010; color: #f0c060">
+                숫자 (isdigit)
+              </div>
+              <div class="fi-body">
+                (ch - '0' + 3) % 10 + '0'<br />
+                <span style="color: #546e7a; font-size: 10px"
+                  >0~9에서 +3 시프트</span
+                >
+              </div>
+            </div>
+            <div class="formula-item">
+              <div class="fi-head" style="background: #1a1208; color: #546e7a">
+                공백/기타
+              </div>
+              <div class="fi-body">
+                result[i] = p[i]<br />
+                <span style="color: #546e7a; font-size: 10px">변환 없음</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ 문자별 변환 계산 -->
+        <div class="sub-section">
+          <div class="sub-title">③ "It is 8" — 문자별 변환 계산</div>
+
+          <!-- I -->
+          <div
+            style="
+              margin-bottom: 18px;
+              background: #1a1208;
+              border-radius: 7px;
+              padding: 14px 18px;
+              border: 1px solid #1e3a6e;
+            "
+          >
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #82aaff;
+                margin-bottom: 8px;
+              "
+            >
+              p[0] = 'I' → isupper
+            </div>
+            <div class="char-transform">
+              <div
+                class="ct-box"
+                style="
+                  background: #1a1e2d;
+                  border: 2px solid #82aaff;
+                  color: #82aaff;
+                "
+              >
+                I
+              </div>
+              <div class="ct-arrow">→</div>
+              <div class="ct-calc">
+                ('I'-'A'+5)%26+'A'<br />= (8+5)%26+65<br />= 13%26+65<br />=
+                13+65 = 78
+              </div>
+              <div class="ct-arrow">→</div>
+              <div
+                class="ct-box"
+                style="
+                  background: #2d2010;
+                  border: 2.5px solid #f0c060;
+                  color: #f0c060;
+                  font-size: 24px;
+                "
+              >
+                N
+              </div>
+            </div>
+          </div>
+
+          <!-- t -->
+          <div
+            style="
+              margin-bottom: 18px;
+              background: #1a1208;
+              border-radius: 7px;
+              padding: 14px 18px;
+              border: 1px solid #2d5a3d;
+            "
+          >
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #c3e88d;
+                margin-bottom: 8px;
+              "
+            >
+              p[1] = 't' → islower
+            </div>
+            <div class="char-transform">
+              <div
+                class="ct-box"
+                style="
+                  background: #1a2010;
+                  border: 2px solid #c3e88d;
+                  color: #c3e88d;
+                "
+              >
+                t
+              </div>
+              <div class="ct-arrow">→</div>
+              <div class="ct-calc">
+                ('t'-'a'+10)%26+'a'<br />= (19+10)%26+97<br />= 29%26+97<br />=
+                3+97 = 100
+              </div>
+              <div class="ct-arrow">→</div>
+              <div
+                class="ct-box"
+                style="
+                  background: #2d2010;
+                  border: 2.5px solid #f0c060;
+                  color: #f0c060;
+                  font-size: 24px;
+                "
+              >
+                d
+              </div>
+            </div>
+          </div>
+
+          <!-- space -->
+          <div
+            style="
+              margin-bottom: 18px;
+              background: #1a1208;
+              border-radius: 7px;
+              padding: 14px 18px;
+              border: 1px solid #3a3028;
+            "
+          >
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #546e7a;
+                margin-bottom: 8px;
+              "
+            >
+              p[2] = ' ' → else (공백)
+            </div>
+            <div class="char-transform">
+              <div
+                class="ct-box"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  font-size: 12px;
+                "
+              >
+                ' '
+              </div>
+              <div class="ct-arrow">→</div>
+              <div class="ct-calc">변환 없음<br />result[2] = ' '</div>
+              <div class="ct-arrow">→</div>
+              <div
+                class="ct-box"
+                style="
+                  background: #1a1208;
+                  border: 2.5px solid #546e7a;
+                  color: #546e7a;
+                  font-size: 12px;
+                "
+              >
+                ' '
+              </div>
+            </div>
+          </div>
+
+          <!-- i -->
+          <div
+            style="
+              margin-bottom: 18px;
+              background: #1a1208;
+              border-radius: 7px;
+              padding: 14px 18px;
+              border: 1px solid #2d5a3d;
+            "
+          >
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #c3e88d;
+                margin-bottom: 8px;
+              "
+            >
+              p[3] = 'i' → islower
+            </div>
+            <div class="char-transform">
+              <div
+                class="ct-box"
+                style="
+                  background: #1a2010;
+                  border: 2px solid #c3e88d;
+                  color: #c3e88d;
+                "
+              >
+                i
+              </div>
+              <div class="ct-arrow">→</div>
+              <div class="ct-calc">
+                ('i'-'a'+10)%26+'a'<br />= (8+10)%26+97<br />= 18%26+97<br />=
+                18+97 = 115
+              </div>
+              <div class="ct-arrow">→</div>
+              <div
+                class="ct-box"
+                style="
+                  background: #2d2010;
+                  border: 2.5px solid #f0c060;
+                  color: #f0c060;
+                  font-size: 24px;
+                "
+              >
+                s
+              </div>
+            </div>
+          </div>
+
+          <!-- s -->
+          <div
+            style="
+              margin-bottom: 18px;
+              background: #1a1208;
+              border-radius: 7px;
+              padding: 14px 18px;
+              border: 1px solid #2d5a3d;
+            "
+          >
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #c3e88d;
+                margin-bottom: 8px;
+              "
+            >
+              p[4] = 's' → islower
+            </div>
+            <div class="char-transform">
+              <div
+                class="ct-box"
+                style="
+                  background: #1a2010;
+                  border: 2px solid #c3e88d;
+                  color: #c3e88d;
+                "
+              >
+                s
+              </div>
+              <div class="ct-arrow">→</div>
+              <div class="ct-calc">
+                ('s'-'a'+10)%26+'a'<br />= (18+10)%26+97<br />= 28%26+97<br />=
+                2+97 = 99
+              </div>
+              <div class="ct-arrow">→</div>
+              <div
+                class="ct-box"
+                style="
+                  background: #2d2010;
+                  border: 2.5px solid #f0c060;
+                  color: #f0c060;
+                  font-size: 24px;
+                "
+              >
+                c
+              </div>
+            </div>
+          </div>
+
+          <!-- space 2 -->
+          <div
+            style="
+              margin-bottom: 18px;
+              background: #1a1208;
+              border-radius: 7px;
+              padding: 14px 18px;
+              border: 1px solid #3a3028;
+            "
+          >
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #546e7a;
+                margin-bottom: 8px;
+              "
+            >
+              p[5] = ' ' → else (공백)
+            </div>
+            <div class="char-transform">
+              <div
+                class="ct-box"
+                style="
+                  background: #1a1208;
+                  border: 2px solid #3a3028;
+                  color: #546e7a;
+                  font-size: 12px;
+                "
+              >
+                ' '
+              </div>
+              <div class="ct-arrow">→</div>
+              <div class="ct-calc">변환 없음<br />result[5] = ' '</div>
+              <div class="ct-arrow">→</div>
+              <div
+                class="ct-box"
+                style="
+                  background: #1a1208;
+                  border: 2.5px solid #546e7a;
+                  color: #546e7a;
+                  font-size: 12px;
+                "
+              >
+                ' '
+              </div>
+            </div>
+          </div>
+
+          <!-- 8 -->
+          <div
+            style="
+              margin-bottom: 4px;
+              background: #1a1208;
+              border-radius: 7px;
+              padding: 14px 18px;
+              border: 1px solid #8b6020;
+            "
+          >
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #f0c060;
+                margin-bottom: 8px;
+              "
+            >
+              p[6] = '8' → isdigit
+            </div>
+            <div class="char-transform">
+              <div
+                class="ct-box"
+                style="
+                  background: #2d2010;
+                  border: 2px solid #f0c060;
+                  color: #f0c060;
+                "
+              >
+                8
+              </div>
+              <div class="ct-arrow">→</div>
+              <div class="ct-calc">
+                ('8'-'0'+3)%10+'0'<br />= (8+3)%10+48<br />= 11%10+48<br />=
+                1+48 = 49
+              </div>
+              <div class="ct-arrow">→</div>
+              <div
+                class="ct-box"
+                style="
+                  background: #2d1010;
+                  border: 2.5px solid #ff9580;
+                  color: #ff9580;
+                  font-size: 24px;
+                "
+              >
+                1
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ 전체 추적표 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 전체 문자 변환 추적표</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>i</th>
+                  <th>p[i]</th>
+                  <th>분류</th>
+                  <th>계산식</th>
+                  <th>result[i]</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="upper-row">
+                  <td>0</td>
+                  <td><code>'I'</code></td>
+                  <td><span class="tag tag-up">대문자</span></td>
+                  <td>(8+5)%26 = 13 → +65</td>
+                  <td>
+                    <strong style="color: #82aaff; font-size: 16px">'N'</strong>
+                  </td>
+                </tr>
+                <tr class="lower-row">
+                  <td>1</td>
+                  <td><code>'t'</code></td>
+                  <td><span class="tag tag-lo">소문자</span></td>
+                  <td>(19+10)%26 = 3 → +97</td>
+                  <td>
+                    <strong style="color: #c3e88d; font-size: 16px">'d'</strong>
+                  </td>
+                </tr>
+                <tr class="space-row">
+                  <td>2</td>
+                  <td><code>' '</code></td>
+                  <td><span class="tag tag-sp">기타</span></td>
+                  <td>그대로</td>
+                  <td><strong style="color: #546e7a">' '</strong></td>
+                </tr>
+                <tr class="lower-row">
+                  <td>3</td>
+                  <td><code>'i'</code></td>
+                  <td><span class="tag tag-lo">소문자</span></td>
+                  <td>(8+10)%26 = 18 → +97</td>
+                  <td>
+                    <strong style="color: #c3e88d; font-size: 16px">'s'</strong>
+                  </td>
+                </tr>
+                <tr class="lower-row">
+                  <td>4</td>
+                  <td><code>'s'</code></td>
+                  <td><span class="tag tag-lo">소문자</span></td>
+                  <td>(18+10)%26 = 2 → +97</td>
+                  <td>
+                    <strong style="color: #c3e88d; font-size: 16px">'c'</strong>
+                  </td>
+                </tr>
+                <tr class="space-row">
+                  <td>5</td>
+                  <td><code>' '</code></td>
+                  <td><span class="tag tag-sp">기타</span></td>
+                  <td>그대로</td>
+                  <td><strong style="color: #546e7a">' '</strong></td>
+                </tr>
+                <tr class="digit-row hl-row">
+                  <td>6</td>
+                  <td><code>'8'</code></td>
+                  <td><span class="tag tag-di">숫자</span></td>
+                  <td>(8+3)%10 = 1 → +48</td>
+                  <td>
+                    <strong style="color: #f0c060; font-size: 16px">'1'</strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 결과 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ result 배열 최종 상태</div>
+          <div class="flow-wrap">
+            <div class="result-row">
+              <div class="rc-cell">
+                <div class="rc-char rc-up">N</div>
+                <div class="rc-idx">[0]</div>
+              </div>
+              <div class="rc-cell">
+                <div class="rc-char rc-lo">d</div>
+                <div class="rc-idx">[1]</div>
+              </div>
+              <div class="rc-cell">
+                <div class="rc-char rc-sp">SP</div>
+                <div class="rc-idx">[2]</div>
+              </div>
+              <div class="rc-cell">
+                <div class="rc-char rc-lo">s</div>
+                <div class="rc-idx">[3]</div>
+              </div>
+              <div class="rc-cell">
+                <div class="rc-char rc-lo">c</div>
+                <div class="rc-idx">[4]</div>
+              </div>
+              <div class="rc-cell">
+                <div class="rc-char rc-sp">SP</div>
+                <div class="rc-idx">[5]</div>
+              </div>
+              <div class="rc-cell">
+                <div class="rc-char rc-di">1</div>
+                <div class="rc-idx">[6]</div>
+              </div>
+              <div class="rc-cell">
+                <div
+                  class="rc-char"
+                  style="
+                    background: #2d1010;
+                    border: 2px solid #8b2020;
+                    color: #ff9580;
+                    font-size: 12px;
+                  "
+                >
+                  \0
+                </div>
+                <div class="rc-idx">[7]</div>
+              </div>
+            </div>
+            <div
+              style="
+                margin-top: 14px;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 18px;
+                font-weight: bold;
+                color: #f0c060;
+                letter-spacing: 4px;
+              "
+            >
+              → "Nd sc 1"
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔢</span>
+                <span
+                  ><span class="hl">모듈러 순환 시프트</span>:
+                  <code>(위치 + 이동량) % 범위</code> 공식으로 알파벳/숫자
+                  범위를 벗어나지 않고 순환됩니다. 's'(18)+10=28 → 28%26=2 →
+                  'c'</span
+                >
+              </li>
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  >대문자 +5, 소문자 +10, 숫자 +3 — 이동량이 각각 다름에
+                  주의합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⬜</span>
+                <span
+                  >공백은 <code>isupper</code>, <code>islower</code>,
+                  <code>isdigit</code> 모두 해당 안 되므로
+                  <strong>else 분기</strong>에서 그대로 복사됩니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span>최종 출력: <strong>Nd sc 1</strong></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">printf() 출력 결과</div>
+          <div class="answer-value">Nd sc 1</div>
+          <div class="answer-desc">
+            I(+5)→N &nbsp; t(+10)→d &nbsp; ' ' &nbsp; i(+10)→s &nbsp; s(+10)→c
+            &nbsp; ' ' &nbsp; 8(+3)→1
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer");
+        const btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain");
+        const btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain");
+        const btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer");
+        const btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>
