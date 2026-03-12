@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .blank {
+        display: inline-block;
+        background: #2d2010;
+        border: 2px dashed #f0c060;
+        color: #f0c060;
+        font-weight: bold;
+        border-radius: 4px;
+        padding: 0 14px;
+        font-size: 13px;
+        vertical-align: middle;
+        letter-spacing: 0.03em;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 28px 24px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 16px;
+      }
+      .ans-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .ans-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(240, 192, 96, 0.3);
+        border-radius: 8px;
+        padding: 12px 16px;
+      }
+      .ans-item .ai-var {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 15px;
+        color: #c3e88d;
+        margin-bottom: 4px;
+      }
+      .ans-item .ai-val {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 20px;
+        font-weight: bold;
+        color: #f0c060;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .ans-item .ai-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        margin-top: 3px;
+      }
+      .answer-box .answer-desc {
+        margin-top: 16px;
+        font-size: 12px;
+        opacity: 0.55;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 2;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.18);
+        font-weight: 700;
+      }
+
+      .tag-ok {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+
+      /* 화폐 흐름 시각화 */
+      .coin-flow {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .cf-row {
+        background: #1a1208;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #2a1e10;
+      }
+      .cf-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border-bottom: 1px solid #2a1e10;
+      }
+      .cf-var {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: bold;
+        color: #ffcb6b;
+        min-width: 20px;
+      }
+      .cf-expr {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: #c3e88d;
+        flex: 1;
+      }
+      .cf-result {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 18px;
+        font-weight: bold;
+        color: #f0c060;
+        padding: 2px 12px;
+        border-radius: 4px;
+        background: rgba(240, 192, 96, 0.1);
+      }
+      .cf-body {
+        padding: 8px 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: #8a7a60;
+        line-height: 2;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java 최소 화폐 거스름돈 계산 빈칸 채우기</h1>
+        <div class="meta">
+          Java · Greedy · / · % · 나눗셈 · 나머지 · Blank Fill
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">public class</span> <span class="cls">Problem</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+        <span class="kw">int</span> m = <span class="nl">4620</span>;
+
+        <span class="kw">int</span> a = ( <span class="blank">　　　　　　　</span> );   <span class="cmt">// 천원짜리  4장 출력</span>
+        <span class="kw">int</span> b = ( <span class="blank">　　　　　　　</span> );   <span class="cmt">// 오백원짜리 1개 출력</span>
+        <span class="kw">int</span> c = ( <span class="blank">　　　　　　　</span> );   <span class="cmt">// 백원짜리  1개 출력</span>
+        <span class="kw">int</span> d = ( <span class="blank">　　　　　　　</span> );   <span class="cmt">// 십원짜리  2개 출력</span>
+
+        System.out.<span class="fn">println</span>(a);
+        System.out.<span class="fn">println</span>(b);
+        System.out.<span class="fn">println</span>(c);
+        System.out.<span class="fn">println</span>(d);
+    }
+}</pre>
+        </div>
+
+        <!-- 조건 박스 -->
+        <div
+          style="
+            margin-top: 14px;
+            background: #1a1208;
+            border-radius: 8px;
+            padding: 14px 20px;
+            font-family: &quot;JetBrains Mono&quot;, monospace;
+            font-size: 13px;
+            border: 1px solid #2a1e10;
+            line-height: 2.4;
+          "
+        >
+          <span style="color: #f0c060; font-weight: bold">[보기]</span>&nbsp;
+          아래 항목만 사용하여 빈칸 작성<br />
+          <span style="color: #c3e88d">변수</span
+          ><span style="color: #f0c060; font-weight: bold"
+            >: m &nbsp;&nbsp;</span
+          >
+          <span style="color: #c3e88d">연산자</span
+          ><span style="color: #f0c060; font-weight: bold"
+            >: / , % &nbsp;&nbsp;</span
+          >
+          <span style="color: #c3e88d">괄호</span
+          ><span style="color: #f0c060; font-weight: bold"
+            >: [ ], ( ) &nbsp;&nbsp;</span
+          >
+          <span style="color: #c3e88d">정수</span
+          ><span style="color: #f0c060; font-weight: bold"
+            >: 1000, 500, 100, 10</span
+          >
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          m = 4620원을 <strong>최소 개수</strong>의 화폐로 분해할 때, 각 빈칸에
+          들어갈 식은?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">각 빈칸 정답</div>
+          <div class="ans-grid">
+            <div class="ans-item">
+              <div class="ai-var">a =</div>
+              <div class="ai-val">m / 1000</div>
+              <div class="ai-label">천원짜리 → 4장</div>
+            </div>
+            <div class="ans-item">
+              <div class="ai-var">b =</div>
+              <div class="ai-val">m % 1000 / 500</div>
+              <div class="ai-label">오백원짜리 → 1개</div>
+            </div>
+            <div class="ans-item">
+              <div class="ai-var">c =</div>
+              <div class="ai-val">m % 500 / 100</div>
+              <div class="ai-label">백원짜리 → 1개</div>
+            </div>
+            <div class="ans-item">
+              <div class="ai-var">d =</div>
+              <div class="ai-val">m % 100 / 10</div>
+              <div class="ai-label">십원짜리 → 2개</div>
+            </div>
+          </div>
+          <div class="answer-desc">출력: 4 / 1 / 1 / 2</div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >정수 나눗셈(/)과 나머지(%) 연산으로 금액을 화폐 단위별로
+                분해하는 그리디(Greedy) 빈칸 채우기 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">➗</span
+                ><span
+                  >나눗셈 <code>/</code> → 해당 단위의
+                  <span class="hl">개수</span>를 구함</span
+                >
+              </li>
+              <li>
+                <span class="icon">〰️</span
+                ><span
+                  >나머지 <code>%</code> → 해당 단위를 제거한
+                  <span class="hl">나머지 금액</span>으로 다음 단위 계산</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 핵심 아이디어 -->
+        <div class="sub-section">
+          <div class="sub-title">② 핵심 아이디어 — 단위별 순서 분해</div>
+          <div
+            style="
+              background: #1a1208;
+              border-radius: 8px;
+              padding: 16px 20px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 13px;
+              line-height: 2.6;
+              border: 1px solid #2a1e10;
+              color: #ffff;
+            "
+          >
+            m = <span style="color: #f78c6c; font-weight: bold">4620</span
+            ><br />
+            4620 ÷ 1000 =
+            <span style="color: #f0c060; font-weight: bold">4</span> ... 나머지
+            620<br />
+            &nbsp;620 ÷ &nbsp;500 =
+            <span style="color: #f0c060; font-weight: bold">1</span> ... 나머지
+            120<br />
+            &nbsp;120 ÷ &nbsp;100 =
+            <span style="color: #f0c060; font-weight: bold">1</span> ... 나머지
+            20<br />
+            &nbsp; 20 ÷ &nbsp; 10 =
+            <span style="color: #f0c060; font-weight: bold">2</span> ... 나머지
+            0
+          </div>
+          <p
+            style="
+              margin-top: 10px;
+              font-size: 14px;
+              color: #7a6650;
+              padding-left: 2px;
+            "
+          >
+            ※ b~d는 이전 단위 금액을 <code>%</code>로 제거한 뒤 나누는 것이
+            핵심입니다.
+          </p>
+        </div>
+
+        <!-- ③ 각 빈칸 도출 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 각 빈칸 도출 과정</div>
+          <div class="coin-flow">
+            <div class="cf-row">
+              <div class="cf-head">
+                <div class="cf-var">a</div>
+                <div class="cf-expr">
+                  = m / 1000 &nbsp;&nbsp; → &nbsp;&nbsp; 4620 / 1000
+                </div>
+                <div class="cf-result">= 4</div>
+              </div>
+              <div class="cf-body">
+                4620을 1000으로 나눈 몫 = 천원짜리 4장<br />
+                <span style="color: #546e7a">나머지: 4620 % 1000 = 620</span>
+              </div>
+            </div>
+
+            <div class="cf-row">
+              <div class="cf-head">
+                <div class="cf-var">b</div>
+                <div class="cf-expr">
+                  = m % 1000 / 500 &nbsp;&nbsp; → &nbsp;&nbsp; 620 / 500
+                </div>
+                <div class="cf-result">= 1</div>
+              </div>
+              <div class="cf-body">
+                천원 단위 제거(% 1000) → 남은 620원 ÷ 500 = 오백원짜리 1개<br />
+                <span style="color: #546e7a">나머지: 620 % 500 = 120</span>
+              </div>
+            </div>
+
+            <div class="cf-row">
+              <div class="cf-head">
+                <div class="cf-var">c</div>
+                <div class="cf-expr">
+                  = m % 500 / 100 &nbsp;&nbsp; → &nbsp;&nbsp; 120 / 100
+                </div>
+                <div class="cf-result">= 1</div>
+              </div>
+              <div class="cf-body">
+                오백원 이상 제거(% 500) → 남은 120원 ÷ 100 = 백원짜리 1개<br />
+                <span style="color: #546e7a">나머지: 120 % 100 = 20</span>
+              </div>
+            </div>
+
+            <div class="cf-row">
+              <div class="cf-head">
+                <div class="cf-var">d</div>
+                <div class="cf-expr">
+                  = m % 100 / 10 &nbsp;&nbsp; → &nbsp;&nbsp; 20 / 10
+                </div>
+                <div class="cf-result">= 2</div>
+              </div>
+              <div class="cf-body">
+                백원 이상 제거(% 100) → 남은 20원 ÷ 10 = 십원짜리 2개<br />
+                <span style="color: #546e7a">나머지: 20 % 10 = 0 (끝)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ 검증 추적표 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 검증 추적표</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>변수</th>
+                  <th>식</th>
+                  <th>계산</th>
+                  <th>결과</th>
+                  <th>출력</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>a</td>
+                  <td><code>m / 1000</code></td>
+                  <td>4620 / 1000</td>
+                  <td>4</td>
+                  <td><span class="tag-ok">4</span></td>
+                </tr>
+                <tr>
+                  <td>b</td>
+                  <td><code>m % 1000 / 500</code></td>
+                  <td>620 / 500</td>
+                  <td>1</td>
+                  <td><span class="tag-ok">1</span></td>
+                </tr>
+                <tr>
+                  <td>c</td>
+                  <td><code>m % 500 / 100</code></td>
+                  <td>120 / 100</td>
+                  <td>1</td>
+                  <td><span class="tag-ok">1</span></td>
+                </tr>
+                <tr class="hl-row">
+                  <td>d</td>
+                  <td><code>m % 100 / 10</code></td>
+                  <td>20 / 10</td>
+                  <td>2</td>
+                  <td><span class="tag-ok">2</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">💡</span>
+                <span
+                  ><span class="hl">큰 단위 → 작은 단위 순서로</span>
+                  계산합니다. 각 단계에서 <code>%</code>로 더 큰 단위 금액을
+                  제거한 뒤 해당 단위로 나눕니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔑</span>
+                <span
+                  ><code>m % 1000</code>은 천원 단위를 제거하고 남은 금액(620)을
+                  구합니다. 이후 <code>m % 500</code>은 500원 이상을 모두
+                  제거합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📋</span>
+                <span>패턴 요약: <code>m % (이전단위) / (현재단위)</code></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">각 빈칸 정답</div>
+          <div class="ans-grid">
+            <div class="ans-item">
+              <div class="ai-var">a =</div>
+              <div class="ai-val">m / 1000</div>
+              <div class="ai-label">→ 4</div>
+            </div>
+            <div class="ans-item">
+              <div class="ai-var">b =</div>
+              <div class="ai-val">m % 1000 / 500</div>
+              <div class="ai-label">→ 1</div>
+            </div>
+            <div class="ans-item">
+              <div class="ai-var">c =</div>
+              <div class="ai-val">m % 500 / 100</div>
+              <div class="ai-label">→ 1</div>
+            </div>
+            <div class="ans-item">
+              <div class="ai-var">d =</div>
+              <div class="ai-val">m % 100 / 10</div>
+              <div class="ai-label">→ 2</div>
+            </div>
+          </div>
+          <div class="answer-desc">출력: 4 / 1 / 1 / 2</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer"),
+          btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain"),
+          btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain"),
+          btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer"),
+          btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

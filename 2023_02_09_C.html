@@ -1,0 +1,1073 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.red {
+        border-left-color: #c0392b;
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12.5px;
+        line-height: 1.85;
+        color: var(--code-fg);
+        overflow-x: auto;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .hi-new {
+        display: block;
+        background: rgba(240, 192, 96, 0.18);
+        border-left: 3px solid #f0c060;
+        margin: 0 -24px;
+        padding: 0 21px;
+      }
+      .hi-warn {
+        display: block;
+        background: rgba(192, 57, 43, 0.18);
+        border-left: 3px solid #c0392b;
+        margin: 0 -24px;
+        padding: 0 21px;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 90px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+        letter-spacing: 3px;
+      }
+      .answer-box .answer-sub {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 26px;
+        color: #ff9580;
+        margin-top: 8px;
+      }
+      .answer-box .answer-desc {
+        margin-top: 14px;
+        font-size: 12px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 2;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 24px;
+      }
+
+      .stack-box {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 3px;
+        min-width: 60px;
+      }
+      .stack-cell {
+        width: 60px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: bold;
+      }
+      .cell-val {
+        background: rgba(45, 90, 61, 0.3);
+        border: 1px solid #2d5a3d;
+        color: #c3e88d;
+      }
+      .cell-top {
+        background: rgba(240, 192, 96, 0.25);
+        border: 2px solid #f0c060;
+        color: #f0c060;
+      }
+      .cell-empty {
+        background: #1a1208;
+        border: 1px dashed #2a1e10;
+        color: #3a3028;
+        font-size: 11px;
+      }
+      .cell-warn {
+        background: rgba(192, 57, 43, 0.2);
+        border: 2px solid #c0392b;
+        color: #ff9580;
+      }
+      .stack-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        text-align: center;
+        margin-top: 6px;
+      }
+      .stack-step-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 12px;
+        color: #f0c060;
+        margin-bottom: 8px;
+        font-weight: 700;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.2);
+        font-weight: 700;
+      }
+      .trace-table tr.push-row td {
+        background: rgba(45, 90, 61, 0.08);
+      }
+      .trace-table tr.pop-row td {
+        background: rgba(139, 58, 15, 0.06);
+      }
+      .trace-table tr.warn-row td {
+        background: rgba(192, 57, 43, 0.1);
+      }
+
+      .tag-push {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-pop {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        background: #2d1808;
+        color: #f78c6c;
+        border: 1px solid #8b3a0f;
+      }
+      .tag-out {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+      .tag-warn {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        background: #2d1010;
+        color: #ff9580;
+        border: 1px solid #8b2020;
+      }
+      .tag-new {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        background: #2a2000;
+        color: #f0c060;
+        border: 1px dashed #f0c060;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .hl-r {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(192, 57, 43, 0.3) 55%
+        );
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 배열 스택 — push/pop while 루프 출력 추적 (수정본)</h1>
+        <div class="meta">
+          C · Stack · Array · push(into) · pop(take) · Empty 감지 · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+<span class="kw">#define</span> MAX_SIZE <span class="nl">10</span>
+
+<span class="kw">int</span> isWhat[MAX_SIZE];
+<span class="kw">int</span> point = <span class="nl">-1</span>;
+
+<span class="kw">void</span> <span class="fn">into</span>(<span class="kw">int</span> num) {
+    <span class="kw">if</span> (point &gt;= <span class="nl">10</span>) <span class="fn">printf</span>(<span class="str">"Full"</span>);
+    isWhat[++point] = num;
+}
+
+<span class="kw">int</span> <span class="fn">take</span>() {
+    <span class="kw">if</span> (<span class="fn">isempty</span>() == <span class="nl">1</span>) <span class="fn">printf</span>(<span class="str">"Empty"</span>);
+    <span class="kw">return</span> isWhat[point--];
+}
+
+<span class="kw">int</span> <span class="fn">isempty</span>() {
+    <span class="kw">if</span> (point == <span class="nl">-1</span>) <span class="kw">return</span> <span class="nl">1</span>;
+    <span class="kw">return</span> <span class="nl">0</span>;
+}
+
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">int</span> argc, <span class="kw">char const</span> *argv[]){
+    <span class="kw">int</span> e;
+    <span class="fn">into</span>(<span class="nl">5</span>); <span class="fn">into</span>(<span class="nl">2</span>);
+    <span class="kw">while</span>(!<span class="fn">isempty</span>()){
+<span class="kw">        <span class="fn">printf</span>(<span class="str">"%d"</span>, <span class="fn">take</span>());  
+        <span class="fn">into</span>(<span class="nl">4</span>); <span class="fn">into</span>(<span class="nl">1</span>); <span class="fn">printf</span>(<span class="str">"%d"</span>, <span class="fn">take</span>());
+        <span class="fn">into</span>(<span class="nl">3</span>); <span class="fn">printf</span>(<span class="str">"%d"</span>, <span class="fn">take</span>()); <span class="fn">printf</span>(<span class="str">"%d"</span>, <span class="fn">take</span>());
+<span class="kw">        <span class="fn">into</span>(<span class="nl">6</span>); <span class="fn">printf</span>(<span class="str">"%d"</span>, <span class="fn">take</span>()); <span class="fn">printf</span>(<span class="str">"%d"</span>, <span class="fn">take</span>()); <span class="fn">printf</span>(<span class="str">"%d"</span>, <span class="fn">take</span>());
+    <span class="kw">return</span> <span class="nl">0</span>;
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">printf 출력 결과</div>
+          <div class="answer-value">213465</div>
+          <div class="answer-sub">Empty</div>
+          <div class="answer-desc">
+            숫자 출력: 2 → 1 → 3 → 4 → 6 → 5<br />
+            마지막 take() 호출 시 스택 비어 "Empty" 추가 출력
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >배열 스택 push(into)/pop(take) 혼합 + 빈 스택 접근 시 "Empty"
+                출력 감지까지 추적하는 문제</span
+              >입니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- ② 초기 상태 -->
+        <div class="sub-section">
+          <div class="sub-title">② 초기 상태 — into(5), into(2)</div>
+          <div class="flow-wrap" style="padding: 16px 20px">
+            <div style="display: flex; gap: 32px; align-items: flex-end">
+              <div>
+                <div class="stack-step-title">into(5)</div>
+                <div class="stack-box">
+                  <div class="stack-cell cell-top">[0]=5</div>
+                </div>
+                <div class="stack-label">point=0</div>
+              </div>
+              <div
+                style="font-size: 18px; color: #546e7a; padding-bottom: 30px"
+              >
+                →
+              </div>
+              <div>
+                <div class="stack-step-title">into(2)</div>
+                <div class="stack-box">
+                  <div class="stack-cell cell-top">[1]=2</div>
+                  <div class="stack-cell cell-val">[0]=5</div>
+                </div>
+                <div class="stack-label">point=1</div>
+              </div>
+              <div
+                style="font-size: 18px; color: #f0c060; padding-bottom: 30px"
+              >
+                → while 진입!
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ 전체 추적표 -->
+        <div class="sub-section">
+          <div class="sub-title">③ while 루프 전체 단계 추적표</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>단계</th>
+                  <th>연산</th>
+                  <th>스택 (top→bottom)</th>
+                  <th>point</th>
+                  <th>출력</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td
+                    colspan="5"
+                    style="
+                      background: #1e1510;
+                      color: #8a7a60;
+                      font-size: 11px;
+                      text-align: center;
+                      padding: 5px;
+                    "
+                  >
+                    ── 초기화 ──
+                  </td>
+                </tr>
+                <tr class="push-row">
+                  <td>1</td>
+                  <td><span class="tag-push">into(5)</span></td>
+                  <td>[5]</td>
+                  <td>0</td>
+                  <td>—</td>
+                </tr>
+                <tr class="push-row">
+                  <td>2</td>
+                  <td><span class="tag-push">into(2)</span></td>
+                  <td>[2,5]</td>
+                  <td>1</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td
+                    colspan="5"
+                    style="
+                      background: #1e1510;
+                      color: #f0c060;
+                      font-size: 11px;
+                      text-align: center;
+                      padding: 5px;
+                    "
+                  >
+                    ── while(!isempty()) 진입 — point=1 ──
+                  </td>
+                </tr>
+                <tr class="pop-row hl-row">
+                  <td>3</td>
+                  <td>
+                    <span class="tag-new">★ 새 줄</span>
+                    <span class="tag-pop">take()</span>
+                  </td>
+                  <td>[5]</td>
+                  <td>0</td>
+                  <td><span class="tag-out">2</span></td>
+                </tr>
+                <tr class="push-row">
+                  <td>4</td>
+                  <td><span class="tag-push">into(4)</span></td>
+                  <td>[4,5]</td>
+                  <td>1</td>
+                  <td>—</td>
+                </tr>
+                <tr class="push-row">
+                  <td>5</td>
+                  <td><span class="tag-push">into(1)</span></td>
+                  <td>[1,4,5]</td>
+                  <td>2</td>
+                  <td>—</td>
+                </tr>
+                <tr class="pop-row hl-row">
+                  <td>6</td>
+                  <td><span class="tag-pop">take()</span></td>
+                  <td>[4,5]</td>
+                  <td>1</td>
+                  <td><span class="tag-out">1</span></td>
+                </tr>
+                <tr class="push-row">
+                  <td>7</td>
+                  <td><span class="tag-push">into(3)</span></td>
+                  <td>[3,4,5]</td>
+                  <td>2</td>
+                  <td>—</td>
+                </tr>
+                <tr class="pop-row hl-row">
+                  <td>8</td>
+                  <td><span class="tag-pop">take()</span></td>
+                  <td>[4,5]</td>
+                  <td>1</td>
+                  <td><span class="tag-out">3</span></td>
+                </tr>
+                <tr class="pop-row hl-row">
+                  <td>9</td>
+                  <td><span class="tag-pop">take()</span></td>
+                  <td>[5]</td>
+                  <td>0</td>
+                  <td><span class="tag-out">4</span></td>
+                </tr>
+                <tr class="push-row">
+                  <td>10</td>
+                  <td><span class="tag-push">into(6)</span></td>
+                  <td>[6,5]</td>
+                  <td>1</td>
+                  <td>—</td>
+                </tr>
+                <tr class="pop-row hl-row">
+                  <td>11</td>
+                  <td><span class="tag-pop">take()</span></td>
+                  <td>[5]</td>
+                  <td>0</td>
+                  <td><span class="tag-out">6</span></td>
+                </tr>
+                <tr class="pop-row hl-row">
+                  <td>12</td>
+                  <td><span class="tag-pop">take()</span></td>
+                  <td>[ ]</td>
+                  <td>-1</td>
+                  <td><span class="tag-out">5</span></td>
+                </tr>
+                <tr class="warn-row">
+                  <td>13</td>
+                  <td><span class="tag-warn">take() — 빈 스택!</span></td>
+                  <td>[ ] (비어있음)</td>
+                  <td>-1</td>
+                  <td><span class="tag-warn">Empty</span></td>
+                </tr>
+                <tr>
+                  <td
+                    colspan="5"
+                    style="
+                      background: #1e1510;
+                      color: #546e7a;
+                      font-size: 11px;
+                      text-align: center;
+                      padding: 5px;
+                    "
+                  >
+                    ── while 조건 재확인: point=-1 → isempty()=1 → 루프 종료 ──
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ 스택 상태 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 핵심 시점 스택 상태</div>
+          <div class="flow-wrap">
+            <div
+              style="
+                display: flex;
+                gap: 18px;
+                align-items: flex-end;
+                flex-wrap: wrap;
+              "
+            >
+              <div>
+                <div class="stack-step-title">① take()→2 후</div>
+                <div class="stack-box">
+                  <div class="stack-cell cell-top">[0]=5</div>
+                </div>
+                <div class="stack-label">point=0</div>
+              </div>
+              <div
+                style="font-size: 16px; color: #546e7a; padding-bottom: 30px"
+              >
+                →
+              </div>
+              <div>
+                <div class="stack-step-title">② into(4,1) 후</div>
+                <div class="stack-box">
+                  <div class="stack-cell cell-top">[2]=1</div>
+                  <div class="stack-cell cell-val">[1]=4</div>
+                  <div class="stack-cell cell-val">[0]=5</div>
+                </div>
+                <div class="stack-label">→take()=1</div>
+              </div>
+              <div
+                style="font-size: 16px; color: #546e7a; padding-bottom: 50px"
+              >
+                →
+              </div>
+              <div>
+                <div class="stack-step-title">③ into(3) 후</div>
+                <div class="stack-box">
+                  <div class="stack-cell cell-top">[2]=3</div>
+                  <div class="stack-cell cell-val">[1]=4</div>
+                  <div class="stack-cell cell-val">[0]=5</div>
+                </div>
+                <div class="stack-label">→3,4</div>
+              </div>
+              <div
+                style="font-size: 16px; color: #546e7a; padding-bottom: 50px"
+              >
+                →
+              </div>
+              <div>
+                <div class="stack-step-title">④ into(6) 후</div>
+                <div class="stack-box">
+                  <div class="stack-cell cell-top">[1]=6</div>
+                  <div class="stack-cell cell-val">[0]=5</div>
+                  <div class="stack-cell cell-empty">—</div>
+                </div>
+                <div class="stack-label">→6,5</div>
+              </div>
+              <div
+                style="font-size: 16px; color: #546e7a; padding-bottom: 50px"
+              >
+                →
+              </div>
+              <div>
+                <div class="stack-step-title">⑤ take()×3 (빈 스택)</div>
+                <div class="stack-box">
+                  <div class="stack-cell cell-warn">EMPTY</div>
+                  <div class="stack-cell cell-empty">—</div>
+                  <div class="stack-cell cell-empty">—</div>
+                </div>
+                <div class="stack-label" style="color: #ff9580">
+                  Empty 출력!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ 출력 순서 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 출력 순서 한눈에 보기</div>
+          <div
+            style="
+              background: #1a1208;
+              border-radius: 8px;
+              padding: 16px 24px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 16px;
+              border: 1px solid #2a1e10;
+              line-height: 3;
+              text-align: center;
+              letter-spacing: 4px;
+            "
+          >
+            <span style="color: #f78c6c">take(2)</span>
+            <span style="color: #546e7a; font-size: 12px; margin: 0 4px"
+              >→</span
+            >
+            <span style="color: #c3e88d">take(1)</span>
+            <span style="color: #546e7a; font-size: 12px; margin: 0 4px"
+              >→</span
+            >
+            <span style="color: #c3e88d">take(3)</span>
+            <span style="color: #546e7a; font-size: 12px; margin: 0 4px"
+              >→</span
+            >
+            <span style="color: #c3e88d">take(4)</span>
+            <span style="color: #546e7a; font-size: 12px; margin: 0 4px"
+              >→</span
+            >
+            <span style="color: #f0c060">take(6)</span>
+            <span style="color: #546e7a; font-size: 12px; margin: 0 4px"
+              >→</span
+            >
+            <span style="color: #f0c060">take(5)</span>
+            <span style="color: #546e7a; font-size: 12px; margin: 0 4px"
+              >→</span
+            >
+            <span style="color: #ff9580; font-size: 13px">Empty</span>
+            <br />
+            <span
+              style="
+                color: #f0c060;
+                font-size: 28px;
+                font-weight: bold;
+                letter-spacing: 2px;
+              "
+              >2 1 3 4 6 5</span
+            >
+            <span
+              style="
+                color: #ff9580;
+                font-size: 20px;
+                margin-left: 12px;
+                font-weight: bold;
+              "
+              >Empty</span
+            >
+          </div>
+        </div>
+
+        <!-- ⑥ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑥ 핵심 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">✨</span>
+                <span
+                  >새로 추가된 <code>printf("%d", take())</code>가 루프 첫
+                  줄에서 <span class="hl">초기 top 값 2를 바로 꺼냅니다</span>.
+                  이후 스택에는 [5]만 남아 흐름이 달라집니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span>
+                <span
+                  >마지막 줄 <code>take()×3</code> 수행 시 6, 5를 꺼낸 후
+                  <span class="hl-r"
+                    >스택이 비어있는 상태에서 한 번 더 take() 호출</span
+                  >
+                  → <code>isempty()==1</code> →
+                  <strong>"Empty"</strong> 출력</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔄</span>
+                <span
+                  >while 루프는 1회만 수행됩니다. 마지막 take() 후 point=-1이
+                  되어 다음 조건 검사에서 종료됩니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">printf 전체 출력 결과</div>
+          <div class="answer-value">213465</div>
+          <div class="answer-sub">Empty</div>
+          <div class="answer-desc">
+            2(초기 top) → 1 → 3 → 4 → 6 → 5 → Empty(스택 빈 상태 접근)<br />
+            while 루프 1회 수행 후 point=-1 → 종료
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer"),
+          btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain"),
+          btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain"),
+          btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer"),
+          btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

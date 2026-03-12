@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .blank {
+        display: inline-block;
+        background: #2d2010;
+        border: 2px dashed #f0c060;
+        color: #f0c060;
+        font-weight: bold;
+        border-radius: 4px;
+        padding: 0 12px;
+        font-size: 13px;
+        letter-spacing: 0.05em;
+        vertical-align: middle;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 52px;
+        font-weight: 600;
+        line-height: 1.2;
+        animation: pulse 2s ease-in-out infinite;
+        letter-spacing: 2px;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 1.9;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 24px;
+      }
+
+      /* 배열 시각화 */
+      .arr-visual {
+        display: flex;
+        gap: 3px;
+        justify-content: center;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 10px 0;
+      }
+      .av-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+      .av-box {
+        width: 56px;
+        height: 56px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 22px;
+        font-weight: bold;
+      }
+      .ab-norm {
+        background: #1a1208;
+        border: 2px solid #3a3028;
+        color: #e8d5b0;
+      }
+      .ab-hi {
+        background: #1a2010;
+        border: 2.5px solid #c3e88d;
+        color: #c3e88d;
+      }
+      .av-idx {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #546e7a;
+      }
+      .av-arrow {
+        font-size: 18px;
+        color: #f0c060;
+        align-self: center;
+        margin: 0 6px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.18);
+        font-weight: 700;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-ok {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-hi {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 배열 순환 시프트(Circular Shift) 빈칸 채우기</h1>
+        <div class="meta">
+          C · Array · Circular Shift · Modulo(%) · Blank Fill
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">void</span>) {
+
+    <span class="kw">int</span> n[<span class="nl">5</span>];
+    <span class="kw">int</span> i;
+
+    <span class="kw">for</span> (i = <span class="nl">0</span>; i &lt; <span class="nl">5</span>; i++) {
+        printf(<span class="str">"숫자를 입력해주세요 : "</span>);
+        scanf(<span class="str">"%d"</span>, &amp;n[i]);
+    }
+
+    <span class="kw">for</span> (i = <span class="nl">0</span>; i &lt; <span class="nl">5</span>; i++) {
+        printf(<span class="str">"%d"</span>, ( <span class="blank">　　　　　</span> ) );
+    }
+
+    <span class="kw">return</span> <span class="nl">0</span>;
+}</pre>
+        </div>
+
+        <!-- 조건 박스 -->
+        <div
+          style="
+            margin-top: 14px;
+            background: #1a1208;
+            border-radius: 8px;
+            padding: 14px 20px;
+            font-family: &quot;JetBrains Mono&quot;, monospace;
+            font-size: 13px;
+            border: 1px solid #2a1e10;
+            line-height: 2.4;
+          "
+        >
+          <span style="color: #f0c060; font-weight: bold">[조건]</span><br />
+          입력값이 &nbsp;<span style="color: #f78c6c; font-weight: bold"
+            >5 4 3 2 1</span
+          >&nbsp; 일 경우<br />
+          출력값이 &nbsp;<span style="color: #c3e88d; font-weight: bold"
+            >4 3 2 1 5</span
+          >&nbsp; 로 출력되어야 한다.
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          빈칸에 들어갈 <strong>식</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">빈칸에 들어갈 식</div>
+          <div class="answer-value">n[(i+1)%5]</div>
+          <div class="answer-desc">
+            i=0 → n[1]=4 &nbsp;|&nbsp; i=1 → n[2]=3 &nbsp;|&nbsp; i=2 →
+            n[3]=2<br />
+            i=3 → n[4]=1 &nbsp;|&nbsp; i=4 → n[0]=5 (순환!)
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >배열을 한 칸씩 앞으로 순환 이동(Circular Left Shift)하여
+                출력하는 식을 완성하는 빈칸 채우기 문제</span
+              >입니다.
+            </p>
+            <br />
+            <ul class="point-list">
+              <li>
+                <span class="icon">📌</span
+                ><span
+                  >입력 <code>5 4 3 2 1</code> → n[0]=5, n[1]=4, n[2]=3, n[3]=2,
+                  n[4]=1</span
+                >
+              </li>
+              <li>
+                <span class="icon">🎯</span
+                ><span
+                  >출력 <code>4 3 2 1 5</code> → 첫 번째 원소(5)가 맨 뒤로 가는
+                  <span class="hl">왼쪽 순환</span></span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ② 입출력 패턴 분석 -->
+        <div class="sub-section">
+          <div class="sub-title">② 입출력 패턴 분석</div>
+          <div class="flow-wrap">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 20px;
+                flex-wrap: wrap;
+              "
+            >
+              <div>
+                <div
+                  style="
+                    text-align: center;
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                    font-size: 11px;
+                    color: #546e7a;
+                    margin-bottom: 8px;
+                  "
+                >
+                  입력 (저장 순서)
+                </div>
+                <div class="arr-visual" style="justify-content: flex-start">
+                  <div class="av-cell">
+                    <div class="av-box ab-norm">5</div>
+                    <div class="av-idx">n[0]</div>
+                  </div>
+                  <div class="av-cell">
+                    <div class="av-box ab-hi">4</div>
+                    <div class="av-idx">n[1]</div>
+                  </div>
+                  <div class="av-cell">
+                    <div class="av-box ab-hi">3</div>
+                    <div class="av-idx">n[2]</div>
+                  </div>
+                  <div class="av-cell">
+                    <div class="av-box ab-hi">2</div>
+                    <div class="av-idx">n[3]</div>
+                  </div>
+                  <div class="av-cell">
+                    <div class="av-box ab-hi">1</div>
+                    <div class="av-idx">n[4]</div>
+                  </div>
+                </div>
+              </div>
+              <div style="font-size: 28px; color: #f0c060">→</div>
+              <div>
+                <div
+                  style="
+                    text-align: center;
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                    font-size: 11px;
+                    color: #546e7a;
+                    margin-bottom: 8px;
+                  "
+                >
+                  출력 순서
+                </div>
+                <div class="arr-visual" style="justify-content: flex-start">
+                  <div class="av-cell">
+                    <div class="av-box ab-hi">4</div>
+                    <div class="av-idx">i=0</div>
+                  </div>
+                  <div class="av-cell">
+                    <div class="av-box ab-hi">3</div>
+                    <div class="av-idx">i=1</div>
+                  </div>
+                  <div class="av-cell">
+                    <div class="av-box ab-hi">2</div>
+                    <div class="av-idx">i=2</div>
+                  </div>
+                  <div class="av-cell">
+                    <div class="av-box ab-hi">1</div>
+                    <div class="av-idx">i=3</div>
+                  </div>
+                  <div class="av-cell">
+                    <div class="av-box ab-norm">5</div>
+                    <div class="av-idx">i=4</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              style="
+                margin-top: 14px;
+                text-align: center;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #546e7a;
+              "
+            >
+              n[0]=5 가 맨 뒤로 이동 →
+              <span style="color: #f0c060">왼쪽 순환 시프트</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ 식 도출 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 빈칸 식 도출 과정</div>
+          <div
+            style="
+              background: #1a1208;
+              border-radius: 8px;
+              padding: 16px 20px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 13px;
+              line-height: 2.6;
+              border: 1px solid #2a1e10;
+            "
+          >
+            <span style="color: #546e7a"
+              >i=0 일 때 n[1] 출력 → 인덱스 = 1 = (0+1)%5</span
+            ><br />
+            <span style="color: #546e7a"
+              >i=1 일 때 n[2] 출력 → 인덱스 = 2 = (1+1)%5</span
+            ><br />
+            <span style="color: #546e7a"
+              >i=2 일 때 n[3] 출력 → 인덱스 = 3 = (2+1)%5</span
+            ><br />
+            <span style="color: #546e7a"
+              >i=3 일 때 n[4] 출력 → 인덱스 = 4 = (3+1)%5</span
+            ><br />
+            <span style="color: #ff9580"
+              >i=4 일 때 n[0] 출력 → 인덱스 = 0 = (4+1)%5 ← 순환!</span
+            ><br />
+            <br />
+            <span style="color: #f0c060; font-weight: bold; font-size: 15px"
+              >∴ n[(i+1) % 5]</span
+            >
+          </div>
+        </div>
+
+        <!-- ④ 단계별 추적표 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 단계별 실행 추적표</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>i</th>
+                  <th>(i+1)%5</th>
+                  <th>접근 인덱스</th>
+                  <th>n[인덱스]</th>
+                  <th>출력</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>0</td>
+                  <td>(0+1)%5 = 1</td>
+                  <td>n[1]</td>
+                  <td>4</td>
+                  <td><span class="tag tag-ok">4</span></td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>(1+1)%5 = 2</td>
+                  <td>n[2]</td>
+                  <td>3</td>
+                  <td><span class="tag tag-ok">3</span></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>(2+1)%5 = 3</td>
+                  <td>n[3]</td>
+                  <td>2</td>
+                  <td><span class="tag tag-ok">2</span></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>(3+1)%5 = 4</td>
+                  <td>n[4]</td>
+                  <td>1</td>
+                  <td><span class="tag tag-ok">1</span></td>
+                </tr>
+                <tr class="hl-row">
+                  <td>4</td>
+                  <td>(4+1)%5 = <strong>0</strong></td>
+                  <td>n[0]</td>
+                  <td>5</td>
+                  <td><span class="tag tag-hi">5 ← 순환!</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔁</span>
+                <span
+                  ><span class="hl">나머지 연산(%)이 순환의 핵심</span>입니다.
+                  i=4일 때 (4+1)%5=0 이 되어 첫 번째 원소로 돌아옵니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📐</span>
+                <span
+                  >일반화: 크기 N인 배열에서 한 칸 왼쪽 순환 출력 →
+                  <code>n[(i+1) % N]</code></span
+                >
+              </li>
+              <li>
+                <span class="icon">✅</span>
+                <span
+                  >정답: <strong><code>n[(i+1)%5]</code></strong> → 출력 결과:
+                  <strong>43215</strong></span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">빈칸에 들어갈 식</div>
+          <div class="answer-value">n[(i+1)%5]</div>
+          <div class="answer-desc">
+            (i+1)%5 로 인덱스를 한 칸 앞으로 순환 이동<br />
+            i=4 → (4+1)%5=0 으로 첫 원소 복귀 → 출력: 43215
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer"),
+          btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain"),
+          btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain"),
+          btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer"),
+          btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .line-skip {
+        color: #3a3028;
+      }
+      .line-match {
+        display: block;
+        background: rgba(45, 90, 61, 0.2);
+        border-left: 3px solid #c3e88d;
+        margin: 0 -24px;
+        padding: 0 21px;
+      }
+      .line-fall {
+        display: block;
+        background: rgba(240, 192, 96, 0.12);
+        border-left: 3px solid #f0c060;
+        margin: 0 -24px;
+        padding: 0 21px;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+      }
+      .answer-box .answer-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 140px;
+        font-weight: 600;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+        letter-spacing: 6px;
+      }
+      .answer-box .answer-desc {
+        margin-top: 12px;
+        font-size: 13px;
+        opacity: 0.6;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 1.9;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 24px;
+      }
+
+      /* switch 흐름 다이어그램 */
+      .sw-flow {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .sw-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+      }
+      .sw-case {
+        min-width: 90px;
+        font-weight: bold;
+      }
+      .sw-action {
+        flex: 1;
+      }
+      .sw-badge {
+        min-width: 90px;
+        text-align: right;
+      }
+      .row-skip {
+        background: #1a1208;
+        opacity: 0.4;
+      }
+      .row-match {
+        background: rgba(45, 90, 61, 0.22);
+        border: 1px solid #2d5a3d;
+      }
+      .row-fall {
+        background: rgba(240, 192, 96, 0.13);
+        border: 1px solid #8b6020;
+      }
+      .row-fall2 {
+        background: rgba(240, 192, 96, 0.07);
+        border: 1px solid #5a4010;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.18);
+        font-weight: 700;
+      }
+      .trace-table tr.ok-row td {
+        background: rgba(45, 90, 61, 0.08);
+      }
+      .trace-table tr.skip-row td {
+        color: #546e7a;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .tag-skip {
+        background: #1a1208;
+        color: #546e7a;
+        border: 1px solid #2a1e10;
+      }
+      .tag-hit {
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-fall {
+        background: #2d2010;
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .hl-r {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(192, 57, 43, 0.3) 55%
+        );
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C switch 폴스루(Fall-through) + 정수 나눗셈 추적</h1>
+        <div class="meta">
+          C · switch · fall-through · break 없음 · 정수 나눗셈 · Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">int</span> n[<span class="nl">3</span>] = {<span class="nl">73</span>, <span class="nl">95</span>, <span class="nl">82</span>};
+<span class="kw">int</span> sum = <span class="nl">0</span>;
+
+<span class="kw">for</span>(i = <span class="nl">0</span>; i &lt; <span class="nl">3</span>; i++){
+    sum += n[i];
+}
+
+<span class="kw">switch</span>(sum / <span class="nl">30</span>){
+    <span class="line-skip"><span class="kw">case</span> <span class="nl">10</span>:                     <span class="cmt">// 8≠10 → 스킵</span></span>
+    <span class="line-skip"><span class="kw">case</span>  <span class="nl">9</span>: <span class="fn">printf</span>(<span class="str">"A"</span>);      <span class="cmt">// 8≠9  → 스킵</span></span>
+    <span class="line-match"><span class="kw">case</span>  <span class="nl">8</span>: <span class="fn">printf</span>(<span class="str">"B"</span>);      <span class="cmt">// ★ 진입! B 출력</span></span>
+    <span class="line-fall"><span class="kw">case</span>  <span class="nl">7</span>:                     <span class="cmt">// fall-through (문장 없음)</span></span>
+    <span class="line-fall"><span class="kw">case</span>  <span class="nl">6</span>: <span class="fn">printf</span>(<span class="str">"C"</span>);      <span class="cmt">// fall-through C 출력</span></span>
+    <span class="line-fall"><span class="kw">default</span>: <span class="fn">printf</span>(<span class="str">"D"</span>);     <span class="cmt">// fall-through D 출력</span></span>
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">출력 결과</div>
+          <div class="answer-value">BCD</div>
+          <div class="answer-desc">
+            sum=250 → 250/30=8 → case 8 진입<br />
+            break 없음 → case 7 → case 6(C) → default(D) 연속 실행
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >for 루프 합산 → 정수 나눗셈 → break 없는 switch fall-through를
+                모두 추적하는 복합 문제</span
+              >입니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- ② sum 계산 -->
+        <div class="sub-section">
+          <div class="sub-title">② sum & switch 인수 계산</div>
+          <div
+            style="
+              background: #1a1208;
+              border-radius: 8px;
+              padding: 16px 20px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 14px;
+              line-height: 2.6;
+              border: 1px solid #2a1e10;
+            "
+          >
+            sum = <span style="color: #f78c6c">73</span> +
+            <span style="color: #f78c6c">95</span> +
+            <span style="color: #f78c6c">82</span> =
+            <span style="color: #f0c060; font-weight: bold">250</span><br />
+            sum / 30 = 250 / 30 =
+            <span style="color: #c3e88d; font-weight: bold; font-size: 22px"
+              >8</span
+            >
+            <span style="color: #546e7a; font-size: 11px; margin-left: 8px"
+              >(정수 나눗셈 — 소수점 버림)</span
+            >
+          </div>
+        </div>
+
+        <!-- ③ switch 흐름 다이어그램 -->
+        <div class="sub-section">
+          <div class="sub-title">③ switch(8) 실행 흐름</div>
+          <div class="flow-wrap">
+            <div class="sw-flow">
+              <div class="sw-row row-skip">
+                <div class="sw-case" style="color: #546e7a">case 10:</div>
+                <div class="sw-action" style="color: #546e7a">(문장 없음)</div>
+                <div class="sw-badge">
+                  <span class="tag tag-skip">8≠10 스킵</span>
+                </div>
+              </div>
+              <div class="sw-row row-skip">
+                <div class="sw-case" style="color: #546e7a">case 9:</div>
+                <div class="sw-action" style="color: #546e7a">printf("A")</div>
+                <div class="sw-badge">
+                  <span class="tag tag-skip">8≠9 스킵</span>
+                </div>
+              </div>
+              <div class="sw-row row-match">
+                <div class="sw-case" style="color: #c3e88d">case 8:</div>
+                <div class="sw-action">
+                  printf(<strong style="color: #c3e88d">"B"</strong>) →
+                  <strong>B</strong> 출력
+                </div>
+                <div class="sw-badge">
+                  <span class="tag tag-hit">진입!</span>
+                </div>
+              </div>
+              <div class="sw-row row-fall">
+                <div class="sw-case" style="color: #f0c060">case 7:</div>
+                <div class="sw-action">(문장 없음) — 통과</div>
+                <div class="sw-badge">
+                  <span class="tag tag-fall">fall-through</span>
+                </div>
+              </div>
+              <div class="sw-row row-fall">
+                <div class="sw-case" style="color: #f0c060">case 6:</div>
+                <div class="sw-action">
+                  printf(<strong style="color: #f0c060">"C"</strong>) →
+                  <strong>C</strong> 출력
+                </div>
+                <div class="sw-badge">
+                  <span class="tag tag-fall">fall-through</span>
+                </div>
+              </div>
+              <div class="sw-row row-fall2">
+                <div class="sw-case" style="color: #f0c060">default:</div>
+                <div class="sw-action">
+                  printf(<strong style="color: #f0c060">"D"</strong>) →
+                  <strong>D</strong> 출력
+                </div>
+                <div class="sw-badge">
+                  <span class="tag tag-fall">fall-through</span>
+                </div>
+              </div>
+            </div>
+            <div
+              style="
+                margin-top: 10px;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 11px;
+                color: #546e7a;
+              "
+            >
+              ※ case 8, 7, 6, default 모두 break 없음 → 연속 실행
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ 단계별 추적표 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 단계별 추적표</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>단계</th>
+                  <th>내용</th>
+                  <th>출력</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>합계</td>
+                  <td>73+95+82 = 250</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td>나눗셈</td>
+                  <td>250/30 = 8</td>
+                  <td>—</td>
+                </tr>
+                <tr class="skip-row">
+                  <td>case 10</td>
+                  <td>8≠10 스킵</td>
+                  <td>—</td>
+                </tr>
+                <tr class="skip-row">
+                  <td>case 9</td>
+                  <td>8≠9 스킵</td>
+                  <td>—</td>
+                </tr>
+                <tr class="ok-row">
+                  <td>case 8</td>
+                  <td>일치 → printf("B")</td>
+                  <td><strong style="color: #c3e88d">B</strong></td>
+                </tr>
+                <tr class="hl-row">
+                  <td>case 7</td>
+                  <td>문장 없음, fall-through</td>
+                  <td>—</td>
+                </tr>
+                <tr class="hl-row">
+                  <td>case 6</td>
+                  <td>printf("C")</td>
+                  <td><strong style="color: #f0c060">C</strong></td>
+                </tr>
+                <tr class="hl-row">
+                  <td>default</td>
+                  <td>printf("D")</td>
+                  <td><strong style="color: #f0c060">D</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 주의 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">➗</span>
+                <span
+                  >250 / 30 = <strong>8</strong> — 정수 나눗셈이므로 소수점
+                  버림</span
+                >
+              </li>
+              <li>
+                <span class="icon">⚠️</span>
+                <span
+                  ><span class="hl-r"
+                    >break가 없으면 일치한 case 이후 모든 case·default가 연속
+                    실행</span
+                  >됩니다 (fall-through). case 7은 문장이 없어도
+                  통과합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🖨️</span>
+                <span
+                  >case 8 진입 → B 출력 → case 7(무시) → case 6 → C 출력 →
+                  default → D 출력 = <strong>BCD</strong></span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">출력 결과</div>
+          <div class="answer-value">BCD</div>
+          <div class="answer-desc">
+            sum=250 → 250/30=8 → case 8 진입(B)<br />
+            break 없음 → case 7(통과) → case 6(C) → default(D)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer"),
+          btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain"),
+          btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain"),
+          btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer"),
+          btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

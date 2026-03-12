@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .hi-pool {
+        display: block;
+        background: rgba(45, 90, 61, 0.18);
+        border-left: 3px solid #c3e88d;
+        margin: 0 -24px;
+        padding: 0 21px;
+      }
+      .hi-heap {
+        display: block;
+        background: rgba(139, 58, 15, 0.18);
+        border-left: 3px solid #f78c6c;
+        margin: 0 -24px;
+        padding: 0 21px;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 28px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 16px;
+      }
+      .ans-lines {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: center;
+      }
+      .ans-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .ans-expr {
+        font-size: 14px;
+        opacity: 0.6;
+        min-width: 200px;
+        text-align: right;
+      }
+      .ans-val {
+        font-size: 36px;
+        font-weight: bold;
+        animation: pulse 2s ease-in-out infinite;
+        min-width: 80px;
+        text-align: left;
+      }
+      .ans-val.true-val {
+        color: #c3e88d;
+      }
+      .ans-val.false-val {
+        color: #ff9580;
+      }
+      .answer-box .answer-desc {
+        margin-top: 18px;
+        font-size: 12px;
+        opacity: 0.55;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 2;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 24px;
+      }
+
+      /* 메모리 다이어그램 */
+      .mem-diagram {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .mem-region {
+        border-radius: 8px;
+        padding: 14px 16px;
+        min-width: 180px;
+      }
+      .mem-pool {
+        background: #0e1f12;
+        border: 2px solid #2d5a3d;
+      }
+      .mem-heap {
+        background: #1f0e08;
+        border: 2px solid #8b3a0f;
+      }
+      .mem-stack-r {
+        background: #0e1218;
+        border: 2px solid #1e3a6e;
+      }
+      .mem-region-title {
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .mem-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        font-size: 12px;
+      }
+      .mem-addr {
+        color: #546e7a;
+        min-width: 60px;
+      }
+      .mem-box {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 4px;
+        padding: 4px 10px;
+      }
+      .ptr-line {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+      .ptr-name {
+        color: #82aaff;
+        font-weight: bold;
+        min-width: 40px;
+      }
+      .ptr-arr {
+        color: #546e7a;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.true-row td {
+        background: rgba(45, 90, 61, 0.1);
+      }
+      .trace-table tr.false-row td {
+        background: rgba(139, 58, 15, 0.1);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.15);
+        font-weight: 700;
+      }
+
+      .tag-true {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 3px;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .tag-false {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 3px;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        background: #2d1010;
+        color: #ff9580;
+        border: 1px solid #8b2020;
+      }
+      .tag-eq {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        background: #1a1820;
+        color: #82aaff;
+        border: 1px solid #1e3a6e;
+      }
+      .tag-ref {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        background: #1f0e08;
+        color: #f78c6c;
+        border: 1px solid #8b3a0f;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .hl-r {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(192, 57, 43, 0.3) 55%
+        );
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>Java String — 리터럴 vs new String() 참조 비교 추적</h1>
+        <div class="meta">
+          Java · String Pool · Heap · == (참조비교) · equals() (값비교) ·
+          Tracing
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">public class</span> <span class="cls">Main</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+<span class="hi-pool">        <span class="cls">String</span> str1 = <span class="str">"Programming"</span>;         <span class="cmt">// String Pool</span></span>
+<span class="hi-pool">        <span class="cls">String</span> str2 = <span class="str">"Programming"</span>;         <span class="cmt">// String Pool — str1과 같은 객체!</span></span>
+<span class="hi-heap">        <span class="cls">String</span> str3 = <span class="kw">new</span> <span class="cls">String</span>(<span class="str">"Programming"</span>); <span class="cmt">// Heap — 새 객체!</span></span>
+
+        <span class="fn">println</span>(str1 == str2);          <span class="cmt">// ① 참조 비교</span>
+        <span class="fn">println</span>(str1 == str3);          <span class="cmt">// ② 참조 비교</span>
+        <span class="fn">println</span>(str1.<span class="fn">equals</span>(str3));     <span class="cmt">// ③ 값 비교</span>
+        <span class="fn">print</span>(str2.<span class="fn">equals</span>(str3));      <span class="cmt">// ④ 값 비교 (줄바꿈 없음)</span>
+    }
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">출력 결과 (순서대로)</div>
+          <div class="ans-lines">
+            <div class="ans-row">
+              <div class="ans-expr">str1 == str2 →</div>
+              <div class="ans-val true-val">true</div>
+            </div>
+            <div class="ans-row">
+              <div class="ans-expr">str1 == str3 →</div>
+              <div class="ans-val false-val">false</div>
+            </div>
+            <div class="ans-row">
+              <div class="ans-expr">str1.equals(str3) →</div>
+              <div class="ans-val true-val">true</div>
+            </div>
+            <div class="ans-row">
+              <div class="ans-expr">str2.equals(str3) →</div>
+              <div class="ans-val true-val">true</div>
+            </div>
+          </div>
+          <div class="answer-desc">
+            리터럴 → String Pool 공유 → == true<br />
+            new String() → Heap 새 객체 → == false / equals() true
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >Java의 String Pool과 Heap 메모리 차이를 이해하고, == (참조
+                비교)와 equals() (값 비교)의 결과를 추적하는 문제</span
+              >입니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- ② 메모리 구조 시각화 -->
+        <div class="sub-section">
+          <div class="sub-title">② 메모리 구조 시각화</div>
+          <div class="flow-wrap">
+            <div class="mem-diagram">
+              <!-- Stack (변수) -->
+              <div class="mem-region mem-stack-r">
+                <div class="mem-region-title" style="color: #82aaff">
+                  Stack (변수)
+                </div>
+                <div class="ptr-line">
+                  <div class="ptr-name">str1</div>
+                  <div class="ptr-arr">──────┐</div>
+                </div>
+                <div class="ptr-line">
+                  <div class="ptr-name">str2</div>
+                  <div class="ptr-arr">──────┤ 동일 주소</div>
+                </div>
+                <div class="ptr-line" style="margin-top: 12px">
+                  <div class="ptr-name">str3</div>
+                  <div class="ptr-arr" style="color: #f78c6c">──────→ Heap</div>
+                </div>
+              </div>
+
+              <!-- String Pool -->
+              <div class="mem-region mem-pool">
+                <div class="mem-region-title" style="color: #c3e88d">
+                  String Pool (Heap 내)
+                </div>
+                <div class="mem-item">
+                  <div class="mem-addr">0x1000</div>
+                  <div class="mem-box" style="color: #c3e88d">
+                    "Programming"
+                  </div>
+                </div>
+                <div style="font-size: 11px; color: #546e7a; margin-top: 6px">
+                  ← str1, str2 둘 다 이 주소
+                </div>
+              </div>
+
+              <!-- Heap -->
+              <div class="mem-region mem-heap">
+                <div class="mem-region-title" style="color: #f78c6c">
+                  Heap (new)
+                </div>
+                <div class="mem-item">
+                  <div class="mem-addr">0x2000</div>
+                  <div class="mem-box" style="color: #f78c6c">
+                    "Programming"
+                  </div>
+                </div>
+                <div style="font-size: 11px; color: #546e7a; margin-top: 6px">
+                  ← str3 만 이 주소<br />값은 같지만 주소가 다름!
+                </div>
+              </div>
+            </div>
+
+            <!-- 핵심 요약 -->
+            <div
+              style="
+                margin-top: 16px;
+                background: #1a1208;
+                border-radius: 6px;
+                padding: 12px 16px;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                line-height: 2.4;
+                border: 1px solid #2a1e10;
+              "
+            >
+              str1 주소 =
+              <span style="color: #c3e88d; font-weight: bold">0x1000</span>
+              &nbsp;|&nbsp; str2 주소 =
+              <span style="color: #c3e88d; font-weight: bold">0x1000</span>
+              &nbsp;|&nbsp; str3 주소 =
+              <span style="color: #f78c6c; font-weight: bold">0x2000</span
+              ><br />
+              str1 == str2 → 0x1000 == 0x1000 →
+              <span style="color: #c3e88d; font-weight: bold">true</span><br />
+              str1 == str3 → 0x1000 == 0x2000 →
+              <span style="color: #ff9580; font-weight: bold">false</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ 단계별 추적표 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 단계별 출력 추적표</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>코드</th>
+                  <th>비교 방식</th>
+                  <th>이유</th>
+                  <th>결과</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="true-row">
+                  <td>①</td>
+                  <td><code>str1 == str2</code></td>
+                  <td><span class="tag-ref">참조 비교</span></td>
+                  <td>둘 다 String Pool의 <strong>같은 주소</strong> 0x1000</td>
+                  <td><span class="tag-true">true</span></td>
+                </tr>
+                <tr class="false-row">
+                  <td>②</td>
+                  <td><code>str1 == str3</code></td>
+                  <td><span class="tag-ref">참조 비교</span></td>
+                  <td>
+                    str1=0x1000 (Pool) vs str3=0x2000 (Heap) →
+                    <strong>다른 주소</strong>
+                  </td>
+                  <td><span class="tag-false">false</span></td>
+                </tr>
+                <tr class="true-row">
+                  <td>③</td>
+                  <td><code>str1.equals(str3)</code></td>
+                  <td><span class="tag-eq">값 비교</span></td>
+                  <td>
+                    내용 "Programming" == "Programming" →
+                    <strong>같은 값</strong>
+                  </td>
+                  <td><span class="tag-true">true</span></td>
+                </tr>
+                <tr class="true-row hl-row">
+                  <td>④</td>
+                  <td><code>str2.equals(str3)</code></td>
+                  <td><span class="tag-eq">값 비교</span></td>
+                  <td>
+                    내용 "Programming" == "Programming" →
+                    <strong>같은 값</strong>
+                  </td>
+                  <td><span class="tag-true">true</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ == vs equals 차이 -->
+        <div class="sub-section">
+          <div class="sub-title">④ == vs equals() 핵심 차이</div>
+          <div
+            style="
+              background: #1a1208;
+              border-radius: 8px;
+              padding: 16px 20px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 13px;
+              border: 1px solid #2a1e10;
+              line-height: 3;
+            "
+          >
+            <span style="color: #ff9580; font-weight: bold">==</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→
+            <span style="color: #f78c6c">주소(참조) 비교</span>
+            &nbsp;&nbsp;<span style="color: #546e7a">// 같은 객체인지 확인</span
+            ><br />
+            <span style="color: #c3e88d; font-weight: bold">.equals()</span> →
+            <span style="color: #c3e88d">내용(값) 비교</span>
+            &nbsp;&nbsp;&nbsp;<span style="color: #546e7a"
+              >// 문자열 내용이 같은지 확인</span
+            >
+          </div>
+        </div>
+
+        <!-- ⑤ String Pool 원리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ String Pool vs new String()</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🏊</span>
+                <span
+                  ><span class="hl">리터럴 선언</span> (<code>"..."</code>) →
+                  JVM이 String Pool에서 같은 문자열 재사용 → str1, str2는 동일
+                  객체</span
+                >
+              </li>
+              <li>
+                <span class="icon">🆕</span>
+                <span
+                  ><span class="hl-r">new String("...")</span> → 항상 Heap에 새
+                  객체 생성 → 내용이 같아도 주소는 다름</span
+                >
+              </li>
+              <li>
+                <span class="icon">✅</span>
+                <span
+                  >문자열 내용 비교는
+                  <strong>반드시 <code>.equals()</code></strong> 를 사용해야
+                  합니다. <code>==</code>는 참조 주소를 비교합니다.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">출력 결과 (순서대로)</div>
+          <div class="ans-lines">
+            <div class="ans-row">
+              <div class="ans-expr">① str1 == str2</div>
+              <div class="ans-val true-val">true</div>
+            </div>
+            <div class="ans-row">
+              <div class="ans-expr">② str1 == str3</div>
+              <div class="ans-val false-val">false</div>
+            </div>
+            <div class="ans-row">
+              <div class="ans-expr">③ str1.equals(str3)</div>
+              <div class="ans-val true-val">true</div>
+            </div>
+            <div class="ans-row">
+              <div class="ans-expr">④ str2.equals(str3)</div>
+              <div class="ans-val true-val">true</div>
+            </div>
+          </div>
+          <div class="answer-desc">
+            == : 주소(참조) 비교 &nbsp;|&nbsp; equals() : 값(내용) 비교<br />
+            리터럴은 Pool 공유 → ==true / new String은 새 Heap 객체 → ==false
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer"),
+          btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain"),
+          btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain"),
+          btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer"),
+          btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>
