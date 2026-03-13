@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .blank {
+        display: inline-block;
+        background: #2d2010;
+        border: 2px dashed #f0c060;
+        color: #f0c060;
+        font-weight: bold;
+        border-radius: 4px;
+        padding: 0 12px;
+        font-size: 13px;
+        vertical-align: middle;
+      }
+      .hi1 {
+        display: block;
+        background: rgba(240, 192, 96, 0.1);
+        border-left: 3px solid #f0c060;
+        margin: 0 -24px;
+        padding: 0 21px;
+      }
+      .hi2 {
+        display: block;
+        background: rgba(45, 90, 61, 0.1);
+        border-left: 3px solid #c3e88d;
+        margin: 0 -24px;
+        padding: 0 21px;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 16px;
+      }
+      .blank-grid {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .bg-item {
+        text-align: center;
+      }
+      .bg-tag {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        opacity: 0.5;
+        margin-bottom: 6px;
+      }
+      .bg-val {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 72px;
+        font-weight: 700;
+        line-height: 1;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .answer-box .answer-desc {
+        font-size: 12px;
+        opacity: 0.55;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 2.4;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 24px;
+      }
+
+      /* swap 다이어그램 */
+      .swap-diag {
+        font-family: "JetBrains Mono", monospace;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .sw-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .sw-label {
+        min-width: 80px;
+        font-size: 12px;
+        color: #546e7a;
+      }
+      .sw-cell {
+        width: 54px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        font-size: 15px;
+        font-weight: bold;
+        border: 2px solid;
+      }
+      .sw-idx1 {
+        background: rgba(139, 58, 15, 0.25);
+        border-color: #f78c6c;
+        color: #f78c6c;
+      }
+      .sw-idx2 {
+        background: rgba(30, 58, 110, 0.25);
+        border-color: #82aaff;
+        color: #82aaff;
+      }
+      .sw-t {
+        background: rgba(240, 192, 96, 0.2);
+        border-color: #f0c060;
+        color: #f0c060;
+      }
+      .sw-norm {
+        background: #1a1208;
+        border-color: #2a1e10;
+        color: #6a5a40;
+      }
+      .sw-arrow {
+        font-size: 20px;
+        color: #546e7a;
+      }
+
+      /* 배열 시각화 */
+      .arr-vis {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .arr-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .ar-label {
+        min-width: 60px;
+        font-size: 12px;
+        color: #546e7a;
+      }
+      .ar-cells {
+        display: flex;
+        gap: 3px;
+      }
+      .ar-cell {
+        width: 52px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        border: 1px solid;
+      }
+      .ac-n {
+        background: #1a1208;
+        border-color: #2a1e10;
+        color: #8a7a60;
+      }
+      .ac-s {
+        background: rgba(45, 90, 61, 0.3);
+        border-color: #2d5a3d;
+        color: #c3e88d;
+      }
+      .ac-hi {
+        background: rgba(240, 192, 96, 0.2);
+        border-color: #f0c060;
+        color: #f0c060;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.18);
+        font-weight: 700;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 버블 정렬 — 빈칸 채우기</h1>
+        <div class="meta">C · Bubble Sort · swap · 포인터 · Blank Fill</div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+
+<span class="kw">void</span> <span class="fn">swap</span>(<span class="kw">int</span> *a, <span class="kw">int</span> idx1, <span class="kw">int</span> idx2) {
+    <span class="kw">int</span> t = a[idx1];
+    a[idx1] = a[idx2];
+<span class="hi1">    a[(<span class="blank">① ?</span>)] = t;  <span class="cmt">// ★ 빈칸 ①</span></span>
+}
+
+<span class="kw">void</span> <span class="fn">Usort</span>(<span class="kw">int</span> *a, <span class="kw">int</span> len) {
+    <span class="kw">for</span>(<span class="kw">int</span> i = <span class="nl">0</span>; i &lt; len - <span class="nl">1</span>; i++)
+        <span class="kw">for</span>(<span class="kw">int</span> j = <span class="nl">0</span>; j &lt; len - <span class="nl">1</span> - i; j++)
+            <span class="kw">if</span>(a[j] &gt; a[j+<span class="nl">1</span>])
+                <span class="fn">swap</span>(a, j, j+<span class="nl">1</span>);
+}
+
+<span class="kw">void</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> a[] = {<span class="nl">85</span>, <span class="nl">75</span>, <span class="nl">50</span>, <span class="nl">100</span>, <span class="nl">95</span>};
+    <span class="kw">int</span> nx = <span class="nl">5</span>;
+<span class="hi2">    <span class="fn">Usort</span>(a, (<span class="blank">② ?</span>));  <span class="cmt">// ★ 빈칸 ②</span></span>
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          빈칸 <strong>①</strong>과 <strong>②</strong>에 들어갈 값은?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">빈칸 정답</div>
+          <div class="blank-grid">
+            <div class="bg-item">
+              <div class="bg-tag">① a[ ] = t</div>
+              <div class="bg-val">idx2</div>
+            </div>
+            <div class="bg-item">
+              <div class="bg-tag">② Usort(a, )</div>
+              <div class="bg-val">nx</div>
+            </div>
+          </div>
+          <div class="answer-desc">
+            ① swap 완성: t(=a[idx1]) → a[idx2]에 저장<br />
+            ② 배열 길이 nx=5를 Usort에 전달
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >포인터 기반 swap 함수와 버블 정렬(Bubble Sort) 호출에서 빈칸을
+                완성하는 문제</span
+              >입니다. swap 로직의 3단계 교환 패턴과 함수에 올바른 인자를
+              전달하는 방법을 이해해야 합니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- ② 빈칸 ① 분석 — swap -->
+        <div class="sub-section">
+          <div class="sub-title">② 빈칸 ① 분석 — swap 완성</div>
+          <div class="flow-wrap">
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 13px;
+                background: #1a1208;
+                border-radius: 8px;
+                padding: 16px 20px;
+                border: 1px solid #2a1e10;
+                line-height: 3;
+                margin-bottom: 16px;
+              "
+            >
+              <span style="color: #f0c060; font-weight: bold"
+                >swap의 3단계:</span
+              ><br />
+              <span style="color: #f78c6c">① t = a[idx1]</span>
+              &nbsp;&nbsp;&nbsp;← idx1의 값을 임시 저장<br />
+              <span style="color: #82aaff">② a[idx1] = a[idx2]</span> ← idx2의
+              값을 idx1에 복사<br />
+              <span style="color: #c3e88d"
+                >③ a[<strong style="color: #f0c060">idx2</strong>] = t</span
+              >
+              &nbsp;&nbsp;&nbsp;&nbsp;← 임시값(t)을 idx2에 저장<br /><br />
+              <span style="color: #546e7a"
+                >∴ 빈칸 ① =
+                <span style="color: #f0c060; font-weight: bold; font-size: 16px"
+                  >idx2</span
+                ></span
+              >
+            </div>
+            <div class="swap-diag">
+              <div class="sw-row">
+                <div class="sw-label" style="color: #f0c060">Step 1</div>
+                <div class="sw-cell sw-t">t</div>
+                <div class="sw-arrow">←</div>
+                <div class="sw-cell sw-idx1">idx1</div>
+                <div
+                  style="
+                    font-size: 12px;
+                    color: #546e7a;
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                  "
+                >
+                  t = a[idx1]
+                </div>
+              </div>
+              <div class="sw-row">
+                <div class="sw-label" style="color: #f0c060">Step 2</div>
+                <div class="sw-cell sw-idx1">idx1</div>
+                <div class="sw-arrow">←</div>
+                <div class="sw-cell sw-idx2">idx2</div>
+                <div
+                  style="
+                    font-size: 12px;
+                    color: #546e7a;
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                  "
+                >
+                  a[idx1] = a[idx2]
+                </div>
+              </div>
+              <div class="sw-row">
+                <div class="sw-label" style="color: #f0c060">Step 3</div>
+                <div class="sw-cell sw-idx2">idx2</div>
+                <div class="sw-arrow">←</div>
+                <div class="sw-cell sw-t">t</div>
+                <div
+                  style="
+                    font-size: 12px;
+                    color: #f0c060;
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                    font-weight: bold;
+                  "
+                >
+                  a[<strong>idx2</strong>] = t ← 빈칸 ①
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ 빈칸 ② 분석 — Usort 호출 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 빈칸 ② 분석 — Usort 호출 인자</div>
+          <div
+            style="
+              background: #1a1208;
+              border-radius: 8px;
+              padding: 16px 20px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 13px;
+              border: 1px solid #2a1e10;
+              line-height: 2.8;
+              margin-bottom: 16px;
+            "
+          >
+            <span style="color: #c3e88d; font-weight: bold"
+              >Usort(int *a, int len)</span
+            >
+            — len은 배열의 길이<br />
+            배열: <span style="color: #f78c6c">{85, 75, 50, 100, 95}</span> →
+            원소 5개<br />
+            <span style="color: #f0c060">int nx = 5</span> → 배열 크기를 저장한
+            변수<br /><br />
+            <span style="color: #546e7a"
+              >∴ 빈칸 ② =
+              <span style="color: #f0c060; font-weight: bold; font-size: 16px"
+                >nx</span
+              ></span
+            >
+          </div>
+        </div>
+
+        <!-- ④ 버블 정렬 과정 -->
+        <div class="sub-section">
+          <div class="sub-title">④ 버블 정렬 — Pass별 배열 변화</div>
+          <div class="flow-wrap">
+            <div class="arr-vis">
+              <div class="arr-row">
+                <div class="ar-label">초기</div>
+                <div class="ar-cells">
+                  <div class="ar-cell ac-n">85</div>
+                  <div class="ar-cell ac-n">75</div>
+                  <div class="ar-cell ac-n">50</div>
+                  <div class="ar-cell ac-n">100</div>
+                  <div class="ar-cell ac-n">95</div>
+                </div>
+              </div>
+              <div class="arr-row">
+                <div class="ar-label">Pass 1</div>
+                <div class="ar-cells">
+                  <div class="ar-cell ac-n">75</div>
+                  <div class="ar-cell ac-n">50</div>
+                  <div class="ar-cell ac-n">85</div>
+                  <div class="ar-cell ac-n">95</div>
+                  <div class="ar-cell ac-s">100</div>
+                </div>
+              </div>
+              <div class="arr-row">
+                <div class="ar-label">Pass 2</div>
+                <div class="ar-cells">
+                  <div class="ar-cell ac-n">50</div>
+                  <div class="ar-cell ac-n">75</div>
+                  <div class="ar-cell ac-n">85</div>
+                  <div class="ar-cell ac-s">95</div>
+                  <div class="ar-cell ac-s">100</div>
+                </div>
+              </div>
+              <div class="arr-row">
+                <div class="ar-label">Pass 3</div>
+                <div class="ar-cells">
+                  <div class="ar-cell ac-n">50</div>
+                  <div class="ar-cell ac-n">75</div>
+                  <div class="ar-cell ac-s">85</div>
+                  <div class="ar-cell ac-s">95</div>
+                  <div class="ar-cell ac-s">100</div>
+                </div>
+              </div>
+              <div class="arr-row">
+                <div class="ar-label">Pass 4</div>
+                <div class="ar-cells">
+                  <div class="ar-cell ac-hi">50</div>
+                  <div class="ar-cell ac-hi">75</div>
+                  <div class="ar-cell ac-hi">85</div>
+                  <div class="ar-cell ac-hi">95</div>
+                  <div class="ar-cell ac-hi">100</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">🔄</span>
+                <span
+                  >swap 3단계: <code>t=a[idx1]</code> →
+                  <code>a[idx1]=a[idx2]</code> →
+                  <span class="hl"><code>a[idx2]=t</code></span
+                  >. 마지막에 반드시 idx2에 t를 넣어야 교환 완성.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📏</span>
+                <span
+                  >Usort의 두 번째 매개변수 len은
+                  <span class="hl">배열의 길이</span>입니다. <code>nx=5</code>가
+                  그 값을 담고 있습니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🫧</span>
+                <span
+                  >이 알고리즘은 <strong>버블 정렬(Bubble Sort)</strong>입니다.
+                  인접한 두 원소를 비교해 큰 값을 오른쪽으로 밀어 오름차순
+                  정렬합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📋</span>
+                <span
+                  >최종 결과: <strong>50 75 85 95 100</strong> (오름차순)</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">빈칸 정답</div>
+          <div class="blank-grid">
+            <div class="bg-item">
+              <div class="bg-tag">① a[ ] = t</div>
+              <div class="bg-val">idx2</div>
+            </div>
+            <div class="bg-item">
+              <div class="bg-tag">② Usort(a, )</div>
+              <div class="bg-val">nx</div>
+            </div>
+          </div>
+          <div class="answer-desc">
+            ① a[idx2] = t → swap 3단계 완성 (두 원소 교환)<br />
+            ② Usort(a, nx) → 배열 길이 5를 len으로 전달
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer"),
+          btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain"),
+          btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain"),
+          btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer"),
+          btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>

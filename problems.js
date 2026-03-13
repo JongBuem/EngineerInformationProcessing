@@ -20,6 +20,17 @@
  *   PROBLEMS 또는 LEARNING 배열에 한 줄 추가 후 HTML 파일을 같은 폴더에 저장.
  */
 const PROBLEMS = [
+  // ── 2023년 1회차 ──
+  { file: "2023_01_01_J.html", year: 2023, round: 1, num:  1, lang: "J", type: "programming" },
+  { file: "2023_01_02_C.html", year: 2023, round: 1, num:  2, lang: "C", type: "programming" },
+  { file: "2023_01_03_C.html", year: 2023, round: 1, num:  3, lang: "C", type: "programming" },
+  { file: "2023_01_09_C.html", year: 2023, round: 1, num:  9, lang: "C", type: "programming" },
+  { file: "2023_01_14_C.html", year: 2023, round: 1, num:  14, lang: "C", type: "programming" },
+  { file: "2023_01_15_P.html", year: 2023, round: 1, num:  15, lang: "P", type: "programming" },
+  { file: "2023_01_17_J.html", year: 2023, round: 1, num:  17, lang: "J", type: "programming" },
+  { file: "2023_01_20_J.html", year: 2023, round: 1, num:  20, lang: "J", type: "programming" },
+
+
   // ── 2023년 2회차 ──
   { file: "2023_02_01_C.html", year: 2023, round: 2, num:  1, lang: "C", type: "programming" },
   { file: "2023_02_02_J.html", year: 2023, round: 2, num:  2, lang: "J", type: "programming" },

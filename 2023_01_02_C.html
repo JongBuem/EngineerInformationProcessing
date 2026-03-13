@@ -1,0 +1,960 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>알고리즘 풀이 노트</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .section-title .num {
+        width: 26px;
+        height: 26px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 20px 24px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2;
+        color: #2a1f10;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 12px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+      }
+      pre {
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .hi {
+        display: block;
+        background: rgba(240, 192, 96, 0.1);
+        border-left: 3px solid #f0c060;
+        margin: 0 -24px;
+        padding: 0 21px;
+      }
+
+      .btn-area {
+        padding-left: 48px;
+        margin-bottom: 40px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        animation: fadeSlide 0.6s ease 0.2s both;
+      }
+      .btn {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.18);
+        position: relative;
+        top: 0;
+      }
+      .btn:active {
+        top: 2px;
+        box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+      .btn-answer {
+        background: var(--ink);
+        color: var(--highlight);
+        border: 2px solid var(--accent);
+      }
+      .btn-answer:hover {
+        background: #2d1e0a;
+      }
+      .btn-explain {
+        background: var(--accent2);
+        color: #e8f5ec;
+        border: 2px solid #1e4028;
+      }
+      .btn-explain:hover {
+        background: #1e4028;
+      }
+      .btn.active-answer {
+        background: var(--highlight);
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+      .btn.active-explain {
+        background: #c3e88d;
+        color: #1a3010;
+        border-color: var(--accent2);
+      }
+
+      .panel {
+        padding-left: 48px;
+        margin-bottom: 44px;
+        display: none;
+        animation: fadeSlide 0.4s ease both;
+      }
+      .panel.visible {
+        display: block;
+      }
+
+      /* 정답 박스 */
+      .answer-box {
+        background: var(--ink);
+        color: var(--highlight);
+        border-radius: 10px;
+        padding: 28px;
+        text-align: center;
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .answer-box::before {
+        content: "★";
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 100px;
+        color: rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+      }
+      .answer-box .answer-label {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        opacity: 0.7;
+        margin-bottom: 16px;
+      }
+      .answer-box .answer-desc {
+        margin-top: 16px;
+        font-size: 12px;
+        opacity: 0.55;
+        font-family: "JetBrains Mono", monospace;
+        line-height: 2.4;
+      }
+
+      /* 출력 터미널 */
+      .terminal {
+        background: #0d1117;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #2a1e10;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      }
+      .terminal-bar {
+        background: #161b22;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        border-bottom: 1px solid #2a1e10;
+      }
+      .terminal-body {
+        padding: 16px 22px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 15px;
+        line-height: 2.4;
+      }
+      .t-line {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .t-num {
+        font-size: 10px;
+        color: #3a3028;
+        min-width: 16px;
+      }
+      .t-out {
+        color: #f0c060;
+        font-weight: bold;
+        font-size: 22px;
+      }
+      .t-note {
+        font-size: 11px;
+        color: #3a3028;
+      }
+
+      /* 메모리 다이어그램 */
+      .mem-wrap {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .mem-box {
+        border-radius: 8px;
+        padding: 14px 16px;
+        min-width: 160px;
+      }
+      .mem-arr {
+        background: #0e1218;
+        border: 2px solid #1e3a6e;
+      }
+      .mem-ptr {
+        background: #0e1a0e;
+        border: 2px solid #2d5a3d;
+      }
+      .mem-title {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .mem-cells {
+        display: flex;
+        gap: 3px;
+      }
+      .mc {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+      }
+      .mc-addr {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        color: #3a3028;
+      }
+      .mc-val {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .mc-arr {
+        background: rgba(30, 58, 110, 0.4);
+        border: 1px solid #82aaff;
+        color: #82aaff;
+      }
+      .mc-nul {
+        background: rgba(80, 80, 80, 0.2);
+        border: 1px solid #3a3028;
+        color: #546e7a;
+        font-size: 10px;
+      }
+      .mc-idx {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        color: #546e7a;
+      }
+      .ptr-arrow {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: #c3e88d;
+        margin-top: 8px;
+      }
+
+      .trace-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .trace-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .trace-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .trace-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .trace-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.18);
+        font-weight: 700;
+      }
+
+      .tag-s {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        background: #0e1218;
+        color: #82aaff;
+        border: 1px solid #1e3a6e;
+      }
+      .tag-c {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        background: #1a2010;
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 24px;
+      }
+
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .sub-section {
+        margin-bottom: 32px;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--aged);
+      }
+
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.75;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Algorithm Study Note</div>
+        <h1>C 문자 배열 & 포인터 출력 추적</h1>
+        <div class="meta">
+          C · char array · char* pointer · %s · %c · *p · *a · for loop
+        </div>
+      </div>
+
+      <!-- 문제 코드 -->
+      <div class="section">
+        <div class="section-title"><span class="num">Q</span>문제 코드</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span>
+            <span class="lang">C</span>
+          </div>
+          <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">char</span> a[] = <span class="str">"Art"</span>;     <span class="cmt">// a[0]='A', a[1]='r', a[2]='t', a[3]='\0'</span>
+    <span class="kw">char</span>* p = NULL;
+    p = a;               <span class="cmt">// p가 a[0]의 주소를 가리킴</span>
+
+<span class="hi">    <span class="fn">printf</span>(<span class="str">"%s\n"</span>, a);   <span class="cmt">// ① 배열명 → 문자열 전체</span></span>
+<span class="hi">    <span class="fn">printf</span>(<span class="str">"%c\n"</span>, *p);  <span class="cmt">// ② p가 가리키는 첫 문자</span></span>
+<span class="hi">    <span class="fn">printf</span>(<span class="str">"%c\n"</span>, *a);  <span class="cmt">// ③ 배열명 역참조 → 첫 문자</span></span>
+<span class="hi">    <span class="fn">printf</span>(<span class="str">"%s\n"</span>, p);   <span class="cmt">// ④ 포인터 → 문자열 전체</span></span>
+
+    <span class="kw">for</span>(<span class="kw">int</span> i = <span class="nl">0</span>; a[i] != <span class="str">'\0'</span>; i++)
+<span class="hi">        <span class="fn">printf</span>(<span class="str">"%c"</span>, a[i]); <span class="cmt">// ⑤ 문자 하나씩, 줄바꿈 없음</span></span>
+}</pre>
+        </div>
+        <p
+          style="
+            margin-top: 12px;
+            padding-left: 4px;
+            font-size: 14px;
+            color: #7a6650;
+          "
+        >
+          위 코드의 <strong>출력값</strong>은 무엇인가?
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="btn-area">
+        <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">
+          ✦ 정답 보기
+        </button>
+        <button
+          class="btn btn-explain"
+          id="btnExplain"
+          onclick="toggleExplain()"
+        >
+          📖 설명 보기
+        </button>
+      </div>
+
+      <!-- 정답 패널 -->
+      <div class="panel" id="panelAnswer">
+        <div class="answer-box">
+          <div class="answer-label">출력 결과</div>
+          <div class="terminal" style="max-width: 320px; margin: 0 auto">
+            <div class="terminal-bar">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span
+              ><span class="dot dot-g"></span>
+            </div>
+            <div class="terminal-body">
+              <div class="t-line">
+                <span class="t-num">①</span><span class="t-out">Art</span>
+              </div>
+              <div class="t-line">
+                <span class="t-num">②</span><span class="t-out">A</span>
+              </div>
+              <div class="t-line">
+                <span class="t-num">③</span><span class="t-out">A</span>
+              </div>
+              <div class="t-line">
+                <span class="t-num">④</span><span class="t-out">Art</span>
+              </div>
+              <div class="t-line">
+                <span class="t-num">⑤</span><span class="t-out">Art</span
+                ><span class="t-note" style="color: #3a5030"
+                  >(줄바꿈 없음)</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="answer-desc">
+            %s → 문자열 전체 · %c → 문자 하나 · *p = *a = a[0] = 'A'<br />
+            for 루프: '\0' 전까지 한 글자씩 출력 (마지막 줄바꿈 없음)
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 패널 -->
+      <div class="panel" id="panelExplain">
+        <!-- ① 문제 유형 -->
+        <div class="sub-section">
+          <div class="sub-title">① 문제 유형</div>
+          <div class="card blue">
+            <p>
+              <span class="hl"
+                >C 문자 배열과 char* 포인터가 동일한 주소를 가리킬 때 %s/%c
+                서식과 역참조(*) 연산의 출력 결과를 추적하는 문제</span
+              >입니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- ② 메모리 구조 -->
+        <div class="sub-section">
+          <div class="sub-title">② 메모리 구조</div>
+          <div class="flow-wrap">
+            <div class="mem-wrap">
+              <!-- 배열 a -->
+              <div class="mem-box mem-arr">
+                <div class="mem-title" style="color: #82aaff">
+                  char a[] = "Art"
+                </div>
+                <div class="mem-cells">
+                  <div class="mc">
+                    <div class="mc-addr">0x100</div>
+                    <div class="mc-val mc-arr">A</div>
+                    <div class="mc-idx">a[0]</div>
+                  </div>
+                  <div class="mc">
+                    <div class="mc-addr">0x101</div>
+                    <div class="mc-val mc-arr">r</div>
+                    <div class="mc-idx">a[1]</div>
+                  </div>
+                  <div class="mc">
+                    <div class="mc-addr">0x102</div>
+                    <div class="mc-val mc-arr">t</div>
+                    <div class="mc-idx">a[2]</div>
+                  </div>
+                  <div class="mc">
+                    <div class="mc-addr">0x103</div>
+                    <div class="mc-val mc-nul">\0</div>
+                    <div class="mc-idx">a[3]</div>
+                  </div>
+                </div>
+              </div>
+              <!-- 포인터 p -->
+              <div class="mem-box mem-ptr" style="min-width: 130px">
+                <div class="mem-title" style="color: #c3e88d">char* p</div>
+                <div class="mem-cells">
+                  <div class="mc">
+                    <div class="mc-addr">p 값</div>
+                    <div
+                      class="mc-val"
+                      style="
+                        background: rgba(45, 90, 61, 0.4);
+                        border: 1px solid #c3e88d;
+                        color: #c3e88d;
+                        font-size: 11px;
+                        width: 60px;
+                      "
+                    >
+                      0x100
+                    </div>
+                  </div>
+                </div>
+                <div class="ptr-arrow">↓ a[0] 가리킴</div>
+              </div>
+            </div>
+            <div
+              style="
+                margin-top: 12px;
+                background: #1a1208;
+                border-radius: 6px;
+                padding: 10px 14px;
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #546e7a;
+                line-height: 2.2;
+              "
+            >
+              <span style="color: #82aaff">a</span> (배열명) ==
+              <span style="color: #c3e88d">p</span> (포인터) ==
+              <span style="color: #f78c6c">0x100</span> → 같은 주소<br />
+              <span style="color: #82aaff">*a</span> ==
+              <span style="color: #c3e88d">*p</span> ==
+              <span style="color: #f78c6c">a[0]</span> ==
+              <span style="color: #f0c060; font-weight: bold">'A'</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ 단계별 추적표 -->
+        <div class="sub-section">
+          <div class="sub-title">③ 출력 단계별 추적</div>
+          <div style="overflow-x: auto">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>번호</th>
+                  <th>코드</th>
+                  <th>서식/연산</th>
+                  <th>값</th>
+                  <th>출력</th>
+                  <th>줄바꿈</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>①</td>
+                  <td><code>printf("%s\n", a)</code></td>
+                  <td><span class="tag-s">%s</span> 문자열</td>
+                  <td>a = 0x100</td>
+                  <td><strong>Art</strong></td>
+                  <td>✅ \n</td>
+                </tr>
+                <tr>
+                  <td>②</td>
+                  <td><code>printf("%c\n", *p)</code></td>
+                  <td><span class="tag-c">%c</span> *p 역참조</td>
+                  <td>*p = a[0] = 'A'</td>
+                  <td><strong>A</strong></td>
+                  <td>✅ \n</td>
+                </tr>
+                <tr>
+                  <td>③</td>
+                  <td><code>printf("%c\n", *a)</code></td>
+                  <td><span class="tag-c">%c</span> *a 역참조</td>
+                  <td>*a = a[0] = 'A'</td>
+                  <td><strong>A</strong></td>
+                  <td>✅ \n</td>
+                </tr>
+                <tr>
+                  <td>④</td>
+                  <td><code>printf("%s\n", p)</code></td>
+                  <td><span class="tag-s">%s</span> 문자열</td>
+                  <td>p = 0x100 (= a)</td>
+                  <td><strong>Art</strong></td>
+                  <td>✅ \n</td>
+                </tr>
+                <tr class="hl-row">
+                  <td>⑤</td>
+                  <td><code>for → printf("%c", a[i])</code></td>
+                  <td><span class="tag-c">%c</span> × 3</td>
+                  <td>A, r, t 순서</td>
+                  <td><strong>Art</strong></td>
+                  <td>❌ 없음</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ④ for 루프 추적 -->
+        <div class="sub-section">
+          <div class="sub-title">④ for 루프 추적</div>
+          <div class="flow-wrap">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>i</th>
+                  <th>a[i]</th>
+                  <th>조건 a[i]≠'\0'</th>
+                  <th>출력</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>0</td>
+                  <td>'A'</td>
+                  <td>✅ 계속</td>
+                  <td>A</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td>'r'</td>
+                  <td>✅ 계속</td>
+                  <td>r</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>'t'</td>
+                  <td>✅ 계속</td>
+                  <td>t</td>
+                </tr>
+                <tr class="hl-row">
+                  <td>3</td>
+                  <td>'\0'</td>
+                  <td>❌ 종료</td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ⑤ 핵심 정리 -->
+        <div class="sub-section">
+          <div class="sub-title">⑤ 핵심 포인트</div>
+          <div class="card green">
+            <ul class="point-list">
+              <li>
+                <span class="icon">📌</span>
+                <span
+                  ><span class="hl">배열명 a는 첫 번째 원소의 주소</span>입니다.
+                  <code>p = a</code> 이후 p와 a는 같은 주소를 가리킵니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔍</span>
+                <span
+                  ><code>*p</code>와 <code>*a</code>는 모두
+                  <span class="hl">역참조 → a[0] = 'A'</span>를
+                  반환합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">📋</span>
+                <span
+                  ><code>%s</code>는
+                  <span class="hl">'\0'을 만날 때까지 문자열 전체</span>를,
+                  <code>%c</code>는 문자 단 하나를 출력합니다.</span
+                >
+              </li>
+              <li>
+                <span class="icon">🔁</span>
+                <span
+                  >for 루프의 <code>printf("%c", a[i])</code>는
+                  <code>\n</code> 없이 한 글자씩 출력 → 마지막 줄은
+                  <strong>줄바꿈 없음</strong>.</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최종 정답 -->
+        <div class="answer-box">
+          <div class="answer-label">출력 결과</div>
+          <div class="terminal" style="max-width: 320px; margin: 0 auto">
+            <div class="terminal-bar">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span
+              ><span class="dot dot-g"></span>
+            </div>
+            <div class="terminal-body">
+              <div class="t-line">
+                <span class="t-num">①</span><span class="t-out">Art</span
+                ><span class="t-note">← %s, a</span>
+              </div>
+              <div class="t-line">
+                <span class="t-num">②</span><span class="t-out">A</span
+                ><span class="t-note">← %c, *p</span>
+              </div>
+              <div class="t-line">
+                <span class="t-num">③</span><span class="t-out">A</span
+                ><span class="t-note">← %c, *a</span>
+              </div>
+              <div class="t-line">
+                <span class="t-num">④</span><span class="t-out">Art</span
+                ><span class="t-note">← %s, p</span>
+              </div>
+              <div class="t-line">
+                <span class="t-num">⑤</span><span class="t-out">Art</span
+                ><span class="t-note">← for loop (줄바꿈 없음)</span>
+              </div>
+            </div>
+          </div>
+          <div class="answer-desc">
+            *p == *a == a[0] == 'A' · %s는 '\0'까지 문자열 전체 출력<br />
+            마지막 for 루프: printf("%c") → \n 없음
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleAnswer() {
+        const panel = document.getElementById("panelAnswer"),
+          btn = document.getElementById("btnAnswer");
+        const panelEx = document.getElementById("panelExplain"),
+          btnEx = document.getElementById("btnExplain");
+        const opening = !panel.classList.contains("visible");
+        panelEx.classList.remove("visible");
+        btnEx.classList.remove("active-explain");
+        btnEx.textContent = "📖 설명 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-answer");
+          btn.textContent = "✦ 정답 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-answer");
+          btn.textContent = "✦ 정답 보기";
+        }
+      }
+      function toggleExplain() {
+        const panel = document.getElementById("panelExplain"),
+          btn = document.getElementById("btnExplain");
+        const panelAns = document.getElementById("panelAnswer"),
+          btnAns = document.getElementById("btnAnswer");
+        const opening = !panel.classList.contains("visible");
+        panelAns.classList.remove("visible");
+        btnAns.classList.remove("active-answer");
+        btnAns.textContent = "✦ 정답 보기";
+        if (opening) {
+          panel.classList.add("visible");
+          btn.classList.add("active-explain");
+          btn.textContent = "📖 설명 닫기";
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+          panel.classList.remove("visible");
+          btn.classList.remove("active-explain");
+          btn.textContent = "📖 설명 보기";
+        }
+      }
+    </script>
+  </body>
+</html>
