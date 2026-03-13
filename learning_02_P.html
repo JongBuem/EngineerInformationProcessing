@@ -1,0 +1,960 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python 슬라이싱 · enumerate · 컬렉션 메서드</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 52px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 25px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .toc {
+        padding-left: 48px;
+        margin-bottom: 52px;
+      }
+      .toc-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.15em;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+      }
+      .toc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 8px;
+      }
+      .toc-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        text-decoration: none;
+        color: var(--ink);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+      }
+      .toc-item:hover {
+        background: rgba(240, 192, 96, 0.18);
+        border-color: var(--highlight);
+      }
+      .toc-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: bold;
+        flex-shrink: 0;
+        color: var(--paper);
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.08em;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .section-title .num {
+        width: 28px;
+        height: 28px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .section-title .num.green {
+        background: var(--accent2);
+      }
+      .section-title .num.blue {
+        background: var(--accent3);
+      }
+      .section-title .num.gold {
+        background: #8b6020;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 18px 22px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+        margin-bottom: 14px;
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.gold {
+        border-left-color: var(--highlight);
+        background: rgba(240, 192, 96, 0.06);
+      }
+      .card.red {
+        border-left-color: #c0392b;
+        background: rgba(192, 57, 43, 0.05);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2.1;
+        color: #2a1f10;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin: 22px 0 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sub-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: bold;
+        flex-shrink: 0;
+        color: white;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 14px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+      }
+      pre {
+        padding: 18px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .vb {
+        color: #ffcb6b;
+      }
+      code {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        background: rgba(26, 18, 8, 0.08);
+        border: 1px solid var(--aged);
+        border-radius: 3px;
+        padding: 1px 6px;
+        color: var(--accent);
+      }
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        margin: 14px 0;
+      }
+      .info-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 16px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .info-table td {
+        padding: 9px 16px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .info-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .info-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.15);
+        font-weight: 700;
+      }
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin: 14px 0;
+      }
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      /* 슬라이싱 시각화 */
+      .slice-vis {
+        font-family: "JetBrains Mono", monospace;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .sv-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .sv-label {
+        min-width: 120px;
+        font-size: 12px;
+        color: #f0c060;
+        font-weight: bold;
+        padding-top: 8px;
+      }
+      .sv-cells {
+        display: flex;
+        gap: 0;
+      }
+      .sv-cell {
+        min-width: 42px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: bold;
+        border: 1px solid #2a1e10;
+      }
+      .sc-n {
+        background: #1a1208;
+        color: #8a7a60;
+      }
+      .sc-hi {
+        background: rgba(240, 192, 96, 0.2);
+        border-color: #f0c060;
+        color: #f0c060;
+      }
+      .sv-idx {
+        display: flex;
+        gap: 0;
+      }
+      .si-cell {
+        min-width: 42px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: #546e7a;
+      }
+      .sv-result {
+        font-size: 13px;
+        color: #c3e88d;
+        padding-top: 10px;
+      }
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Python Learning Note — 06</div>
+        <h1>Python 출제 문제 심화 학습 정리</h1>
+        <div class="meta">
+          Python · slicing · enumerate · set ops · type() · isinstance() · 시험
+          빈출 패턴
+        </div>
+      </div>
+
+      <!-- TOC -->
+      <div class="toc">
+        <div class="toc-title">목차</div>
+        <div class="toc-grid">
+          <a class="toc-item" href="#s1"
+            ><span class="toc-num" style="background: #8b3a0f">1</span>슬라이싱
+            [start:end:step]</a
+          >
+          <a class="toc-item" href="#s2"
+            ><span class="toc-num" style="background: #1e3a6e">2</span
+            >enumerate()</a
+          >
+          <a class="toc-item" href="#s3"
+            ><span class="toc-num" style="background: #2d5a3d">3</span>set
+            메서드 총정리</a
+          >
+          <a class="toc-item" href="#s4"
+            ><span class="toc-num" style="background: #8b6020">4</span>type() &
+            isinstance()</a
+          >
+          <a class="toc-item" href="#s5"
+            ><span class="toc-num" style="background: #c0392b">5</span>자주
+            나오는 함정</a
+          >
+        </div>
+      </div>
+
+      <!-- ═══ 1. 슬라이싱 ═══ -->
+      <div class="section" id="s1">
+        <div class="section-title">
+          <span class="num">1</span>슬라이싱 — [start : end : step]
+        </div>
+        <div class="card blue">
+          <p>
+            <code>a[start:end:step]</code>:
+            <span class="hl">start 포함, end 미포함</span>. 모두 생략 가능하며
+            음수 사용 가능합니다. 문자열·리스트 모두 동일하게 적용됩니다.
+          </p>
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #8b3a0f">★</span>슬라이싱
+          시각화
+        </div>
+        <div class="flow-wrap">
+          <div class="slice-vis">
+            <!-- 원본 -->
+            <div
+              style="
+                font-family: &quot;JetBrains Mono&quot;, monospace;
+                font-size: 12px;
+                color: #546e7a;
+                margin-bottom: 4px;
+              "
+            >
+              a = "engineer"
+            </div>
+            <div class="sv-row">
+              <div class="sv-label" style="padding-top: 0">인덱스</div>
+              <div style="display: flex; flex-direction: column">
+                <div class="sv-idx">
+                  <div class="si-cell">0</div>
+                  <div class="si-cell">1</div>
+                  <div class="si-cell">2</div>
+                  <div class="si-cell">3</div>
+                  <div class="si-cell">4</div>
+                  <div class="si-cell">5</div>
+                  <div class="si-cell">6</div>
+                  <div class="si-cell">7</div>
+                </div>
+                <div class="sv-cells">
+                  <div class="sv-cell sc-n">e</div>
+                  <div class="sv-cell sc-n">n</div>
+                  <div class="sv-cell sc-n">g</div>
+                  <div class="sv-cell sc-n">i</div>
+                  <div class="sv-cell sc-n">n</div>
+                  <div class="sv-cell sc-n">e</div>
+                  <div class="sv-cell sc-n">e</div>
+                  <div class="sv-cell sc-n">r</div>
+                </div>
+                <div class="sv-idx">
+                  <div class="si-cell" style="color: #c0392b">-8</div>
+                  <div class="si-cell" style="color: #c0392b">-7</div>
+                  <div class="si-cell" style="color: #c0392b">-6</div>
+                  <div class="si-cell" style="color: #c0392b">-5</div>
+                  <div class="si-cell" style="color: #c0392b">-4</div>
+                  <div class="si-cell" style="color: #c0392b">-3</div>
+                  <div class="si-cell" style="color: #c0392b">-2</div>
+                  <div class="si-cell" style="color: #c0392b">-1</div>
+                </div>
+              </div>
+            </div>
+            <!-- a[:3] -->
+            <div class="sv-row">
+              <div class="sv-label">a[:3]</div>
+              <div style="display: flex; flex-direction: column">
+                <div class="sv-cells">
+                  <div class="sv-cell sc-hi">e</div>
+                  <div class="sv-cell sc-hi">n</div>
+                  <div class="sv-cell sc-hi">g</div>
+                  <div class="sv-cell sc-n">i</div>
+                  <div class="sv-cell sc-n">n</div>
+                  <div class="sv-cell sc-n">e</div>
+                  <div class="sv-cell sc-n">e</div>
+                  <div class="sv-cell sc-n">r</div>
+                </div>
+                <div class="sv-result">→ "eng" (0,1,2 — end=3 미포함)</div>
+              </div>
+            </div>
+            <!-- a[4:6] -->
+            <div class="sv-row">
+              <div class="sv-label">a[4:6]</div>
+              <div style="display: flex; flex-direction: column">
+                <div class="sv-cells">
+                  <div class="sv-cell sc-n">e</div>
+                  <div class="sv-cell sc-n">n</div>
+                  <div class="sv-cell sc-n">g</div>
+                  <div class="sv-cell sc-n">i</div>
+                  <div class="sv-cell sc-hi">n</div>
+                  <div class="sv-cell sc-hi">e</div>
+                  <div class="sv-cell sc-n">e</div>
+                  <div class="sv-cell sc-n">r</div>
+                </div>
+                <div class="sv-result">→ "ne" (4,5 — end=6 미포함)</div>
+              </div>
+            </div>
+            <!-- a[-3:] -->
+            <div class="sv-row">
+              <div class="sv-label">a[-3:]</div>
+              <div style="display: flex; flex-direction: column">
+                <div class="sv-cells">
+                  <div class="sv-cell sc-n">e</div>
+                  <div class="sv-cell sc-n">n</div>
+                  <div class="sv-cell sc-n">g</div>
+                  <div class="sv-cell sc-n">i</div>
+                  <div class="sv-cell sc-n">n</div>
+                  <div class="sv-cell sc-hi">e</div>
+                  <div class="sv-cell sc-hi">e</div>
+                  <div class="sv-cell sc-hi">r</div>
+                </div>
+                <div class="sv-result">→ "eer" (뒤에서 3개)</div>
+              </div>
+            </div>
+            <!-- a[::-1] -->
+            <div class="sv-row">
+              <div class="sv-label">a[::-1]</div>
+              <div style="display: flex; flex-direction: column">
+                <div class="sv-cells">
+                  <div class="sv-cell sc-hi">r</div>
+                  <div class="sv-cell sc-hi">e</div>
+                  <div class="sv-cell sc-hi">e</div>
+                  <div class="sv-cell sc-hi">n</div>
+                  <div class="sv-cell sc-hi">i</div>
+                  <div class="sv-cell sc-hi">g</div>
+                  <div class="sv-cell sc-hi">n</div>
+                  <div class="sv-cell sc-hi">e</div>
+                </div>
+                <div class="sv-result">→ "reenigne" (전체 역순)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #1e3a6e">규칙</span
+          >슬라이싱 핵심 규칙
+        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>패턴</th>
+              <th>의미</th>
+              <th>예시 (a="hello")</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>a[start:end]</code></td>
+              <td>start 포함, end 미포함</td>
+              <td><code>a[1:3]</code> → "el"</td>
+            </tr>
+            <tr>
+              <td><code>a[:end]</code></td>
+              <td>처음~end-1</td>
+              <td><code>a[:3]</code> → "hel"</td>
+            </tr>
+            <tr>
+              <td><code>a[start:]</code></td>
+              <td>start~끝</td>
+              <td><code>a[2:]</code> → "llo"</td>
+            </tr>
+            <tr class="hl-row">
+              <td><code>a[:]</code></td>
+              <td>전체 복사</td>
+              <td><code>a[:]</code> → "hello"</td>
+            </tr>
+            <tr>
+              <td><code>a[::2]</code></td>
+              <td>2칸씩 (짝수 인덱스)</td>
+              <td><code>a[::2]</code> → "hlo"</td>
+            </tr>
+            <tr>
+              <td><code>a[::-1]</code></td>
+              <td>역순 전체</td>
+              <td><code>a[::-1]</code> → "olleh"</td>
+            </tr>
+            <tr>
+              <td><code>a[-n:]</code></td>
+              <td>뒤에서 n개</td>
+              <td><code>a[-2:]</code> → "lo"</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="card red">
+          <p>
+            <strong>⚠ end는 항상 미포함!</strong> <code>a[2:5]</code>는 인덱스
+            2,3,4만 포함합니다. <code>5</code>는 포함되지 않습니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- ═══ 2. enumerate ═══ -->
+      <div class="section" id="s2">
+        <div class="section-title">
+          <span class="num blue">2</span>enumerate() — 인덱스 + 값 동시 순회
+        </div>
+        <div class="card blue">
+          <p>
+            <code>enumerate(iterable, start=0)</code>: 반복 시
+            <span class="hl">(인덱스, 값) 튜플을 함께</span> 반환합니다. start로
+            시작 번호를 바꿀 수 있습니다.
+          </p>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Python</span>
+          </div>
+          <pre><span class="vb">fruits</span> = [<span class="str">'apple'</span>, <span class="str">'banana'</span>, <span class="str">'cherry'</span>]
+
+<span class="cmt"># 기본 사용법</span>
+<span class="kw">for</span> i, v <span class="kw">in</span> <span class="fn">enumerate</span>(fruits):
+    <span class="fn">print</span>(i, v)
+<span class="cmt"># 0 apple
+# 1 banana
+# 2 cherry</span>
+
+<span class="cmt"># start 파라미터로 시작 번호 변경</span>
+<span class="kw">for</span> i, v <span class="kw">in</span> <span class="fn">enumerate</span>(fruits, start=<span class="nl">1</span>):
+    <span class="fn">print</span>(i, v)
+<span class="cmt"># 1 apple
+# 2 banana
+# 3 cherry</span>
+
+<span class="cmt"># dict 컴프리헨션과 결합 (시험 자주 출제)</span>
+d = {i: v <span class="kw">for</span> i, v <span class="kw">in</span> <span class="fn">enumerate</span>(fruits)}
+<span class="cmt"># {0: 'apple', 1: 'banana', 2: 'cherry'}</span>
+
+<span class="cmt"># list()로 변환하면 (index, value) 튜플 리스트</span>
+<span class="fn">list</span>(<span class="fn">enumerate</span>(fruits))
+<span class="cmt"># [(0, 'apple'), (1, 'banana'), (2, 'cherry')]</span></pre>
+        </div>
+        <div class="card red">
+          <p>
+            <strong>⚠ enumerate는 원본 순서를 그대로 유지합니다.</strong>
+            set처럼 순서가 없는 자료구조에 적용하면 인덱스와 원소 매핑이
+            실행마다 달라질 수 있습니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- ═══ 3. set 메서드 ═══ -->
+      <div class="section" id="s3">
+        <div class="section-title">
+          <span class="num green">3</span>set 메서드 총정리 ★ 시험 최빈출
+        </div>
+        <div class="card green">
+          <p>
+            set 메서드는 <strong>중복 처리 로직</strong>이 핵심입니다.
+            add/remove/update 각 메서드의 동작과 중복 시 동작을 정확히
+            암기하세요.
+          </p>
+        </div>
+
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>메서드</th>
+              <th>동작</th>
+              <th>이미 존재 시</th>
+              <th>없을 때</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>add(x)</code></td>
+              <td>원소 1개 추가</td>
+              <td>무시 (에러 없음)</td>
+              <td>추가됨</td>
+            </tr>
+            <tr class="hl-row">
+              <td><code>remove(x)</code></td>
+              <td>원소 1개 삭제</td>
+              <td>—</td>
+              <td>❌ KeyError 발생</td>
+            </tr>
+            <tr>
+              <td><code>discard(x)</code></td>
+              <td>원소 1개 안전 삭제</td>
+              <td>—</td>
+              <td>무시 (에러 없음) ✅</td>
+            </tr>
+            <tr class="hl-row">
+              <td><code>update(S)</code></td>
+              <td>집합 S 원소 전부 추가</td>
+              <td>중복 무시</td>
+              <td>새 원소 추가</td>
+            </tr>
+            <tr>
+              <td><code>pop()</code></td>
+              <td>임의 원소 제거 & 반환</td>
+              <td>—</td>
+              <td>KeyError</td>
+            </tr>
+            <tr>
+              <td><code>clear()</code></td>
+              <td>모든 원소 제거</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span
+            ><span class="lang">Python — 시험 패턴 완전 추적</span>
+          </div>
+          <pre><span class="vb">a</span> = {<span class="str">'한국'</span>, <span class="str">'중국'</span>, <span class="str">'일본'</span>}   <span class="cmt"># 초기: 3개</span>
+a.<span class="fn">add</span>(<span class="str">'베트남'</span>)                  <span class="cmt"># 추가 → 4개</span>
+a.<span class="fn">add</span>(<span class="str">'중국'</span>)                    <span class="cmt"># 이미 있음 → 무시, 4개 유지</span>
+a.<span class="fn">remove</span>(<span class="str">'일본'</span>)                 <span class="cmt"># 제거 → 3개</span>
+a.<span class="fn">update</span>({<span class="str">'홍콩'</span>, <span class="str">'한국'</span>, <span class="str">'태국'</span>}) <span class="cmt"># 홍콩·태국 추가, 한국 무시 → 5개</span>
+<span class="fn">print</span>(a)
+<span class="cmt"># {'한국', '중국', '베트남', '홍콩', '태국'} (순서 불정)</span></pre>
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #8b6020">★</span>집합 연산
+          빠른 참조
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Python</span>
+          </div>
+          <pre>a = {<span class="nl">1</span>,<span class="nl">2</span>,<span class="nl">3</span>}; b = {<span class="nl">2</span>,<span class="nl">3</span>,<span class="nl">4</span>}
+a | b     <span class="cmt"># {1,2,3,4}  합집합</span>
+a &amp; b     <span class="cmt"># {2,3}      교집합 ← intersection</span>
+a - b     <span class="cmt"># {1}        차집합 (a에만 있는 것)</span>
+a ^ b     <span class="cmt"># {1,4}      대칭 차집합 (둘 중 하나에만)</span>
+a &lt;= b    <span class="cmt"># False      부분집합 여부</span>
+<span class="nl">2</span> <span class="kw">in</span> a    <span class="cmt"># True       멤버십 검사 (set은 O(1)로 빠름)</span></pre>
+        </div>
+      </div>
+
+      <!-- ═══ 4. type() / isinstance() ═══ -->
+      <div class="section" id="s4">
+        <div class="section-title">
+          <span class="num gold">4</span>type() & isinstance() — 타입 비교
+        </div>
+        <div class="card blue">
+          <p>
+            <code>type(x)</code>는 x의 정확한 타입을 반환합니다.
+            <code>isinstance(x, T)</code>는 상속 관계까지 포함해서 확인합니다.
+          </p>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Python</span>
+          </div>
+          <pre><span class="cmt"># type() — 정확한 타입 반환</span>
+<span class="fn">type</span>(<span class="nl">42</span>)         <span class="cmt"># &lt;class 'int'&gt;</span>
+<span class="fn">type</span>(<span class="str">'hello'</span>)   <span class="cmt"># &lt;class 'str'&gt;</span>
+<span class="fn">type</span>([<span class="nl">1</span>,<span class="nl">2</span>])      <span class="cmt"># &lt;class 'list'&gt;</span>
+<span class="fn">type</span>(<span class="nl">3.14</span>)       <span class="cmt"># &lt;class 'float'&gt;</span>
+
+<span class="cmt"># type() == 비교 (시험 출제 패턴)</span>
+<span class="fn">type</span>(<span class="nl">42</span>) == <span class="fn">int</span>      <span class="cmt"># True</span>
+<span class="fn">type</span>(<span class="nl">42</span>) == <span class="fn">float</span>    <span class="cmt"># False</span>
+<span class="fn">type</span>(<span class="nl">42</span>) == <span class="fn">str</span>      <span class="cmt"># False</span>
+
+<span class="cmt"># isinstance() — 상속 포함 확인</span>
+<span class="fn">isinstance</span>(<span class="nl">42</span>, <span class="fn">int</span>)      <span class="cmt"># True</span>
+<span class="fn">isinstance</span>(<span class="nl">42</span>, (<span class="fn">int</span>, <span class="fn">float</span>))  <span class="cmt"># True (여러 타입 중 하나)</span>
+
+<span class="cmt"># 분기 처리 패턴 (시험 자주 출제)</span>
+<span class="vb">items</span> = [<span class="nl">1</span>, <span class="str">'a'</span>, <span class="nl">2.5</span>, <span class="str">'b'</span>, <span class="nl">3</span>]
+<span class="kw">for</span> v <span class="kw">in</span> items:
+    <span class="kw">if</span> <span class="fn">type</span>(v) == <span class="fn">int</span>:
+        <span class="fn">print</span>(<span class="str">'int:'</span>, v)
+    <span class="kw">elif</span> <span class="fn">type</span>(v) == <span class="fn">str</span>:
+        <span class="fn">print</span>(<span class="str">'str:'</span>, v)</pre>
+        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>값</th>
+              <th>type()</th>
+              <th>isinstance(v, int)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>42</code></td>
+              <td>int</td>
+              <td>True</td>
+            </tr>
+            <tr>
+              <td><code>3.14</code></td>
+              <td>float</td>
+              <td>False</td>
+            </tr>
+            <tr>
+              <td><code>True</code></td>
+              <td>bool</td>
+              <td>True (bool은 int의 서브클래스!)</td>
+            </tr>
+            <tr class="hl-row">
+              <td><code>'hello'</code></td>
+              <td>str</td>
+              <td>False</td>
+            </tr>
+            <tr>
+              <td><code>[1,2]</code></td>
+              <td>list</td>
+              <td>False</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="card red">
+          <p>
+            <strong>⚠ bool은 int의 서브클래스!</strong>
+            <code>isinstance(True, int)</code>는
+            <span class="hl">True</span>입니다. 하지만
+            <code>type(True) == int</code>는 False입니다. 시험에서 자주
+            혼동됩니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- ═══ 5. 함정 ═══ -->
+      <div class="section" id="s5">
+        <div class="section-title">
+          <span class="num" style="background: #c0392b">5</span>자주 나오는 함정
+          포인트
+        </div>
+        <div class="card gold">
+          <ul class="point-list">
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                >슬라이싱: <span class="hl">end는 항상 미포함</span>.
+                <code>a[2:5]</code> → 인덱스 2,3,4만 선택</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                >슬라이싱 범위 초과: <code>a[100:]</code>처럼 범위 벗어나도 에러
+                없음, 빈 문자열/리스트 반환</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                ><code>set.remove()</code> → 없으면 KeyError /
+                <code>set.discard()</code> → 없어도 안전</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                ><code>set.update({'a','b','c'})</code>의 중복 원소는 자동
+                무시됨</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                ><code>enumerate</code> 기본 시작값은 0. <code>start=1</code>로
+                바꾸면 1부터 시작</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                >set은 출력 순서가 매 실행마다 다를 수 있음 —
+                <strong>원소 자체는 동일</strong></span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                ><code>type(True) == bool</code> → True /
+                <code>isinstance(True, int)</code> → True (bool은 int
+                서브클래스)</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

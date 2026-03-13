@@ -127,8 +127,14 @@ const PROBLEMS = [
  */
 const LEARNING = [
   // ── C언어 ──
+  { file: "learning_01_J.html", lang: "J", num: 1, title: "Java OOP 기본 개념 완전 정리" },
+  { file: "learning_02_J.html", lang: "J", num: 2, title: "JAVA 출제 문제 심화 학습 정리" },
+
   { file: "learning_01_C.html", lang: "C", num: 1, title: "포인터(Pointer) 핵심 개념 완전 정리" },
-  { file: "learning_02_C.html", lang: "C", num: 2, title: "언어 출제 테마별 심화 학습 정리" },
+  { file: "learning_02_C.html", lang: "C", num: 2, title: "C언어 출제 문제 심화 학습 정리" },
+
+  { file: "learning_01_P.html", lang: "P", num: 1, title: "Python 기본 자료구조 완전 정리" },
+  { file: "learning_02_P.html", lang: "P", num: 2, title: "Python 출제 문제 심화 학습 정리" },
 
   // ── Java (추후 추가) ──
   // { file: "learning_01_J.html", lang: "J", num: 1, title: "..." },

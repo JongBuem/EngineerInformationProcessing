@@ -1,0 +1,1070 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Java OOP 기본 개념 정리</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 52px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .toc {
+        padding-left: 48px;
+        margin-bottom: 52px;
+      }
+      .toc-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.15em;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+      }
+      .toc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 8px;
+      }
+      .toc-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        text-decoration: none;
+        color: var(--ink);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+      }
+      .toc-item:hover {
+        background: rgba(240, 192, 96, 0.18);
+        border-color: var(--highlight);
+      }
+      .toc-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: bold;
+        flex-shrink: 0;
+        color: var(--paper);
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.08em;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .section-title .num {
+        width: 28px;
+        height: 28px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .section-title .num.green {
+        background: var(--accent2);
+      }
+      .section-title .num.blue {
+        background: var(--accent3);
+      }
+      .section-title .num.gold {
+        background: #8b6020;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 18px 22px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+        margin-bottom: 14px;
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.gold {
+        border-left-color: var(--highlight);
+        background: rgba(240, 192, 96, 0.06);
+      }
+      .card.red {
+        border-left-color: #c0392b;
+        background: rgba(192, 57, 43, 0.05);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2.1;
+        color: #2a1f10;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin: 22px 0 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sub-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: bold;
+        flex-shrink: 0;
+        color: white;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 14px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+        letter-spacing: 0.1em;
+      }
+      pre {
+        padding: 18px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+        tab-size: 4;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+      .op {
+        color: #89ddff;
+      }
+      code {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        background: rgba(26, 18, 8, 0.08);
+        border: 1px solid var(--aged);
+        border-radius: 3px;
+        padding: 1px 6px;
+        color: var(--accent);
+      }
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        margin: 14px 0;
+      }
+      .info-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 16px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .info-table td {
+        padding: 9px 16px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .info-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .info-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.15);
+        font-weight: 700;
+      }
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin: 14px 0;
+      }
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+      .b-pub {
+        background: rgba(45, 90, 61, 0.3);
+        color: #c3e88d;
+        border: 1px solid #2d5a3d;
+      }
+      .b-pri {
+        background: rgba(139, 58, 15, 0.3);
+        color: #f78c6c;
+        border: 1px solid #8b3a0f;
+      }
+      .b-pro {
+        background: rgba(30, 58, 110, 0.3);
+        color: #82aaff;
+        border: 1px solid #1e3a6e;
+      }
+      .b-def {
+        background: rgba(240, 192, 96, 0.2);
+        color: #f0c060;
+        border: 1px solid #8b6020;
+      }
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin: 14px 0;
+      }
+      @media (max-width: 600px) {
+        .two-col {
+          grid-template-columns: 1fr;
+        }
+      }
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Java Learning Note — 03</div>
+        <h1>Java OOP 기본 개념 완전 정리</h1>
+        <div class="meta">
+          Java · Class · 상속 · 접근 제어자 · 오버라이딩 · 오버로딩 · abstract ·
+          interface
+        </div>
+      </div>
+
+      <!-- TOC -->
+      <div class="toc">
+        <div class="toc-title">목차</div>
+        <div class="toc-grid">
+          <a class="toc-item" href="#s1"
+            ><span class="toc-num" style="background: #8b3a0f">1</span>클래스
+            구조</a
+          >
+          <a class="toc-item" href="#s2"
+            ><span class="toc-num" style="background: #1e3a6e">2</span>접근
+            제어자</a
+          >
+          <a class="toc-item" href="#s3"
+            ><span class="toc-num" style="background: #2d5a3d">3</span>상속 &
+            extends</a
+          >
+          <a class="toc-item" href="#s4"
+            ><span class="toc-num" style="background: #8b6020">4</span
+            >오버라이딩 vs 오버로딩</a
+          >
+          <a class="toc-item" href="#s5"
+            ><span class="toc-num" style="background: #5a3a8b">5</span>abstract
+            & interface</a
+          >
+          <a class="toc-item" href="#s6"
+            ><span class="toc-num" style="background: #2d5a3d">6</span>핵심
+            요약</a
+          >
+        </div>
+      </div>
+
+      <!-- ═══ 1. 클래스 구조 ═══ -->
+      <div class="section" id="s1">
+        <div class="section-title">
+          <span class="num">1</span>클래스 구조 — 필드 · 생성자 · 메서드
+        </div>
+        <div class="card blue">
+          <p>
+            Java 클래스는 <strong>필드(Field)</strong>,
+            <strong>생성자(Constructor)</strong>,
+            <strong>메서드(Method)</strong>로 구성됩니다. 각 역할을 명확히
+            구분하는 것이 OOP의 출발점입니다.
+          </p>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span
+            ><span class="lang">Java — 클래스 기본 구조</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Person</span> {
+    <span class="cmt">// ① 필드 (멤버 변수)</span>
+    <span class="kw">String</span> name;
+    <span class="kw">int</span>    age;
+
+    <span class="cmt">// ② 생성자 — 클래스 이름과 동일, 반환 타입 없음</span>
+    <span class="cls">Person</span>(<span class="kw">String</span> name, <span class="kw">int</span> age) {
+        <span class="kw">this</span>.name = name;   <span class="cmt">// this = 현재 인스턴스</span>
+        <span class="kw">this</span>.age  = age;
+    }
+
+    <span class="cmt">// ③ 메서드</span>
+    <span class="kw">void</span> <span class="fn">greet</span>() {
+        <span class="cls">System</span>.out.<span class="fn">println</span>(<span class="str">"Hi, I'm "</span> + name);
+    }
+}
+
+<span class="cmt">// 사용</span>
+<span class="cls">Person</span> p = <span class="kw">new</span> <span class="cls">Person</span>(<span class="str">"Alice"</span>, <span class="nl">20</span>);
+p.<span class="fn">greet</span>();  <span class="cmt">// Hi, I'm Alice</span></pre>
+        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>구성 요소</th>
+              <th>특징</th>
+              <th>this 활용</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>필드 (Field)</td>
+              <td>클래스 내 변수. 인스턴스마다 별도 저장</td>
+              <td><code>this.name</code> — 같은 이름 매개변수와 구분</td>
+            </tr>
+            <tr class="hl-row">
+              <td>생성자 (Constructor)</td>
+              <td>클래스 이름 = 메서드명, 반환 타입 없음</td>
+              <td><code>this()</code> — 다른 생성자 호출 (체이닝)</td>
+            </tr>
+            <tr>
+              <td>메서드 (Method)</td>
+              <td>기능 정의, 반환 타입 명시 필수</td>
+              <td><code>this.method()</code> — 현재 인스턴스 메서드 호출</td>
+            </tr>
+            <tr>
+              <td>static 멤버</td>
+              <td>인스턴스 없이 클래스로 직접 접근</td>
+              <td>static 내부에서 <code>this</code> 사용 불가 ❌</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ═══ 2. 접근 제어자 ═══ -->
+      <div class="section" id="s2">
+        <div class="section-title">
+          <span class="num blue">2</span>접근 제어자 — public · private ·
+          protected · default
+        </div>
+        <div class="card blue">
+          <p>
+            접근 제어자는 <strong>어디서 해당 멤버에 접근할 수 있는지</strong>를
+            결정합니다. 시험에서는 상속 관계에서 어느 제어자가 자식에게
+            보이는지가 자주 출제됩니다.
+          </p>
+        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>제어자</th>
+              <th>같은 클래스</th>
+              <th>같은 패키지</th>
+              <th>자식 클래스</th>
+              <th>외부</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="b-pub">public</span></td>
+              <td>✅</td>
+              <td>✅</td>
+              <td>✅</td>
+              <td>✅</td>
+            </tr>
+            <tr class="hl-row">
+              <td><span class="b-pro">protected</span></td>
+              <td>✅</td>
+              <td>✅</td>
+              <td>✅</td>
+              <td>❌</td>
+            </tr>
+            <tr>
+              <td><span class="b-def">default (없음)</span></td>
+              <td>✅</td>
+              <td>✅</td>
+              <td>❌</td>
+              <td>❌</td>
+            </tr>
+            <tr>
+              <td><span class="b-pri">private</span></td>
+              <td>✅</td>
+              <td>❌</td>
+              <td>❌</td>
+              <td>❌</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Animal</span> {
+    <span class="kw">public</span>    <span class="kw">String</span> name;     <span class="cmt">// 어디서나 접근 가능</span>
+    <span class="kw">protected</span> <span class="kw">int</span>    age;      <span class="cmt">// 자식까지 접근 가능</span>
+    <span class="kw">private</span>   <span class="kw">double</span> weight;   <span class="cmt">// 이 클래스 안에서만</span>
+    <span class="kw">String</span> type;               <span class="cmt">// default — 같은 패키지만</span>
+}
+
+<span class="kw">class</span> <span class="cls">Dog</span> <span class="kw">extends</span> <span class="cls">Animal</span> {
+    <span class="kw">void</span> <span class="fn">show</span>() {
+        name   = <span class="str">"Rex"</span>;   <span class="cmt">// ✅ public</span>
+        age    = <span class="nl">3</span>;       <span class="cmt">// ✅ protected</span>
+        <span class="cmt">// weight = 5.0;  ❌ private — 접근 불가</span>
+    }
+}</pre>
+        </div>
+      </div>
+
+      <!-- ═══ 3. 상속 ═══ -->
+      <div class="section" id="s3">
+        <div class="section-title">
+          <span class="num green">3</span>상속 — extends & super
+        </div>
+        <div class="card green">
+          <p>
+            상속(Inheritance)은 부모 클래스의 필드·메서드를 자식 클래스가
+            물려받는 것입니다. Java는 <strong>단일 상속</strong>만
+            지원하며(<code>extends</code>는 하나만), <code>super</code>로 부모에
+            접근합니다.
+          </p>
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #2d5a3d">A</span>super
+          키워드 사용법
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Animal</span> {
+    <span class="kw">String</span> sound = <span class="str">"..."</span>;
+    <span class="cls">Animal</span>(<span class="kw">String</span> s) { sound = s; }
+    <span class="kw">void</span> <span class="fn">speak</span>() { <span class="cls">System</span>.out.<span class="fn">println</span>(sound); }
+}
+
+<span class="kw">class</span> <span class="cls">Dog</span> <span class="kw">extends</span> <span class="cls">Animal</span> {
+    <span class="cls">Dog</span>() {
+        <span class="kw">super</span>(<span class="str">"Woof"</span>);  <span class="cmt">// ① 부모 생성자 호출 — 반드시 첫 줄</span>
+    }
+    <span class="kw">void</span> <span class="fn">speak</span>() {
+        <span class="kw">super</span>.<span class="fn">speak</span>();    <span class="cmt">// ② 부모 메서드 호출</span>
+        <span class="cls">System</span>.out.<span class="fn">println</span>(<span class="str">"I'm a dog"</span>);
+    }
+    <span class="kw">void</span> <span class="fn">showSound</span>() {
+        <span class="cls">System</span>.out.<span class="fn">println</span>(<span class="kw">super</span>.sound); <span class="cmt">// ③ 부모 필드 접근</span>
+    }
+}</pre>
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #1e3a6e">B</span>생성자
+          호출 규칙 ★ 시험 핵심
+        </div>
+        <div class="card red">
+          <ul class="point-list">
+            <li>
+              <span class="icon">🔴</span
+              ><span
+                >자식 생성자에 <code>super()</code>나 <code>this()</code>가
+                없으면 컴파일러가
+                <span class="hl">super() 를 자동 삽입</span>합니다.</span
+              >
+            </li>
+            <li>
+              <span class="icon">🔴</span
+              ><span
+                ><code>super()</code>와 <code>this()</code>는 반드시
+                <strong>생성자의 첫 줄</strong>에 와야 하며, 동시에 사용
+                불가합니다.</span
+              >
+            </li>
+            <li>
+              <span class="icon">🔴</span
+              ><span
+                >즉, new Child() 호출 시 항상
+                <span class="hl">Parent 생성자가 먼저 완료</span>된 후 Child
+                생성자 본문이 실행됩니다.</span
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- 생성자 실행 순서 다이어그램 -->
+        <div class="flow-wrap">
+          <svg
+            width="680"
+            height="140"
+            viewBox="0 0 680 140"
+            font-family="JetBrains Mono,monospace"
+          >
+            <rect
+              x="10"
+              y="10"
+              width="180"
+              height="120"
+              rx="6"
+              fill="#0e1218"
+              stroke="#1e3a6e"
+              stroke-width="2"
+            />
+            <text
+              x="100"
+              y="32"
+              text-anchor="middle"
+              fill="#82aaff"
+              font-size="12"
+              font-weight="bold"
+            >
+              new Child()
+            </text>
+            <text
+              x="100"
+              y="52"
+              text-anchor="middle"
+              fill="#8a7a60"
+              font-size="11"
+            >
+              Child() 진입
+            </text>
+            <text
+              x="100"
+              y="72"
+              text-anchor="middle"
+              fill="#f78c6c"
+              font-size="11"
+            >
+              super() 자동 삽입
+            </text>
+            <text
+              x="100"
+              y="95"
+              text-anchor="middle"
+              fill="#c3e88d"
+              font-size="10"
+            >
+              …Child 본문은 나중…
+            </text>
+
+            <polygon points="195,70 215,62 215,78" fill="#82aaff" />
+            <line
+              x1="190"
+              y1="70"
+              x2="215"
+              y2="70"
+              stroke="#82aaff"
+              stroke-width="2"
+            />
+
+            <rect
+              x="215"
+              y="10"
+              width="210"
+              height="120"
+              rx="6"
+              fill="#0e1218"
+              stroke="#8b3a0f"
+              stroke-width="2"
+            />
+            <text
+              x="320"
+              y="32"
+              text-anchor="middle"
+              fill="#f78c6c"
+              font-size="12"
+              font-weight="bold"
+            >
+              Parent() 실행
+            </text>
+            <text
+              x="320"
+              y="52"
+              text-anchor="middle"
+              fill="#8a7a60"
+              font-size="11"
+            >
+              Parent 필드 초기화
+            </text>
+            <text
+              x="320"
+              y="72"
+              text-anchor="middle"
+              fill="#8a7a60"
+              font-size="11"
+            >
+              Parent 본문 완료
+            </text>
+            <text
+              x="320"
+              y="92"
+              text-anchor="middle"
+              fill="#f0c060"
+              font-size="10"
+            >
+              반환 ↩
+            </text>
+
+            <polygon points="430,70 450,62 450,78" fill="#c3e88d" />
+            <line
+              x1="425"
+              y1="70"
+              x2="450"
+              y2="70"
+              stroke="#c3e88d"
+              stroke-width="2"
+            />
+
+            <rect
+              x="450"
+              y="10"
+              width="210"
+              height="120"
+              rx="6"
+              fill="#0d1a0e"
+              stroke="#2d5a3d"
+              stroke-width="2"
+            />
+            <text
+              x="555"
+              y="32"
+              text-anchor="middle"
+              fill="#c3e88d"
+              font-size="12"
+              font-weight="bold"
+            >
+              Child() 본문 실행
+            </text>
+            <text
+              x="555"
+              y="52"
+              text-anchor="middle"
+              fill="#8a7a60"
+              font-size="11"
+            >
+              Child 필드 초기화
+            </text>
+            <text
+              x="555"
+              y="72"
+              text-anchor="middle"
+              fill="#8a7a60"
+              font-size="11"
+            >
+              Child 본문 완료
+            </text>
+            <text
+              x="555"
+              y="92"
+              text-anchor="middle"
+              fill="#f0c060"
+              font-size="10"
+            >
+              객체 생성 완료 ✓
+            </text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- ═══ 4. 오버라이딩 vs 오버로딩 ═══ -->
+      <div class="section" id="s4">
+        <div class="section-title">
+          <span class="num gold">4</span>오버라이딩 vs 오버로딩 ★ 시험 최빈출
+        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>구분</th>
+              <th>오버라이딩 (Overriding)</th>
+              <th>오버로딩 (Overloading)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>정의</td>
+              <td>부모 메서드를 자식이 <strong>재정의</strong></td>
+              <td>같은 이름 메서드를 <strong>매개변수 다르게</strong> 정의</td>
+            </tr>
+            <tr class="hl-row">
+              <td>조건</td>
+              <td>시그니처(이름+매개변수) 동일해야 함</td>
+              <td>매개변수 타입/개수가 달라야 함</td>
+            </tr>
+            <tr>
+              <td>반환 타입</td>
+              <td>동일 (또는 공변 반환 타입)</td>
+              <td>달라도 되지만 반환만 다르면 오버로딩 안 됨</td>
+            </tr>
+            <tr>
+              <td>어노테이션</td>
+              <td><code>@Override</code> 권장</td>
+              <td>별도 어노테이션 없음</td>
+            </tr>
+            <tr>
+              <td>결정 시점</td>
+              <td>런타임 (동적 디스패치)</td>
+              <td>컴파일 타임 (정적 결정)</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span
+            ><span class="lang">Java — 두 개념 비교</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Base</span> {
+    <span class="kw">void</span> <span class="fn">show</span>()           { <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="str">"Base"</span>); }
+    <span class="kw">void</span> <span class="fn">show</span>(<span class="kw">int</span> n)       { <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="str">"Base+"</span>+n); } <span class="cmt">// 오버로딩</span>
+}
+
+<span class="kw">class</span> <span class="cls">Child</span> <span class="kw">extends</span> <span class="cls">Base</span> {
+    <span class="op">@Override</span>
+    <span class="kw">void</span> <span class="fn">show</span>() { <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="str">"Child"</span>); }  <span class="cmt">// 오버라이딩</span>
+}
+
+<span class="cls">Base</span> obj = <span class="kw">new</span> <span class="cls">Child</span>();
+obj.<span class="fn">show</span>();     <span class="cmt">// → "Child"  (런타임에 Child 버전 실행)</span>
+obj.<span class="fn">show</span>(<span class="nl">5</span>);   <span class="cmt">// → "Base+5" (Base 오버로딩 버전)</span></pre>
+        </div>
+        <div class="card red">
+          <p>
+            <strong>⚠ 함정:</strong> 참조 타입이 Base여도
+            <span class="hl"
+              >오버라이딩된 메서드는 실제 객체(Child) 버전이 호출</span
+            >됩니다. 오버로딩된 메서드는
+            <strong>컴파일 타임 참조 타입</strong> 기준으로 결정됩니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- ═══ 5. abstract & interface ═══ -->
+      <div class="section" id="s5">
+        <div class="section-title">
+          <span class="num" style="background: #5a3a8b">5</span>abstract 클래스
+          & interface
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #5a3a8b">A</span>abstract
+          클래스
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">abstract class</span> <span class="cls">Shape</span> {
+    <span class="kw">String</span> color = <span class="str">"red"</span>;          <span class="cmt">// 일반 필드 OK</span>
+    <span class="kw">abstract double</span> <span class="fn">area</span>();        <span class="cmt">// 추상 메서드 — 구현 없음</span>
+    <span class="kw">void</span> <span class="fn">printColor</span>() {            <span class="cmt">// 일반 메서드 OK</span>
+        <span class="cls">System</span>.out.<span class="fn">println</span>(color);
+    }
+}
+
+<span class="kw">class</span> <span class="cls">Circle</span> <span class="kw">extends</span> <span class="cls">Shape</span> {
+    <span class="kw">double</span> r;
+    <span class="cls">Circle</span>(<span class="kw">double</span> r) { <span class="kw">this</span>.r = r; }
+    <span class="op">@Override</span>
+    <span class="kw">double</span> <span class="fn">area</span>() { <span class="kw">return</span> <span class="nl">3.14</span> * r * r; } <span class="cmt">// 반드시 구현</span>
+}</pre>
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #2d5a3d">B</span>interface
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">interface</span> <span class="cls">Flyable</span> {
+    <span class="kw">void</span> <span class="fn">fly</span>();                     <span class="cmt">// 기본 public abstract</span>
+    <span class="kw">default void</span> <span class="fn">land</span>() {          <span class="cmt">// Java 8+ default 메서드</span>
+        <span class="cls">System</span>.out.<span class="fn">println</span>(<span class="str">"landing"</span>);
+    }
+}
+
+<span class="kw">class</span> <span class="cls">Bird</span> <span class="kw">implements</span> <span class="cls">Flyable</span> {  <span class="cmt">// ← implements 키워드</span>
+    <span class="kw">public void</span> <span class="fn">fly</span>() { <span class="cls">System</span>.out.<span class="fn">println</span>(<span class="str">"flap!"</span>); }
+}</pre>
+        </div>
+
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>구분</th>
+              <th>abstract class</th>
+              <th>interface</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>키워드</td>
+              <td><code>extends</code></td>
+              <td><code>implements</code></td>
+            </tr>
+            <tr class="hl-row">
+              <td>다중 사용</td>
+              <td>❌ 단일만</td>
+              <td>✅ 여러 개 가능</td>
+            </tr>
+            <tr>
+              <td>필드</td>
+              <td>일반 필드 가능</td>
+              <td>상수만 (public static final)</td>
+            </tr>
+            <tr>
+              <td>생성자</td>
+              <td>가능 (직접 인스턴스화 불가)</td>
+              <td>없음</td>
+            </tr>
+            <tr>
+              <td>메서드</td>
+              <td>abstract + 일반 혼용</td>
+              <td>기본 abstract (default/static 추가 가능)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ═══ 6. 핵심 요약 ═══ -->
+      <div class="section" id="s6">
+        <div class="section-title">
+          <span class="num green">6</span>시험 핵심 요약
+        </div>
+        <div class="card gold">
+          <ul class="point-list">
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                ><code>this</code> = 현재 인스턴스 참조 / <code>this()</code> =
+                같은 클래스의 다른 생성자 호출</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                ><code>super</code> = 부모 참조 / <code>super()</code> = 부모
+                생성자 호출 — 자식 생성자 첫 줄</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                >오버라이딩 → 런타임 결정 (실제 타입 기준) / 오버로딩 → 컴파일
+                결정 (참조 타입 기준)</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                >abstract 클래스 → <code>extends</code> / interface →
+                <code>implements</code></span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                >static 메서드 안에서는 <code>this</code>, 인스턴스 필드 접근
+                모두 <strong>불가</strong></span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

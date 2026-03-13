@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python 기본 자료구조 완전 정리</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 52px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.3;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .toc {
+        padding-left: 48px;
+        margin-bottom: 52px;
+      }
+      .toc-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.15em;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+      }
+      .toc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 8px;
+      }
+      .toc-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        text-decoration: none;
+        color: var(--ink);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+      }
+      .toc-item:hover {
+        background: rgba(240, 192, 96, 0.18);
+        border-color: var(--highlight);
+      }
+      .toc-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: bold;
+        flex-shrink: 0;
+        color: var(--paper);
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.08em;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .section-title .num {
+        width: 28px;
+        height: 28px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .section-title .num.green {
+        background: var(--accent2);
+      }
+      .section-title .num.blue {
+        background: var(--accent3);
+      }
+      .section-title .num.gold {
+        background: #8b6020;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 18px 22px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+        margin-bottom: 14px;
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.gold {
+        border-left-color: var(--highlight);
+        background: rgba(240, 192, 96, 0.06);
+      }
+      .card.red {
+        border-left-color: #c0392b;
+        background: rgba(192, 57, 43, 0.05);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2.1;
+        color: #2a1f10;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin: 22px 0 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sub-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: bold;
+        flex-shrink: 0;
+        color: white;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 14px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+      }
+      pre {
+        padding: 18px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .vb {
+        color: #ffcb6b;
+      }
+      code {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        background: rgba(26, 18, 8, 0.08);
+        border: 1px solid var(--aged);
+        border-radius: 3px;
+        padding: 1px 6px;
+        color: var(--accent);
+      }
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        margin: 14px 0;
+      }
+      .info-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 16px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .info-table td {
+        padding: 9px 16px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.7;
+      }
+      .info-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .info-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.15);
+        font-weight: 700;
+      }
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin: 14px 0;
+      }
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      /* 자료구조 비교 카드 */
+      .ds-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin: 14px 0;
+      }
+      .ds-card {
+        border-radius: 8px;
+        padding: 16px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .ds-list {
+        background: #0e1218;
+        border: 2px solid #8b3a0f;
+      }
+      .ds-tuple {
+        background: #0e1218;
+        border: 2px solid #1e3a6e;
+      }
+      .ds-dict {
+        background: #0e1218;
+        border: 2px solid #2d5a3d;
+      }
+      .ds-set {
+        background: #0e1218;
+        border: 2px solid #8b6020;
+      }
+      .ds-title {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .ds-prop {
+        font-size: 11px;
+        color: #546e7a;
+        line-height: 2;
+      }
+      .ds-prop span {
+        font-weight: bold;
+      }
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Python Learning Note — 05</div>
+        <h1>Python 기본 자료구조 완전 정리</h1>
+        <div class="meta">
+          Python · list · tuple · dict · set · 인덱싱 · 기본 메서드
+        </div>
+      </div>
+
+      <!-- TOC -->
+      <div class="toc">
+        <div class="toc-title">목차</div>
+        <div class="toc-grid">
+          <a class="toc-item" href="#s1"
+            ><span class="toc-num" style="background: #8b3a0f">1</span>자료구조
+            한눈에 비교</a
+          >
+          <a class="toc-item" href="#s2"
+            ><span class="toc-num" style="background: #1e3a6e">2</span>list
+            (리스트)</a
+          >
+          <a class="toc-item" href="#s3"
+            ><span class="toc-num" style="background: #2d5a3d">3</span>dict
+            (딕셔너리)</a
+          >
+          <a class="toc-item" href="#s4"
+            ><span class="toc-num" style="background: #8b6020">4</span>set
+            (집합)</a
+          >
+          <a class="toc-item" href="#s5"
+            ><span class="toc-num" style="background: #5a3a8b">5</span>tuple
+            (튜플)</a
+          >
+          <a class="toc-item" href="#s6"
+            ><span class="toc-num" style="background: #2d5a3d">6</span>핵심
+            요약</a
+          >
+        </div>
+      </div>
+
+      <!-- ═══ 1. 비교 ═══ -->
+      <div class="section" id="s1">
+        <div class="section-title">
+          <span class="num">1</span>자료구조 한눈에 비교
+        </div>
+        <div class="ds-grid">
+          <div class="ds-card ds-list">
+            <div class="ds-title" style="color: #f78c6c">[ ] list</div>
+            <div class="ds-prop">
+              <span style="color: #c3e88d">순서:</span> 있음 ✅<br /><span
+                style="color: #c3e88d"
+                >중복:</span
+              >
+              가능 ✅<br /><span style="color: #c3e88d">수정:</span> 가능 ✅<br /><span
+                style="color: #c3e88d"
+                >대표:</span
+              >
+              append, remove
+            </div>
+          </div>
+          <div class="ds-card ds-tuple">
+            <div class="ds-title" style="color: #82aaff">( ) tuple</div>
+            <div class="ds-prop">
+              <span style="color: #c3e88d">순서:</span> 있음 ✅<br /><span
+                style="color: #c3e88d"
+                >중복:</span
+              >
+              가능 ✅<br /><span style="color: #f78c6c">수정:</span> 불가 ❌<br /><span
+                style="color: #c3e88d"
+                >대표:</span
+              >
+              count, index
+            </div>
+          </div>
+          <div class="ds-card ds-dict">
+            <div class="ds-title" style="color: #c3e88d">{ k:v } dict</div>
+            <div class="ds-prop">
+              <span style="color: #c3e88d">순서:</span> 삽입순 유지<br /><span
+                style="color: #f78c6c"
+                >키 중복:</span
+              >
+              불가 ❌<br /><span style="color: #c3e88d">수정:</span> 가능 ✅<br /><span
+                style="color: #c3e88d"
+                >대표:</span
+              >
+              keys, values, get
+            </div>
+          </div>
+          <div class="ds-card ds-set">
+            <div class="ds-title" style="color: #f0c060">{ } set</div>
+            <div class="ds-prop">
+              <span style="color: #f78c6c">순서:</span> 없음 ❌<br /><span
+                style="color: #f78c6c"
+                >중복:</span
+              >
+              불가 ❌<br /><span style="color: #c3e88d">수정:</span> 가능 ✅<br /><span
+                style="color: #c3e88d"
+                >대표:</span
+              >
+              add, remove, update
+            </div>
+          </div>
+        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>자료구조</th>
+              <th>생성 예시</th>
+              <th>인덱싱</th>
+              <th>불변 여부</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>list</code></td>
+              <td><code>[1, 2, 3]</code></td>
+              <td>✅ <code>a[0]</code></td>
+              <td>가변 (mutable)</td>
+            </tr>
+            <tr>
+              <td><code>tuple</code></td>
+              <td><code>(1, 2, 3)</code></td>
+              <td>✅ <code>a[0]</code></td>
+              <td>불변 (immutable)</td>
+            </tr>
+            <tr class="hl-row">
+              <td><code>dict</code></td>
+              <td><code>{'a':1}</code></td>
+              <td>✅ <code>d['a']</code></td>
+              <td>가변 (키 불변)</td>
+            </tr>
+            <tr>
+              <td><code>set</code></td>
+              <td><code>{1, 2, 3}</code></td>
+              <td>❌ 인덱싱 불가</td>
+              <td>가변 (원소 불변)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ═══ 2. list ═══ -->
+      <div class="section" id="s2">
+        <div class="section-title">
+          <span class="num blue">2</span>list — 순서 있는 가변 컬렉션
+        </div>
+        <div class="card blue">
+          <p>
+            가장 많이 사용하는 자료구조.
+            <strong>순서 있고, 중복 허용, 수정 가능</strong>합니다. 인덱스는
+            0부터, 음수 인덱스로 뒤에서 접근 가능합니다.
+          </p>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Python</span>
+          </div>
+          <pre><span class="vb">a</span> = [<span class="nl">10</span>, <span class="nl">20</span>, <span class="nl">30</span>, <span class="nl">40</span>, <span class="nl">50</span>]
+
+<span class="cmt"># 인덱싱</span>
+a[<span class="nl">0</span>]    <span class="cmt"># 10  (앞에서 첫 번째)</span>
+a[-<span class="nl">1</span>]   <span class="cmt"># 50  (뒤에서 첫 번째)</span>
+a[-<span class="nl">2</span>]   <span class="cmt"># 40  (뒤에서 두 번째)</span>
+
+<span class="cmt"># 주요 메서드</span>
+a.<span class="fn">append</span>(<span class="nl">60</span>)      <span class="cmt"># 맨 뒤에 추가 → [10,20,30,40,50,60]</span>
+a.<span class="fn">insert</span>(<span class="nl">1</span>, <span class="nl">99</span>)   <span class="cmt"># 인덱스 1에 삽입 → [10,99,20,30,40,50]</span>
+a.<span class="fn">remove</span>(<span class="nl">30</span>)      <span class="cmt"># 값 30 제거 (처음 발견된 것)</span>
+a.<span class="fn">pop</span>()           <span class="cmt"># 맨 뒤 제거 & 반환</span>
+a.<span class="fn">pop</span>(<span class="nl">0</span>)          <span class="cmt"># 인덱스 0 제거 & 반환</span>
+a.<span class="fn">reverse</span>()       <span class="cmt"># 제자리 역순 (반환값 None)</span>
+a.<span class="fn">sort</span>()           <span class="cmt"># 제자리 정렬 (반환값 None)</span>
+<span class="fn">len</span>(a)             <span class="cmt"># 길이</span>
+<span class="nl">30</span> <span class="kw">in</span> a             <span class="cmt"># True/False</span></pre>
+        </div>
+        <div class="card red">
+          <p>
+            <strong>⚠ 함정:</strong> <code>a.reverse()</code>,
+            <code>a.sort()</code>는
+            <span class="hl">제자리 변경이며 반환값은 None</span>입니다.
+            <code>b = a.reverse()</code> 하면 b = None!
+          </p>
+        </div>
+      </div>
+
+      <!-- ═══ 3. dict ═══ -->
+      <div class="section" id="s3">
+        <div class="section-title">
+          <span class="num green">3</span>dict — 키-값 쌍 자료구조
+        </div>
+        <div class="card green">
+          <p>
+            키(key)와 값(value)의 쌍으로 데이터를 저장합니다.
+            <strong>키는 중복 불가</strong>, 같은 키에 새 값을 대입하면
+            덮어씁니다.
+          </p>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Python</span>
+          </div>
+          <pre><span class="vb">d</span> = {<span class="str">'name'</span>: <span class="str">'Alice'</span>, <span class="str">'age'</span>: <span class="nl">20</span>, <span class="str">'score'</span>: <span class="nl">95</span>}
+
+<span class="cmt"># 접근</span>
+d[<span class="str">'name'</span>]          <span class="cmt"># 'Alice'</span>
+d.<span class="fn">get</span>(<span class="str">'age'</span>)       <span class="cmt"># 20  (없으면 None, 에러 없음)</span>
+d.<span class="fn">get</span>(<span class="str">'x'</span>, <span class="nl">0</span>)      <span class="cmt"># 0   (기본값 지정)</span>
+
+<span class="cmt"># 추가/수정/삭제</span>
+d[<span class="str">'grade'</span>] = <span class="str">'A'</span>    <span class="cmt"># 추가</span>
+d[<span class="str">'age'</span>] = <span class="nl">21</span>       <span class="cmt"># 수정 (덮어쓰기)</span>
+<span class="kw">del</span> d[<span class="str">'score'</span>]      <span class="cmt"># 삭제</span>
+
+<span class="cmt"># 순회</span>
+<span class="kw">for</span> k <span class="kw">in</span> d.<span class="fn">keys</span>():   <span class="cmt"># 키만</span>
+<span class="kw">for</span> v <span class="kw">in</span> d.<span class="fn">values</span>(): <span class="cmt"># 값만</span>
+<span class="kw">for</span> k, v <span class="kw">in</span> d.<span class="fn">items</span>(): <span class="cmt"># 키+값 쌍</span>
+
+<span class="cmt"># 딕셔너리 컴프리헨션</span>
+squares = {x: x*x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nl">5</span>)} <span class="cmt"># {0:0, 1:1, 2:4, 3:9, 4:16}</span></pre>
+        </div>
+      </div>
+
+      <!-- ═══ 4. set ═══ -->
+      <div class="section" id="s4">
+        <div class="section-title">
+          <span class="num gold">4</span>set — 순서 없는 중복 불가 집합
+        </div>
+        <div class="card gold">
+          <p>
+            set은 <strong>중복 원소를 자동으로 제거</strong>하고
+            <strong>순서가 없습니다</strong>. 수학의 집합 연산(합집합, 교집합,
+            차집합)을 지원합니다.
+          </p>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Python</span>
+          </div>
+          <pre><span class="vb">s</span> = {<span class="nl">1</span>, <span class="nl">2</span>, <span class="nl">3</span>, <span class="nl">2</span>, <span class="nl">1</span>}   <span class="cmt"># → {1, 2, 3} 중복 자동 제거</span>
+
+<span class="cmt"># 원소 추가/제거</span>
+s.<span class="fn">add</span>(<span class="nl">4</span>)         <span class="cmt"># 추가. 이미 있으면 무시</span>
+s.<span class="fn">remove</span>(<span class="nl">2</span>)     <span class="cmt"># 제거. 없으면 KeyError</span>
+s.<span class="fn">discard</span>(<span class="nl">9</span>)    <span class="cmt"># 제거. 없어도 에러 없음 (안전)</span>
+s.<span class="fn">update</span>({<span class="nl">5</span>,<span class="nl">6</span>}) <span class="cmt"># 여러 원소 한 번에 추가</span>
+
+<span class="cmt"># 집합 연산</span>
+a = {<span class="nl">1</span>,<span class="nl">2</span>,<span class="nl">3</span>}; b = {<span class="nl">2</span>,<span class="nl">3</span>,<span class="nl">4</span>}
+a | b   <span class="cmt"># {1,2,3,4}  합집합  (a.union(b))</span>
+a &amp; b   <span class="cmt"># {2,3}      교집합  (a.intersection(b))</span>
+a - b   <span class="cmt"># {1}        차집합  (a.difference(b))</span>
+a ^ b   <span class="cmt"># {1,4}      대칭 차집합</span></pre>
+        </div>
+        <div class="card red">
+          <p>
+            <strong>⚠ 주의:</strong> <code>s = {}</code>는 빈 set이 아니라
+            <span class="hl">빈 dict</span>입니다! 빈 set은
+            <code>s = set()</code>으로 만들어야 합니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- ═══ 5. tuple ═══ -->
+      <div class="section" id="s5">
+        <div class="section-title">
+          <span class="num" style="background: #5a3a8b">5</span>tuple — 불변
+          시퀀스
+        </div>
+        <div class="card blue">
+          <p>
+            tuple은 list와 거의 같지만
+            <strong>값을 변경할 수 없습니다(immutable)</strong>. 함수에서 여러
+            값을 반환하거나, 변경되어선 안 되는 데이터를 다룰 때 사용합니다.
+          </p>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Python</span>
+          </div>
+          <pre><span class="vb">t</span> = (<span class="nl">10</span>, <span class="nl">20</span>, <span class="nl">30</span>)
+t[<span class="nl">0</span>]          <span class="cmt"># 10  (인덱싱 가능)</span>
+<span class="cmt"># t[0] = 99    ← TypeError: 수정 불가!</span>
+
+<span class="cmt"># 언패킹 (시험 자주 출제)</span>
+a, b, c = (<span class="nl">1</span>, <span class="nl">2</span>, <span class="nl">3</span>)   <span class="cmt"># a=1, b=2, c=3</span>
+x, *rest = (<span class="nl">1</span>,<span class="nl">2</span>,<span class="nl">3</span>,<span class="nl">4</span>)  <span class="cmt"># x=1, rest=[2,3,4]</span>
+
+<span class="cmt"># 함수 다중 반환값은 tuple</span>
+<span class="kw">def</span> <span class="fn">minmax</span>(lst):
+    <span class="kw">return</span> <span class="fn">min</span>(lst), <span class="fn">max</span>(lst)  <span class="cmt"># tuple 반환</span>
+lo, hi = <span class="fn">minmax</span>([<span class="nl">3</span>,<span class="nl">1</span>,<span class="nl">4</span>,<span class="nl">1</span>,<span class="nl">5</span>])   <span class="cmt"># lo=1, hi=5</span></pre>
+        </div>
+      </div>
+
+      <!-- ═══ 6. 핵심 요약 ═══ -->
+      <div class="section" id="s6">
+        <div class="section-title">
+          <span class="num green">6</span>시험 핵심 요약
+        </div>
+        <div class="card gold">
+          <ul class="point-list">
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                ><code>list</code> — 순서O, 중복O, 수정O. 음수 인덱스
+                <code>[-1]</code> = 마지막 원소</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                ><code>dict</code> — 키 중복 불가, 같은 키 재할당 시 덮어쓰기.
+                <code>.get()</code>은 없어도 에러 없음</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                ><code>set</code> — 순서X, 중복X. <code>add()</code>는 이미
+                있으면 무시. <code>remove()</code>는 없으면 에러,
+                <code>discard()</code>는 안전</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                ><code>tuple</code> — 불변! 수정 시 TypeError. 언패킹으로 여러
+                변수에 한번에 할당 가능</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                ><code>{}</code> = 빈 dict / 빈 set = <code>set()</code> — 혼동
+                주의!</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

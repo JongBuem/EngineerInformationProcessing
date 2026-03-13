@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Java 생성자 체이닝 & 필드 섀도잉 & 다형성</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1208;
+        --paper: #f5f0e8;
+        --aged: #e8dfc8;
+        --line: #c8b89a;
+        --accent: #8b3a0f;
+        --accent2: #2d5a3d;
+        --accent3: #1e3a6e;
+        --highlight: #f0c060;
+        --code-bg: #1a1208;
+        --code-fg: #e8d5b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Gowun Batang", serif;
+        min-height: 100vh;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 31px,
+          var(--line) 31px,
+          var(--line) 32px
+        );
+        background-attachment: fixed;
+      }
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        position: relative;
+      }
+      .page::before {
+        content: "";
+        position: fixed;
+        left: calc(50% - 430px + 72px);
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(192, 57, 43, 0.35);
+        pointer-events: none;
+      }
+      .header {
+        padding-left: 48px;
+        margin-bottom: 52px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .header .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.4;
+        border-bottom: 3px double var(--accent);
+        padding-bottom: 12px;
+        display: inline-block;
+      }
+      .header .meta {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #7a6650;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .toc {
+        padding-left: 48px;
+        margin-bottom: 52px;
+      }
+      .toc-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.15em;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+      }
+      .toc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 8px;
+      }
+      .toc-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        text-decoration: none;
+        color: var(--ink);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+      }
+      .toc-item:hover {
+        background: rgba(240, 192, 96, 0.18);
+        border-color: var(--highlight);
+      }
+      .toc-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: bold;
+        flex-shrink: 0;
+        color: var(--paper);
+      }
+      .section {
+        padding-left: 48px;
+        margin-bottom: 56px;
+        animation: fadeSlide 0.6s ease both;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.08em;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .section-title .num {
+        width: 28px;
+        height: 28px;
+        background: var(--accent);
+        color: var(--paper);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+      .section-title .num.green {
+        background: var(--accent2);
+      }
+      .section-title .num.blue {
+        background: var(--accent3);
+      }
+      .section-title .num.gold {
+        background: #8b6020;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 18px 22px;
+        border-radius: 0 6px 6px 0;
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.05);
+        margin-bottom: 14px;
+      }
+      .card.green {
+        border-left-color: var(--accent2);
+      }
+      .card.blue {
+        border-left-color: var(--accent3);
+      }
+      .card.gold {
+        border-left-color: var(--highlight);
+        background: rgba(240, 192, 96, 0.06);
+      }
+      .card.red {
+        border-left-color: #c0392b;
+        background: rgba(192, 57, 43, 0.05);
+      }
+      p {
+        font-size: 15px;
+        line-height: 2.1;
+        color: #2a1f10;
+      }
+      .sub-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--accent3);
+        margin: 22px 0 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid var(--aged);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sub-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: bold;
+        flex-shrink: 0;
+        color: white;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 14px 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+      .code-header {
+        background: #2d2318;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .code-header .lang {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #8a7a60;
+      }
+      pre {
+        padding: 18px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--code-fg);
+        overflow-x: auto;
+      }
+      .kw {
+        color: #c792ea;
+      }
+      .fn {
+        color: #82aaff;
+      }
+      .nl {
+        color: #f78c6c;
+      }
+      .str {
+        color: #c3e88d;
+      }
+      .cmt {
+        color: #546e7a;
+        font-style: italic;
+      }
+      .cls {
+        color: #ffcb6b;
+      }
+      .ret {
+        color: #89ddff;
+      }
+      .op {
+        color: #89ddff;
+      }
+      code {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        background: rgba(26, 18, 8, 0.08);
+        border: 1px solid var(--aged);
+        border-radius: 3px;
+        padding: 1px 6px;
+        color: var(--accent);
+      }
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        margin: 14px 0;
+      }
+      .info-table th {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 10px 16px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .info-table td {
+        padding: 9px 16px;
+        border-bottom: 1px solid var(--aged);
+        vertical-align: middle;
+        line-height: 1.8;
+      }
+      .info-table tr:nth-child(even) td {
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .info-table tr.hl-row td {
+        background: rgba(240, 192, 96, 0.15);
+        font-weight: 700;
+      }
+      .flow-wrap {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 20px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin: 14px 0;
+      }
+      .point-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .point-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-size: 14.5px;
+        line-height: 1.8;
+      }
+      .point-list li .icon {
+        font-size: 16px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      .hl {
+        background: linear-gradient(
+          transparent 55%,
+          rgba(240, 192, 96, 0.5) 55%
+        );
+      }
+      /* 메모리 박스 */
+      .mem-wrap {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .mem-box {
+        border-radius: 8px;
+        padding: 14px 18px;
+        min-width: 160px;
+      }
+      .mem-p {
+        background: #0e1218;
+        border: 2px solid #1e3a6e;
+      }
+      .mem-c {
+        background: #0e1a0e;
+        border: 2px solid #2d5a3d;
+      }
+      .mem-title {
+        font-size: 11px;
+        font-weight: bold;
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .mem-field {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 6px;
+        font-size: 13px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      /* 호출 체인 */
+      .chain {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .ch-step {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin-bottom: 3px;
+        font-size: 13px;
+      }
+      .ch-num {
+        min-width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: bold;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .ch-body {
+        flex: 1;
+      }
+      .ch-code {
+        font-weight: bold;
+        margin-bottom: 3px;
+      }
+      .ch-note {
+        font-size: 11px;
+        color: #546e7a;
+      }
+      .ch-p {
+        background: rgba(30, 58, 110, 0.08);
+      }
+      .ch-c {
+        background: rgba(45, 90, 61, 0.08);
+      }
+      .ch-hi {
+        background: rgba(240, 192, 96, 0.1);
+      }
+      .ch-arr {
+        text-align: center;
+        font-size: 18px;
+        color: #546e7a;
+        margin: 2px 0;
+        padding-left: 12px;
+      }
+      @keyframes fadeSlide {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="label">Java Learning Note — 04</div>
+        <h1>JAVA 출제 문제 심화 학습 정리</h1>
+        <div class="meta">
+          Java · this() · super() · field shadowing · dynamic dispatch · 참조
+          타입 vs 실제 타입
+        </div>
+      </div>
+
+      <!-- TOC -->
+      <div class="toc">
+        <div class="toc-title">목차</div>
+        <div class="toc-grid">
+          <a class="toc-item" href="#s1"
+            ><span class="toc-num" style="background: #8b3a0f">1</span>this()
+            생성자 체이닝</a
+          >
+          <a class="toc-item" href="#s2"
+            ><span class="toc-num" style="background: #1e3a6e">2</span>super()
+            생성자 호출</a
+          >
+          <a class="toc-item" href="#s3"
+            ><span class="toc-num" style="background: #2d5a3d">3</span>필드
+            섀도잉</a
+          >
+          <a class="toc-item" href="#s4"
+            ><span class="toc-num" style="background: #8b6020">4</span>동적
+            디스패치(다형성)</a
+          >
+          <a class="toc-item" href="#s5"
+            ><span class="toc-num" style="background: #c0392b">5</span>자주
+            나오는 함정</a
+          >
+        </div>
+      </div>
+
+      <!-- ═══ 1. this() ═══ -->
+      <div class="section" id="s1">
+        <div class="section-title">
+          <span class="num">1</span>this() — 생성자 체이닝
+        </div>
+        <div class="card blue">
+          <p>
+            <code>this()</code>는
+            <strong>같은 클래스의 다른 생성자를 호출</strong>합니다. 생성자 중복
+            코드를 줄일 때 사용하며, 반드시
+            <span class="hl">생성자의 첫 번째 줄</span>에 위치해야 합니다.
+          </p>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Java</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Box</span> {
+    <span class="kw">int</span> w, h, d;
+
+    <span class="cls">Box</span>() {
+        <span class="kw">this</span>(<span class="nl">1</span>, <span class="nl">1</span>, <span class="nl">1</span>);      <span class="cmt">// ① Box(int,int,int) 호출 — 첫 줄 필수</span>
+    }
+    <span class="cls">Box</span>(<span class="kw">int</span> w, <span class="kw">int</span> h) {
+        <span class="kw">this</span>(w, h, <span class="nl">1</span>);     <span class="cmt">// ② 세 인자 버전으로 위임</span>
+    }
+    <span class="cls">Box</span>(<span class="kw">int</span> w, <span class="kw">int</span> h, <span class="kw">int</span> d) {
+        <span class="kw">this</span>.w = w;  <span class="kw">this</span>.h = h;  <span class="kw">this</span>.d = d;  <span class="cmt">// 실제 초기화</span>
+    }
+}
+
+<span class="cmt">// new Box()   → this(1,1,1) → Box(1,1,1): w=1,h=1,d=1</span>
+<span class="cmt">// new Box(2,3) → this(2,3,1) → Box(2,3,1): w=2,h=3,d=1</span></pre>
+        </div>
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #8b3a0f">★</span>실행 흐름
+          — 시험 출제 패턴
+        </div>
+        <div class="flow-wrap">
+          <div class="chain">
+            <div class="ch-step ch-c">
+              <div
+                class="ch-num"
+                style="
+                  background: rgba(139, 58, 15, 0.5);
+                  border: 1px solid #8b3a0f;
+                  color: #f78c6c;
+                "
+              >
+                1
+              </div>
+              <div class="ch-body">
+                <div class="ch-code" style="color: #f78c6c">new Box() 호출</div>
+                <div class="ch-note">Box() 생성자 진입</div>
+              </div>
+            </div>
+            <div class="ch-arr">↓ this(1,1,1)</div>
+            <div class="ch-step ch-c">
+              <div
+                class="ch-num"
+                style="
+                  background: rgba(30, 58, 110, 0.5);
+                  border: 1px solid #1e3a6e;
+                  color: #82aaff;
+                "
+              >
+                2
+              </div>
+              <div class="ch-body">
+                <div class="ch-code" style="color: #82aaff">
+                  Box(int,int,int) 진입
+                </div>
+                <div class="ch-note" style="color: #f0c060">
+                  this.w=1, this.h=1, this.d=1 실행 ✓
+                </div>
+              </div>
+            </div>
+            <div class="ch-arr">↩ 반환 후 Box() 본문 없음 → 완료</div>
+          </div>
+        </div>
+        <div class="card red">
+          <p>
+            <strong>규칙:</strong> <code>this()</code>와 <code>super()</code>는
+            <span class="hl">동시에 사용 불가</span>, 한 생성자에 하나만
+            가능하며 둘 다 첫 줄이어야 합니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- ═══ 2. super() ═══ -->
+      <div class="section" id="s2">
+        <div class="section-title">
+          <span class="num blue">2</span>super() — 부모 생성자 자동/명시 호출
+        </div>
+        <div class="card blue">
+          <p>
+            자식 생성자에 <code>super()</code>나 <code>this()</code>를 명시하지
+            않으면 컴파일러가
+            <span class="hl">super()를 첫 줄에 자동 삽입</span>합니다. 이 때
+            부모에 기본 생성자(매개변수 없는)가 없으면 컴파일 에러!
+          </p>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span
+            ><span class="lang">Java — super() 자동 삽입</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Parent</span> {
+    <span class="kw">int</span> x;
+    <span class="cls">Parent</span>()    { x = <span class="nl">10</span>; }       <span class="cmt">// 기본 생성자</span>
+    <span class="cls">Parent</span>(<span class="kw">int</span> v) { x = v; }        <span class="cmt">// 매개변수 생성자</span>
+}
+
+<span class="kw">class</span> <span class="cls">Child</span> <span class="kw">extends</span> <span class="cls">Parent</span> {
+    <span class="kw">int</span> y;
+    <span class="cls">Child</span>(<span class="kw">int</span> v) {
+        <span class="cmt">// super(); ← 컴파일러 자동 삽입 → Parent.x = 10</span>
+        y = v;
+    }
+    <span class="cls">Child</span>(<span class="kw">int</span> px, <span class="kw">int</span> cy) {
+        <span class="kw">super</span>(px);  <span class="cmt">// 명시 — Parent(int) → x = px</span>
+        y = cy;
+    }
+}
+
+<span class="cmt">// new Child(5)     → super() → x=10, y=5</span>
+<span class="cmt">// new Child(3, 7)  → super(3) → x=3,  y=7</span></pre>
+        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>상황</th>
+              <th>동작</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>자식 생성자에 아무것도 없음</td>
+              <td>컴파일러 → <code>super()</code> 자동 삽입</td>
+            </tr>
+            <tr class="hl-row">
+              <td><code>this()</code>만 있음</td>
+              <td>super()는 최종 생성자에서 자동 삽입</td>
+            </tr>
+            <tr>
+              <td><code>super(args)</code> 명시</td>
+              <td>해당 부모 생성자 직접 호출</td>
+            </tr>
+            <tr>
+              <td>부모에 기본 생성자 없음 + 자동 삽입 시도</td>
+              <td>❌ 컴파일 에러</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ═══ 3. 필드 섀도잉 ═══ -->
+      <div class="section" id="s3">
+        <div class="section-title">
+          <span class="num green">3</span>필드 섀도잉 (Field Shadowing) ★ 최빈출
+        </div>
+        <div class="card red">
+          <p>
+            부모와 자식에 <strong>같은 이름의 필드</strong>가 있으면, 자식의
+            필드가 부모의 필드를 <span class="hl">"가립니다(shadow)"</span>.
+            하지만 메모리는 <strong>각각 별개로 존재</strong>합니다. 메서드가
+            정의된 클래스의 필드가 사용됩니다.
+          </p>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span
+            ><span class="lang">Java — 필드 섀도잉 예시</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Parent</span> {
+    <span class="kw">int</span> x = <span class="nl">100</span>;
+    <span class="kw">int</span> <span class="fn">getX</span>() { <span class="ret">return</span> x; }  <span class="cmt">// Parent.x 반환</span>
+}
+
+<span class="kw">class</span> <span class="cls">Child</span> <span class="kw">extends</span> <span class="cls">Parent</span> {
+    <span class="kw">int</span> x = <span class="nl">200</span>;              <span class="cmt">// Parent.x를 가리는 별개 필드</span>
+    <span class="cmt">// getX() 오버라이딩 없음</span>
+}
+
+<span class="cls">Child</span> c = <span class="kw">new</span> <span class="cls">Child</span>();
+<span class="cls">System</span>.out.<span class="fn">println</span>(c.x);          <span class="cmt">// 200  ← Child.x</span>
+<span class="cls">System</span>.out.<span class="fn">println</span>(c.<span class="fn">getX</span>());     <span class="cmt">// 100  ← Parent.getX() 안의 x = Parent.x</span>
+<span class="cls">System</span>.out.<span class="fn">println</span>(((Parent)c).x); <span class="cmt">// 100  ← 참조 타입 캐스팅 시 Parent.x</span></pre>
+        </div>
+
+        <div class="sub-title">
+          <span class="sub-badge" style="background: #2d5a3d">★</span>메모리
+          구조 — 두 x는 별개
+        </div>
+        <div class="flow-wrap">
+          <div class="mem-wrap">
+            <div class="mem-box mem-p">
+              <div class="mem-title" style="color: #82aaff">Parent 영역</div>
+              <div class="mem-field">
+                <span style="color: #82aaff">x</span
+                ><span style="color: #546e7a">=</span
+                ><span style="color: #f78c6c; font-weight: bold">100</span>
+              </div>
+              <div
+                style="
+                  margin-top: 8px;
+                  font-size: 11px;
+                  color: #546e7a;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                getX() → return this.x<br />=
+                <span style="color: #f78c6c">100</span>
+              </div>
+            </div>
+            <div class="mem-box mem-c">
+              <div class="mem-title" style="color: #c3e88d">Child 영역</div>
+              <div class="mem-field">
+                <span style="color: #c3e88d">x</span
+                ><span style="color: #546e7a">=</span
+                ><span style="color: #c3e88d; font-weight: bold">200</span>
+              </div>
+              <div
+                style="
+                  margin-top: 8px;
+                  font-size: 11px;
+                  color: #546e7a;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                c.x → Child.x<br />= <span style="color: #c3e88d">200</span>
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 12px;
+              background: #1a1208;
+              border-radius: 6px;
+              padding: 12px 16px;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 12px;
+              color: #546e7a;
+              line-height: 2.4;
+            "
+          >
+            <span style="color: #f0c060; font-weight: bold">핵심 규칙:</span>
+            필드는 <span style="color: #f0c060">참조 타입 기준</span> (컴파일
+            타임 결정)<br />
+            메서드는 <span style="color: #c3e88d">실제 타입 기준</span> (런타임
+            결정 — 동적 디스패치)
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ 4. 동적 디스패치 ═══ -->
+      <div class="section" id="s4">
+        <div class="section-title">
+          <span class="num gold">4</span>동적 디스패치 — 참조 타입 vs 실제 타입
+        </div>
+        <div class="card blue">
+          <p>
+            <code>Parent obj = new Child()</code>처럼 부모 타입으로 자식
+            인스턴스를 참조할 때, <strong>오버라이딩된 메서드</strong>는
+            <span class="hl">실제 타입(Child) 버전이 호출</span>됩니다. 하지만
+            필드와 static 메서드는 참조 타입 기준입니다.
+          </p>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span
+            ><span class="lang">Java — 동적 디스패치 완전 정리</span>
+          </div>
+          <pre><span class="kw">class</span> <span class="cls">Animal</span> {
+    <span class="kw">String</span> type = <span class="str">"Animal"</span>;
+    <span class="kw">void</span> <span class="fn">sound</span>()   { <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="str">"..."</span>);  }
+    <span class="kw">static void</span> <span class="fn">tag</span>() { <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="str">"A-tag"</span>); }
+}
+
+<span class="kw">class</span> <span class="cls">Dog</span> <span class="kw">extends</span> <span class="cls">Animal</span> {
+    <span class="kw">String</span> type = <span class="str">"Dog"</span>;              <span class="cmt">// 필드 섀도잉</span>
+    <span class="op">@Override</span>
+    <span class="kw">void</span> <span class="fn">sound</span>()   { <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="str">"Woof"</span>); }  <span class="cmt">// 오버라이딩</span>
+    <span class="kw">static void</span> <span class="fn">tag</span>() { <span class="cls">System</span>.out.<span class="fn">print</span>(<span class="str">"D-tag"</span>); } <span class="cmt">// 숨김(hiding)</span>
+}
+
+<span class="cls">Animal</span> obj = <span class="kw">new</span> <span class="cls">Dog</span>();
+obj.<span class="fn">sound</span>();         <span class="cmt">// "Woof"   ← 런타임: Dog 버전 (동적 디스패치)</span>
+<span class="cls">System</span>.out.<span class="fn">println</span>(obj.type); <span class="cmt">// "Animal" ← 컴파일: 참조 타입 기준 (섀도잉)</span>
+<span class="cls">Animal</span>.<span class="fn">tag</span>();        <span class="cmt">// "A-tag"  ← static은 참조 타입 기준</span></pre>
+        </div>
+
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>구분</th>
+              <th>결정 시점</th>
+              <th>기준</th>
+              <th>예시 결과</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl-row">
+              <td>오버라이딩 메서드</td>
+              <td>런타임</td>
+              <td>실제 타입 (Dog)</td>
+              <td>Dog.sound() 실행</td>
+            </tr>
+            <tr>
+              <td>필드 (섀도잉)</td>
+              <td>컴파일</td>
+              <td>참조 타입 (Animal)</td>
+              <td>Animal.type = "Animal"</td>
+            </tr>
+            <tr>
+              <td>static 메서드 (숨김)</td>
+              <td>컴파일</td>
+              <td>참조 타입 (Animal)</td>
+              <td>Animal.tag() 실행</td>
+            </tr>
+            <tr>
+              <td>오버로딩</td>
+              <td>컴파일</td>
+              <td>참조 타입 (인자 타입)</td>
+              <td>선언 타입 기준</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ═══ 5. 함정 ═══ -->
+      <div class="section" id="s5">
+        <div class="section-title">
+          <span class="num" style="background: #c0392b">5</span>자주 나오는 함정
+          포인트
+        </div>
+
+        <div class="card red" style="margin-bottom: 12px">
+          <div
+            style="
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 13px;
+              font-weight: bold;
+              color: #f78c6c;
+              margin-bottom: 8px;
+            "
+          >
+            ① this() 체이닝 후 Parent.x vs Child.x
+          </div>
+          <p style="font-size: 14px">
+            Child 생성자에서 <code>this.x = val</code>은
+            <strong>Child.x</strong>를 설정합니다. 상속받은 Parent.x는 super()
+            체인을 통해서만 설정됩니다. <code>getX()</code>가 어느 클래스에
+            정의되어 있냐에 따라 반환값이 달라집니다.
+          </p>
+        </div>
+
+        <div class="card red" style="margin-bottom: 12px">
+          <div
+            style="
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 13px;
+              font-weight: bold;
+              color: #f78c6c;
+              margin-bottom: 8px;
+            "
+          >
+            ② 인자 없는 메서드 호출 — 어떤 버전?
+          </div>
+          <p style="font-size: 14px">
+            <code>obj.getName()</code>처럼 <strong>인자 없는 호출</strong>은
+            자식에 해당 버전(매개변수 없는)이 없으면 부모의 구현이 실행됩니다.
+            오버로딩과 오버라이딩을 혼동하지 마세요.
+          </p>
+        </div>
+
+        <div class="card red" style="margin-bottom: 12px">
+          <div
+            style="
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 13px;
+              font-weight: bold;
+              color: #f78c6c;
+              margin-bottom: 8px;
+            "
+          >
+            ③ abstract 클래스 — 인스턴스화 불가
+          </div>
+          <p style="font-size: 14px">
+            <code>new Vehicle()</code>처럼 abstract 클래스를 직접 생성하면
+            컴파일 에러입니다. 반드시 자식 클래스를 통해 인스턴스화해야 합니다.
+          </p>
+        </div>
+
+        <div class="card gold">
+          <ul class="point-list">
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                >필드: <span class="hl">참조 타입 기준</span> (컴파일) /
+                오버라이딩 메서드:
+                <span class="hl">실제 타입 기준</span> (런타임)</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                >getX()가 Parent에 있으면 → Parent.x / Child에 오버라이딩 시 →
+                Child.x</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                >생성자 체인 순서: super()가 가장 먼저, 부모 → 자식 순으로
+                초기화</span
+              >
+            </li>
+            <li>
+              <span class="icon">⭐</span
+              ><span
+                >this() 체이닝은 같은 클래스 안에서만. super()는 부모
+                클래스로.</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
