@@ -1117,5 +1117,57 @@
         }
       }
     </script>
-  </body>
+    <!-- comment-toggle -->
+  <style>
+    .btn-cmt {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      background: #2a1f10;
+      color: #546e7a;
+      border: 2px solid #4a3a28;
+    }
+    .btn-cmt:hover { background: #3a2e1e; color: #8a9aaa; }
+    .btn-cmt.cmt-on { background: #1e2a1e; color: #c3e88d; border-color: #2d5a3d; }
+    .btn-cmt.cmt-on:hover { background: #2d3a2d; }
+  </style>
+  <script>
+    (function () {
+      var KEY = 'showComments';
+      var show = localStorage.getItem(KEY) === 'true';
+
+      function applyState() {
+        document.querySelectorAll('.cmt').forEach(function (el) {
+          el.style.visibility = show ? '' : 'hidden';
+        });
+        var btn = document.getElementById('btnCmt');
+        if (!btn) return;
+        btn.textContent = show ? '// 주석  [ ON ]' : '// 주석  [ OFF ]';
+        btn.classList.toggle('cmt-on', show);
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var btnArea = document.querySelector('.btn-area');
+        if (btnArea) {
+          var btn = document.createElement('button');
+          btn.id = 'btnCmt';
+          btn.className = 'btn btn-cmt';
+          btn.addEventListener('click', function () {
+            show = !show;
+            localStorage.setItem(KEY, String(show));
+            applyState();
+          });
+          btnArea.appendChild(btn);
+        }
+        applyState();
+      });
+
+      window.addEventListener('storage', function (e) {
+        if (e.key === KEY) {
+          show = e.newValue === 'true';
+          applyState();
+        }
+      });
+    })();
+  </script>
+</body>
 </html>
