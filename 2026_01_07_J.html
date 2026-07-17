@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>알고리즘 풀이 노트</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--ink:#1a1208;--paper:#f5f0e8;--aged:#e8dfc8;--line:#c8b89a;--accent:#8b3a0f;--accent2:#2d5a3d;--accent3:#1e3a6e;--highlight:#f0c060;--code-bg:#1a1208;--code-fg:#e8d5b0;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--paper);color:var(--ink);font-family:"Gowun Batang",serif;min-height:100vh;background-image:repeating-linear-gradient(0deg,transparent,transparent 31px,var(--line) 31px,var(--line) 32px);background-attachment:fixed;}
+    .page{max-width:860px;margin:0 auto;padding:60px 40px;position:relative;}
+    .page::before{content:"";position:fixed;left:calc(50% - 430px + 72px);top:0;bottom:0;width:2px;background:rgba(192,57,43,0.35);pointer-events:none;}
+    .header{padding-left:48px;margin-bottom:56px;animation:fadeSlide 0.6s ease both;}
+    .header .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.25em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;opacity:.8;}
+    .header h1{font-family:"Noto Serif KR",serif;font-size:24px;font-weight:700;color:var(--ink);line-height:1.4;border-bottom:3px double var(--accent);padding-bottom:12px;display:inline-block;}
+    .header .meta{margin-top:10px;font-size:13px;color:#7a6650;font-family:"JetBrains Mono",monospace;}
+    .section{padding-left:48px;margin-bottom:40px;animation:fadeSlide 0.6s ease 0.1s both;}
+    .section-title{font-family:"Noto Serif KR",serif;font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.12em;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+    .section-title .num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--accent);color:var(--paper);border-radius:50%;font-size:11px;font-weight:700;}
+    .tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+    .tag{font-family:"JetBrains Mono",monospace;font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid;}
+    .tag-j{background:rgba(247,140,108,.15);color:#c4622a;border-color:rgba(247,140,108,.4);}
+    .tag-type{background:rgba(240,192,96,.15);color:#8a6010;border-color:rgba(240,192,96,.4);}
+    .code-block{background:var(--code-bg);border-radius:10px;overflow:hidden;border:1px solid #2a1e10;box-shadow:4px 6px 0 rgba(0,0,0,.2);}
+    .code-header{display:flex;align-items:center;gap:6px;padding:10px 16px;background:#150f06;border-bottom:1px solid #2a1e10;}
+    .dot{width:12px;height:12px;border-radius:50%;}.dot-r{background:#ff5f57;}.dot-y{background:#febc2e;}.dot-g{background:#28c840;}
+    .code-header .lang{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:11px;color:#8a7a60;letter-spacing:.1em;}
+    pre{padding:20px 24px;font-family:"JetBrains Mono",monospace;font-size:13.5px;line-height:1.9;color:var(--code-fg);overflow-x:auto;tab-size:4;}
+    .kw{color:#c792ea;}.fn{color:#82aaff;}.nl{color:#f78c6c;}.str{color:#c3e88d;}.cmt{color:#546e7a;font-style:italic;}.cls{color:#ffcb6b;}.ret{color:#89ddff;}
+    .btn-area{padding-left:48px;margin-bottom:40px;display:flex;gap:16px;flex-wrap:wrap;animation:fadeSlide 0.6s ease 0.2s both;}
+    .btn{font-family:"Noto Serif KR",serif;font-size:15px;font-weight:700;padding:12px 32px;border:none;border-radius:6px;cursor:pointer;letter-spacing:.08em;transition:all .2s;box-shadow:3px 4px 0 rgba(0,0,0,.18);position:relative;top:0;}
+    .btn:active{top:2px;box-shadow:1px 2px 0 rgba(0,0,0,.18);}
+    .btn-answer{background:var(--ink);color:var(--highlight);border:2px solid var(--accent);}
+    .btn-answer:hover{background:#2d1e0a;}
+    .btn-explain{background:var(--accent2);color:#e8f5ec;border:2px solid #1e4028;}
+    .btn-explain:hover{background:#1e4028;}
+    .btn.active-answer{background:var(--highlight);color:var(--ink);border-color:var(--ink);}
+    .btn.active-explain{background:#c3e88d;color:#1a3010;border-color:var(--accent2);}
+    .panel{padding-left:48px;margin-bottom:44px;display:none;animation:fadeSlide 0.4s ease both;}
+    .panel.visible{display:block;}
+    .answer-box{background:var(--ink);color:var(--highlight);border-radius:10px;padding:28px 32px;border:2px solid var(--accent);box-shadow:4px 6px 0 rgba(0,0,0,.25);}
+    .answer-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#8a7a60;margin-bottom:10px;}
+    .answer-value{font-family:"JetBrains Mono",monospace;font-size:80px;font-weight:700;line-height:1.1;margin-bottom:10px;animation:pulse 2s ease-in-out infinite;}
+    .answer-desc{font-family:"JetBrains Mono",monospace;font-size:13px;color:#c8a870;}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.75;}}
+    .sub-section{margin-bottom:32px;}
+    .sub-title{font-family:"Noto Serif KR",serif;font-size:14px;font-weight:700;color:var(--accent3);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--aged);display:flex;align-items:center;gap:8px;}
+    .card{border-radius:8px;padding:16px 20px;font-size:14px;line-height:1.9;border:1px solid;margin-bottom:12px;}
+    .card.blue{background:rgba(30,58,110,.08);border-color:rgba(30,58,110,.25);color:var(--ink);}
+    .card.green{background:rgba(45,90,61,.08);border-color:rgba(45,90,61,.25);color:var(--ink);}
+    .card.yellow{background:rgba(240,192,96,.12);border-color:rgba(240,192,96,.4);color:var(--ink);}
+    .card.red{background:rgba(192,57,43,.06);border-color:rgba(192,57,43,.25);color:var(--ink);}
+    .hl{background:linear-gradient(transparent 55%,rgba(240,192,96,.5) 55%);}
+    .mono{font-family:"JetBrains Mono",monospace;font-size:13px;}
+    .point-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+    .point-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.7;}
+    .icon{flex-shrink:0;font-size:16px;}
+    .flow-wrap{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:8px;padding:20px;overflow-x:auto;box-shadow:inset 0 1px 3px rgba(0,0,0,.06);margin-bottom:20px;}
+    .chain{display:flex;flex-direction:column;gap:14px;}
+    .chain-step{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .chain-step .step-num{font-family:"JetBrains Mono",monospace;font-size:11px;background:var(--accent);color:var(--paper);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .box-expr{background:#1a1208;border:1.5px solid #546e7a;border-radius:5px;padding:5px 14px;font-family:"JetBrains Mono",monospace;font-size:13px;color:#e8d5b0;white-space:nowrap;}
+    .box-arrow{color:#c8b89a;font-size:16px;}
+    .box-result{background:#1a1208;border:2px solid #2d5a3d;border-radius:5px;padding:5px 14px;font-family:"JetBrains Mono",monospace;font-size:13px;color:#c3e88d;font-weight:700;white-space:nowrap;}
+    .box-result.gold{border-color:#f0c060;color:#f0c060;background:#2d2010;}
+    .box-result.red{border-color:#c0392b;color:#ff7675;background:#2d1010;}
+    .chain-step .note{font-size:12px;color:#7a6650;font-family:"JetBrains Mono",monospace;}
+    .trace-table{width:100%;border-collapse:collapse;font-family:"JetBrains Mono",monospace;font-size:13px;margin:12px 0;}
+    .trace-table th{background:var(--ink);color:var(--paper);padding:10px 14px;text-align:left;font-weight:600;}
+    .trace-table td{padding:9px 14px;border-bottom:1px solid var(--aged);vertical-align:middle;line-height:1.6;}
+    .trace-table tr:nth-child(even) td{background:rgba(0,0,0,.03);}
+    .trace-table tr.hl-row td{background:rgba(240,192,96,.22);font-weight:700;}
+    .tag-b{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-family:"JetBrains Mono",monospace;font-weight:600;}
+    .tag-compile{background:#2d1e3d;color:#c792ea;border:1px solid #5a3a8b;}
+    .tag-runtime{background:#1a2010;color:#c3e88d;border:1px solid #2d5a3d;}
+    .tag-warn{background:#2d1010;color:#ff7675;border:1px solid #8b2020;}
+    @keyframes fadeSlide{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="label">2026년 1회 · 정보처리기사 실기 · 문제 7</div>
+    <h1>Java — 다형성과 동적 디스패치</h1>
+    <div class="meta">Java · Polymorphism · Overriding · Overloading · Dynamic Dispatch</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="num">Q</span>문제 코드</div>
+    <div class="tag-row">
+      <span class="tag tag-j">Java</span>
+      <span class="tag tag-type">다형성 · 오버라이딩 · 동적 디스패치</span>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <span class="lang">Java</span>
+      </div>
+      <pre><span class="kw">class</span> <span class="cls">A</span> {
+    <span class="cls">String</span> <span class="fn">f</span>(<span class="cls">Object</span> x) {
+        <span class="kw">return</span> <span class="str">"1"</span>;                 <span class="cmt">// A의 f(Object): 인자 타입 Object</span>
+    }
+    <span class="cls">String</span> <span class="fn">g</span>() {
+        <span class="kw">return</span> <span class="fn">f</span>(<span class="str">"a"</span>);             <span class="cmt">// A 관점에서 오버로딩 해결 → f(Object) 선택</span>
+    }
+}
+
+<span class="kw">class</span> <span class="cls">B</span> <span class="kw">extends</span> <span class="cls">A</span> {
+    <span class="cls">String</span> <span class="fn">f</span>(<span class="cls">Object</span> x) {         <span class="cmt">// A의 f(Object)를 오버라이드 → 동적 디스패치 대상</span>
+        <span class="kw">return</span> <span class="str">"2"</span>;
+    }
+    <span class="cls">String</span> <span class="fn">f</span>(<span class="cls">String</span> x) {         <span class="cmt">// 오버로드 — f(Object)와 별개 시그니처</span>
+        <span class="kw">return</span> <span class="str">"3"</span>;
+    }
+}
+
+<span class="kw">public class</span> <span class="cls">Main</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="cls">String</span>[] args) {
+        <span class="cls">A</span> a = <span class="kw">new</span> <span class="cls">B</span>();           <span class="cmt">// 선언타입=A, 실제객체=B</span>
+        <span class="cls">System</span>.out.<span class="fn">println</span>(a.<span class="fn">g</span>());
+    }
+}</pre>
+    </div>
+    <p style="margin-top:12px;padding-left:4px;font-size:14px;color:#7a6650;">위 코드의 <strong>출력값</strong>은 무엇인가?</p>
+  </div>
+
+  <div class="btn-area">
+    <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">✦ 정답 보기</button>
+    <button class="btn btn-explain" id="btnExplain" onclick="toggleExplain()">📖 설명 보기</button>
+  </div>
+
+  <div class="panel" id="panelAnswer">
+    <div class="answer-box">
+      <div class="answer-label">System.out.println() 출력 결과</div>
+      <div class="answer-value">2</div>
+      <div class="answer-desc">g()→f(Object) 오버로딩 해결(컴파일) + B의 f(Object) 동적 디스패치(런타임)</div>
+    </div>
+  </div>
+
+  <div class="panel" id="panelExplain">
+    <!-- ① 문제 유형 -->
+    <div class="sub-section">
+      <div class="sub-title">① 문제 유형</div>
+      <div class="card blue">
+        <p><span class="hl">Java 동적 디스패치(Dynamic Dispatch): 오버로딩 후보는 컴파일 타임 선언 타입 기준으로 결정되고, 오버라이딩된 메서드는 런타임 실제 객체 타입 기준으로 호출되는 두 단계의 차이를 묻는 문제</span>입니다.</p>
+      </div>
+    </div>
+
+    <!-- ② 연쇄 호출 단계별 분해 -->
+    <div class="sub-section">
+      <div class="sub-title">② 연쇄 호출 단계별 분해</div>
+      <div class="flow-wrap">
+        <div class="chain">
+          <div class="chain-step">
+            <span class="step-num">1</span>
+            <span class="box-expr">A a = new B()</span>
+            <span class="box-arrow">→</span>
+            <span class="box-result" style="color:#82aaff;border-color:#82aaff;">선언타입=A, 실제객체=B</span>
+            <span class="note">참조변수는 A, 힙의 객체는 B</span>
+          </div>
+          <div class="chain-step">
+            <span class="step-num">2</span>
+            <span class="box-expr">a.g() 호출</span>
+            <span class="box-arrow">→</span>
+            <span class="box-result" style="color:#ffcb6b;border-color:#ffcb6b;">A의 g() 실행</span>
+            <span class="note">B에 g() 없음 → A.g() 그대로</span>
+          </div>
+          <div class="chain-step">
+            <span class="step-num">3</span>
+            <span class="box-expr">A.g() 내부: f("a")</span>
+            <span class="box-arrow">→</span>
+            <span class="box-result" style="color:#c792ea;border-color:#c792ea;">컴파일 타임: f(Object) 선택</span>
+            <span class="note">A 관점에서 f(String) 없음 → f(Object)만 후보</span>
+          </div>
+          <div class="chain-step">
+            <span class="step-num">4</span>
+            <span class="box-expr">런타임: 실제 객체 B</span>
+            <span class="box-arrow">→</span>
+            <span class="box-result">B의 f(Object) 호출</span>
+            <span class="note">동적 디스패치: B가 f(Object) 오버라이드</span>
+          </div>
+          <div class="chain-step">
+            <span class="step-num">5</span>
+            <span class="box-expr">B.f(Object) return "2"</span>
+            <span class="box-arrow">→</span>
+            <span class="box-result gold">println("2") 출력</span>
+            <span class="note">최종 출력</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ 두 단계 메커니즘 비교표 -->
+    <div class="sub-section">
+      <div class="sub-title">③ 오버로딩 vs 오버라이딩 — 두 단계 비교</div>
+      <div class="flow-wrap">
+        <table class="trace-table">
+          <thead>
+            <tr><th>구분</th><th>결정 시점</th><th>기준</th><th>이 문제에서</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="tag-b tag-compile">오버로딩 해결</span></td>
+              <td>컴파일 타임</td>
+              <td>선언 타입 <span class="mono">A</span></td>
+              <td>A에 f(Object)만 있음 → <strong>f(Object) 선택</strong></td>
+            </tr>
+            <tr class="hl-row">
+              <td><span class="tag-b tag-runtime">동적 디스패치</span></td>
+              <td>런타임</td>
+              <td>실제 객체 <span class="mono">B</span></td>
+              <td>B가 f(Object) 오버라이드 → <strong>B.f(Object)="2"</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ④ 왜 "3"이 아닌가 -->
+    <div class="sub-section">
+      <div class="sub-title">④ 함정 — 왜 "3"이 나오지 않는가?</div>
+      <div class="card red">
+        <ul class="point-list">
+          <li><span class="icon">⚠️</span><span>B의 <span class="mono">f(String)</span>은 A에 존재하지 않는 메서드 → <span class="hl">A 관점에서 오버로딩 후보에 없음</span></span></li>
+          <li><span class="icon">⚠️</span><span>오버로딩 후보 탐색은 <span class="hl">컴파일 타임에 선언 타입(A) 기준</span>으로 끝남</span></li>
+          <li><span class="icon">✅</span><span>런타임 동적 디스패치는 <strong>오버라이딩된 f(Object)</strong>만 대체 대상 — f(String)은 새 메서드이므로 해당 없음</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="answer-box">
+      <div class="answer-label">System.out.println() 출력 결과</div>
+      <div class="answer-value">2</div>
+      <div class="answer-desc">컴파일: f(Object) 선택 | 런타임: B의 f(Object) 동적 호출 → "2"</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleAnswer(){
+    var p=document.getElementById("panelAnswer"),b=document.getElementById("btnAnswer");
+    var pe=document.getElementById("panelExplain"),be=document.getElementById("btnExplain");
+    var open=!p.classList.contains("visible");
+    pe.classList.remove("visible");be.classList.remove("active-explain");be.textContent="📖 설명 보기";
+    if(open){p.classList.add("visible");b.classList.add("active-answer");b.textContent="✦ 정답 닫기";p.scrollIntoView({behavior:"smooth",block:"nearest"});}
+    else{p.classList.remove("visible");b.classList.remove("active-answer");b.textContent="✦ 정답 보기";}
+  }
+  function toggleExplain(){
+    var p=document.getElementById("panelExplain"),b=document.getElementById("btnExplain");
+    var pa=document.getElementById("panelAnswer"),ba=document.getElementById("btnAnswer");
+    var open=!p.classList.contains("visible");
+    pa.classList.remove("visible");ba.classList.remove("active-answer");ba.textContent="✦ 정답 보기";
+    if(open){p.classList.add("visible");b.classList.add("active-explain");b.textContent="📖 설명 닫기";p.scrollIntoView({behavior:"smooth",block:"nearest"});}
+    else{p.classList.remove("visible");b.classList.remove("active-explain");b.textContent="📖 설명 보기";}
+  }
+</script>
+<!-- comment-toggle -->
+<style>
+  .btn-cmt{font-family:"JetBrains Mono",monospace;font-size:12px;background:#2a1f10;color:#546e7a;border:2px solid #4a3a28;}
+  .btn-cmt:hover{background:#3a2e1e;color:#8a9aaa;}
+  .btn-cmt.cmt-on{background:#1e2a1e;color:#c3e88d;border-color:#2d5a3d;}
+  .btn-cmt.cmt-on:hover{background:#2d3a2d;}
+</style>
+<script>
+  (function(){
+    var KEY='showComments';var show=localStorage.getItem(KEY)==='true';
+    function applyState(){document.querySelectorAll('.cmt').forEach(function(el){el.style.visibility=show?'':'hidden';});var btn=document.getElementById('btnCmt');if(!btn)return;btn.textContent=show?'// 주석  [ ON ]':'// 주석  [ OFF ]';btn.classList.toggle('cmt-on',show);}
+    document.addEventListener('DOMContentLoaded',function(){var btnArea=document.querySelector('.btn-area');if(btnArea){var btn=document.createElement('button');btn.id='btnCmt';btn.className='btn btn-cmt';btn.addEventListener('click',function(){show=!show;localStorage.setItem(KEY,String(show));applyState();});btnArea.appendChild(btn);}applyState();});
+    window.addEventListener('storage',function(e){if(e.key===KEY){show=e.newValue==='true';applyState();}});
+  })();
+</script>
+</body>
+</html>

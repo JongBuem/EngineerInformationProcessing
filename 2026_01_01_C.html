@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>알고리즘 풀이 노트</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--ink:#1a1208;--paper:#f5f0e8;--aged:#e8dfc8;--line:#c8b89a;--accent:#8b3a0f;--accent2:#2d5a3d;--accent3:#1e3a6e;--highlight:#f0c060;--code-bg:#1a1208;--code-fg:#e8d5b0;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--paper);color:var(--ink);font-family:"Gowun Batang",serif;min-height:100vh;background-image:repeating-linear-gradient(0deg,transparent,transparent 31px,var(--line) 31px,var(--line) 32px);background-attachment:fixed;}
+    .page{max-width:860px;margin:0 auto;padding:60px 40px;position:relative;}
+    .page::before{content:"";position:fixed;left:calc(50% - 430px + 72px);top:0;bottom:0;width:2px;background:rgba(192,57,43,0.35);pointer-events:none;}
+    .header{padding-left:48px;margin-bottom:56px;animation:fadeSlide 0.6s ease both;}
+    .header .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.25em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;opacity:.8;}
+    .header h1{font-family:"Noto Serif KR",serif;font-size:24px;font-weight:700;color:var(--ink);line-height:1.4;border-bottom:3px double var(--accent);padding-bottom:12px;display:inline-block;}
+    .header .meta{margin-top:10px;font-size:13px;color:#7a6650;font-family:"JetBrains Mono",monospace;}
+    .section{padding-left:48px;margin-bottom:40px;animation:fadeSlide 0.6s ease 0.1s both;}
+    .section-title{font-family:"Noto Serif KR",serif;font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.12em;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+    .section-title .num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--accent);color:var(--paper);border-radius:50%;font-size:11px;font-weight:700;}
+    .tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+    .tag{font-family:"JetBrains Mono",monospace;font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid;}
+    .tag-c{background:rgba(130,170,255,.15);color:#2d5aaa;border-color:rgba(130,170,255,.4);}
+    .tag-type{background:rgba(240,192,96,.15);color:#8a6010;border-color:rgba(240,192,96,.4);}
+    .code-block{background:var(--code-bg);border-radius:10px;overflow:hidden;border:1px solid #2a1e10;box-shadow:4px 6px 0 rgba(0,0,0,.2);}
+    .code-header{display:flex;align-items:center;gap:6px;padding:10px 16px;background:#150f06;border-bottom:1px solid #2a1e10;}
+    .dot{width:12px;height:12px;border-radius:50%;}
+    .dot-r{background:#ff5f57;}.dot-y{background:#febc2e;}.dot-g{background:#28c840;}
+    .code-header .lang{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:11px;color:#8a7a60;letter-spacing:.1em;}
+    pre{padding:20px 24px;font-family:"JetBrains Mono",monospace;font-size:13.5px;line-height:1.9;color:var(--code-fg);overflow-x:auto;tab-size:4;}
+    .kw{color:#c792ea;}.fn{color:#82aaff;}.nl{color:#f78c6c;}.str{color:#c3e88d;}.cmt{color:#546e7a;font-style:italic;}.cls{color:#ffcb6b;}.inc{color:#89ddff;}
+    /* 버튼 */
+    .btn-area{padding-left:48px;margin-bottom:40px;display:flex;gap:16px;flex-wrap:wrap;animation:fadeSlide 0.6s ease 0.2s both;}
+    .btn{font-family:"Noto Serif KR",serif;font-size:15px;font-weight:700;padding:12px 32px;border:none;border-radius:6px;cursor:pointer;letter-spacing:.08em;transition:all .2s ease;box-shadow:3px 4px 0 rgba(0,0,0,.18);position:relative;top:0;}
+    .btn:active{top:2px;box-shadow:1px 2px 0 rgba(0,0,0,.18);}
+    .btn-answer{background:var(--ink);color:var(--highlight);border:2px solid var(--accent);}
+    .btn-answer:hover{background:#2d1e0a;}
+    .btn-explain{background:var(--accent2);color:#e8f5ec;border:2px solid #1e4028;}
+    .btn-explain:hover{background:#1e4028;}
+    .btn.active-answer{background:var(--highlight);color:var(--ink);border-color:var(--ink);}
+    .btn.active-explain{background:#c3e88d;color:#1a3010;border-color:var(--accent2);}
+    /* 주석 버튼 */
+    .btn-cmt{font-family:"JetBrains Mono",monospace;font-size:12px;background:#2a1f10;color:#546e7a;border:2px solid #4a3a28;}
+    .btn-cmt:hover{background:#3a2e1e;color:#8a9aaa;}
+    .btn-cmt.cmt-on{background:#1e2a1e;color:#c3e88d;border-color:#2d5a3d;}
+    .btn-cmt.cmt-on:hover{background:#2d3a2d;}
+    /* 패널 */
+    .panel{padding-left:48px;margin-bottom:44px;display:none;animation:fadeSlide 0.4s ease both;}
+    .panel.visible{display:block;}
+    /* 정답 박스 */
+    .answer-box{background:var(--ink);color:var(--highlight);border-radius:10px;padding:28px 32px;border:2px solid var(--accent);box-shadow:4px 6px 0 rgba(0,0,0,.25);}
+    .answer-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#8a7a60;margin-bottom:10px;}
+    .answer-value{font-family:"JetBrains Mono",monospace;font-size:56px;font-weight:700;line-height:1.1;margin-bottom:10px;animation:pulse 2s ease-in-out infinite;}
+    .answer-desc{font-family:"JetBrains Mono",monospace;font-size:13px;color:#c8a870;}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.75;}}
+    /* 설명 공통 */
+    .sub-section{margin-bottom:32px;}
+    .sub-title{font-family:"Noto Serif KR",serif;font-size:14px;font-weight:700;color:var(--accent3);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--aged);display:flex;align-items:center;gap:8px;}
+    .card{border-radius:8px;padding:16px 20px;font-size:14px;line-height:1.9;border:1px solid;margin-bottom:12px;}
+    .card.blue{background:rgba(30,58,110,.08);border-color:rgba(30,58,110,.25);color:var(--ink);}
+    .card.green{background:rgba(45,90,61,.08);border-color:rgba(45,90,61,.25);color:var(--ink);}
+    .card.yellow{background:rgba(240,192,96,.12);border-color:rgba(240,192,96,.4);color:var(--ink);}
+    .hl{background:linear-gradient(transparent 55%,rgba(240,192,96,.5) 55%);}
+    .mono{font-family:"JetBrains Mono",monospace;font-size:13px;}
+    .point-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+    .point-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.7;}
+    .icon{flex-shrink:0;font-size:16px;}
+    /* flow-wrap */
+    .flow-wrap{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:8px;padding:20px;overflow-x:auto;box-shadow:inset 0 1px 3px rgba(0,0,0,.06);margin-bottom:20px;}
+    /* chain */
+    .chain{display:flex;flex-direction:column;gap:14px;}
+    .chain-step{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .chain-step .step-num{font-family:"JetBrains Mono",monospace;font-size:11px;background:var(--accent);color:var(--paper);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .box-expr{background:#1a1208;border:1.5px solid #546e7a;border-radius:5px;padding:5px 14px;font-family:"JetBrains Mono",monospace;font-size:13px;color:#e8d5b0;white-space:nowrap;}
+    .box-arrow{color:#c8b89a;font-size:16px;}
+    .box-result{background:#1a1208;border:2px solid #2d5a3d;border-radius:5px;padding:5px 14px;font-family:"JetBrains Mono",monospace;font-size:13px;color:#c3e88d;font-weight:700;white-space:nowrap;}
+    .box-result.gold{border-color:#f0c060;color:#f0c060;background:#2d2010;}
+    .chain-step .note{font-size:12px;color:#7a6650;font-family:"JetBrains Mono",monospace;}
+    /* trace-table */
+    .trace-table{width:100%;border-collapse:collapse;font-family:"JetBrains Mono",monospace;font-size:13px;margin:12px 0;}
+    .trace-table th{background:var(--ink);color:var(--paper);padding:10px 14px;text-align:left;font-weight:600;letter-spacing:.05em;}
+    .trace-table td{padding:9px 14px;border-bottom:1px solid var(--aged);vertical-align:middle;line-height:1.6;}
+    .trace-table tr:nth-child(even) td{background:rgba(0,0,0,.03);}
+    .trace-table tr.hl-row td{background:rgba(240,192,96,.22);font-weight:700;}
+    .tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-family:"JetBrains Mono",monospace;font-weight:600;}
+    .tag-step{background:#fde8d8;color:#8b3a0f;}
+    .tag-val{background:#d5e8f0;color:#1e3a6e;}
+    .tag-result{background:#d5f0e0;color:#2d5a3d;}
+    @keyframes fadeSlide{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="label">2026년 1회 · 정보처리기사 실기 · 문제 1</div>
+    <h1>C언어 — 배열 평균 합산</h1>
+    <div class="meta">C · Array · Function · Pointer Arithmetic · Double Output</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="num">Q</span>문제 코드</div>
+    <div class="tag-row">
+      <span class="tag tag-c">C Language</span>
+      <span class="tag tag-type">배열 · 함수 포인터 · 실수 출력</span>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <span class="lang">C</span>
+      </div>
+      <pre><span class="inc">#include</span> &lt;stdio.h&gt;
+
+<span class="kw">double</span> <span class="fn">arr1</span>(<span class="kw">int</span> p[], <span class="kw">int</span> len) {   <span class="cmt">// ① p[]방식: 배열 첨자</span>
+    <span class="kw">double</span> av = <span class="nl">0</span>;
+    <span class="kw">int</span> i;
+    <span class="kw">for</span> (i = <span class="nl">0</span>; i &lt; len; i++) {
+        av += (<span class="kw">double</span>) p[i];        <span class="cmt">// int → double 캐스팅 후 합산</span>
+    }
+    <span class="kw">return</span> av / len;               <span class="cmt">// 합 ÷ 개수 = 평균</span>
+}
+
+<span class="kw">double</span> <span class="fn">arr2</span>(<span class="kw">int</span> *p, <span class="kw">int</span> len) {    <span class="cmt">// ② *p방식: 포인터 산술</span>
+    <span class="kw">double</span> av = <span class="nl">0</span>;
+    <span class="kw">int</span> i;
+    <span class="kw">for</span> (i = <span class="nl">0</span>; i &lt; len; i++) {
+        av += (<span class="kw">double</span>)(*(p + i));   <span class="cmt">// *(p+i) ≡ p[i] 완전히 동일</span>
+    }
+    <span class="kw">return</span> av / len;
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> arr[<span class="nl">10</span>] = {<span class="nl">80</span>,<span class="nl">20</span>,<span class="nl">50</span>,<span class="nl">55</span>,<span class="nl">45</span>,<span class="nl">95</span>,<span class="nl">55</span>,<span class="nl">10</span>,<span class="nl">40</span>,<span class="nl">80</span>};
+    <span class="kw">int</span> len = <span class="nl">10</span>;
+    printf(<span class="str">"%.2f"</span>, <span class="fn">arr1</span>(arr, len) + <span class="fn">arr2</span>(arr, len));  <span class="cmt">// 두 평균의 합</span>
+    <span class="kw">return</span> <span class="nl">0</span>;
+}</pre>
+    </div>
+    <p style="margin-top:12px;padding-left:4px;font-size:14px;color:#7a6650;">위 코드의 <strong>출력값</strong>은 무엇인가?</p>
+  </div>
+
+  <div class="btn-area">
+    <button class="btn btn-answer" id="btnAnswer" onclick="toggleAnswer()">✦ 정답 보기</button>
+    <button class="btn btn-explain" id="btnExplain" onclick="toggleExplain()">📖 설명 보기</button>
+  </div>
+
+  <div class="panel" id="panelAnswer">
+    <div class="answer-box">
+      <div class="answer-label">printf("%.2f") 출력 결과</div>
+      <div class="answer-value">106.00</div>
+      <div class="answer-desc">arr1 평균 53.00 + arr2 평균 53.00 = 106.00</div>
+    </div>
+  </div>
+
+  <div class="panel" id="panelExplain">
+    <!-- ① 문제 유형 -->
+    <div class="sub-section">
+      <div class="sub-title">① 문제 유형</div>
+      <div class="card blue">
+        <p><span class="hl">배열을 두 가지 방식(첨자 vs 포인터 산술)으로 접근해 평균을 구한 뒤 합산하는 값을 %.2f로 출력하는 문제</span>입니다.</p>
+        <br/>
+        <ul class="point-list">
+          <li><span class="icon">🔷</span><span><strong>arr1</strong>: <span class="mono">int p[]</span> — 배열 첨자 방식 <span class="mono">p[i]</span></span></li>
+          <li><span class="icon">🔷</span><span><strong>arr2</strong>: <span class="mono">int *p</span> — 포인터 산술 방식 <span class="mono">*(p+i)</span></span></li>
+          <li><span class="icon">✅</span><span><span class="mono">p[i]</span> 와 <span class="mono">*(p+i)</span>는 <span class="hl">완전히 동일</span> → 두 함수 결과가 같음</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ② 연쇄 호출 단계별 분해 -->
+    <div class="sub-section">
+      <div class="sub-title">② 연쇄 호출 단계별 분해</div>
+      <div class="flow-wrap">
+        <div class="chain">
+          <div class="chain-step">
+            <span class="step-num">1</span>
+            <span class="box-expr">arr = {80,20,50,55,45,95,55,10,40,80}</span>
+            <span class="box-arrow">→</span>
+            <span class="box-result">합계 530</span>
+            <span class="note">10개 원소 전부 더함</span>
+          </div>
+          <div class="chain-step">
+            <span class="step-num">2</span>
+            <span class="box-expr">arr1(arr, 10)</span>
+            <span class="box-arrow">→</span>
+            <span class="box-result">530.0 / 10</span>
+            <span class="note">double 나눗셈</span>
+          </div>
+          <div class="chain-step">
+            <span class="step-num">3</span>
+            <span class="box-expr">530.0 / 10</span>
+            <span class="box-arrow">→</span>
+            <span class="box-result">53.00</span>
+            <span class="note">arr1 반환값</span>
+          </div>
+          <div class="chain-step">
+            <span class="step-num">4</span>
+            <span class="box-expr">arr2(arr, 10)</span>
+            <span class="box-arrow">→</span>
+            <span class="box-result">53.00</span>
+            <span class="note">*(p+i) ≡ p[i] → 동일 결과</span>
+          </div>
+          <div class="chain-step">
+            <span class="step-num">5</span>
+            <span class="box-expr">53.00 + 53.00</span>
+            <span class="box-arrow">→</span>
+            <span class="box-result gold">106.00</span>
+            <span class="note">printf("%.2f") 출력</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ 단계별 변수 추적 -->
+    <div class="sub-section">
+      <div class="sub-title">③ arr1() 내부 단계별 변수 추적 (주요 i값)</div>
+      <div class="flow-wrap">
+        <table class="trace-table">
+          <thead>
+            <tr><th>i</th><th>p[i]</th><th>(double)p[i]</th><th>av 누적값</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="tag tag-step">0</span></td><td>80</td><td>80.0</td><td>80.0</td></tr>
+            <tr><td><span class="tag tag-step">1</span></td><td>20</td><td>20.0</td><td>100.0</td></tr>
+            <tr><td><span class="tag tag-step">2</span></td><td>50</td><td>50.0</td><td>150.0</td></tr>
+            <tr><td><span class="tag tag-step">3</span></td><td>55</td><td>55.0</td><td>205.0</td></tr>
+            <tr><td><span class="tag tag-step">4</span></td><td>45</td><td>45.0</td><td>250.0</td></tr>
+            <tr><td><span class="tag tag-step">5</span></td><td>95</td><td>95.0</td><td>345.0</td></tr>
+            <tr><td><span class="tag tag-step">6</span></td><td>55</td><td>55.0</td><td>400.0</td></tr>
+            <tr><td><span class="tag tag-step">7</span></td><td>10</td><td>10.0</td><td>410.0</td></tr>
+            <tr><td><span class="tag tag-step">8</span></td><td>40</td><td>40.0</td><td>450.0</td></tr>
+            <tr class="hl-row"><td><span class="tag tag-step">9</span></td><td>80</td><td>80.0</td><td><strong>530.0</strong> → ÷10 = <span class="tag tag-result">53.00</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ④ 핵심 포인트 -->
+    <div class="sub-section">
+      <div class="sub-title">④ 핵심 포인트</div>
+      <div class="card green">
+        <ul class="point-list">
+          <li><span class="icon">✅</span><span>함수 매개변수 <span class="mono">int p[]</span> 와 <span class="mono">int *p</span> 는 <span class="hl">완전히 동일</span> — 컴파일러가 둘 다 포인터로 처리</span></li>
+          <li><span class="icon">✅</span><span><span class="mono">(double)p[i]</span> 캐스팅으로 정수 → 실수 변환 후 합산하므로 소수점 정밀도 유지</span></li>
+          <li><span class="icon">✅</span><span><span class="mono">%.2f</span> : 소수점 이하 2자리 고정 출력 → 106.00</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="answer-box">
+      <div class="answer-label">printf("%.2f") 출력 결과</div>
+      <div class="answer-value">106.00</div>
+      <div class="answer-desc">arr1(53.00) + arr2(53.00) = 106.00</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleAnswer(){
+    var p=document.getElementById("panelAnswer"),b=document.getElementById("btnAnswer");
+    var pe=document.getElementById("panelExplain"),be=document.getElementById("btnExplain");
+    var open=!p.classList.contains("visible");
+    pe.classList.remove("visible");be.classList.remove("active-explain");be.textContent="📖 설명 보기";
+    if(open){p.classList.add("visible");b.classList.add("active-answer");b.textContent="✦ 정답 닫기";p.scrollIntoView({behavior:"smooth",block:"nearest"});}
+    else{p.classList.remove("visible");b.classList.remove("active-answer");b.textContent="✦ 정답 보기";}
+  }
+  function toggleExplain(){
+    var p=document.getElementById("panelExplain"),b=document.getElementById("btnExplain");
+    var pa=document.getElementById("panelAnswer"),ba=document.getElementById("btnAnswer");
+    var open=!p.classList.contains("visible");
+    pa.classList.remove("visible");ba.classList.remove("active-answer");ba.textContent="✦ 정답 보기";
+    if(open){p.classList.add("visible");b.classList.add("active-explain");b.textContent="📖 설명 닫기";p.scrollIntoView({behavior:"smooth",block:"nearest"});}
+    else{p.classList.remove("visible");b.classList.remove("active-explain");b.textContent="📖 설명 보기";}
+  }
+</script>
+<!-- comment-toggle -->
+<style>
+  .btn-cmt{font-family:"JetBrains Mono",monospace;font-size:12px;background:#2a1f10;color:#546e7a;border:2px solid #4a3a28;}
+  .btn-cmt:hover{background:#3a2e1e;color:#8a9aaa;}
+  .btn-cmt.cmt-on{background:#1e2a1e;color:#c3e88d;border-color:#2d5a3d;}
+  .btn-cmt.cmt-on:hover{background:#2d3a2d;}
+</style>
+<script>
+  (function(){
+    var KEY='showComments';
+    var show=localStorage.getItem(KEY)==='true';
+    function applyState(){
+      document.querySelectorAll('.cmt').forEach(function(el){el.style.visibility=show?'':'hidden';});
+      var btn=document.getElementById('btnCmt');
+      if(!btn)return;
+      btn.textContent=show?'// 주석  [ ON ]':'// 주석  [ OFF ]';
+      btn.classList.toggle('cmt-on',show);
+    }
+    document.addEventListener('DOMContentLoaded',function(){
+      var btnArea=document.querySelector('.btn-area');
+      if(btnArea){var btn=document.createElement('button');btn.id='btnCmt';btn.className='btn btn-cmt';btn.addEventListener('click',function(){show=!show;localStorage.setItem(KEY,String(show));applyState();});btnArea.appendChild(btn);}
+      applyState();
+    });
+    window.addEventListener('storage',function(e){if(e.key===KEY){show=e.newValue==='true';applyState();}});
+  })();
+</script>
+</body>
+</html>

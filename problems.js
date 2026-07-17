@@ -113,6 +113,15 @@ const PROBLEMS = [
   { file: "2025_03_12_J.html", year: 2025, round: 3, num: 12, lang: "J", type: "programming" },
   { file: "2025_03_15_C.html", year: 2025, round: 3, num: 15, lang: "C", type: "programming" },
   { file: "2025_03_17_J.html", year: 2025, round: 3, num: 17, lang: "J", type: "programming" },
+
+  // ── 2026년 1회차 ──
+  { file: "2026_01_01_C.html", year: 2026, round: 1, num:  1, lang: "C", type: "programming" },
+  { file: "2026_01_07_J.html", year: 2026, round: 1, num:  7, lang: "J", type: "programming" },
+  { file: "2026_01_08_P.html", year: 2026, round: 1, num:  8, lang: "P", type: "programming" },
+  { file: "2026_01_12_C.html", year: 2026, round: 1, num: 12, lang: "C", type: "programming" },
+  { file: "2026_01_13_P.html", year: 2026, round: 1, num: 13, lang: "P", type: "programming" },
+  { file: "2026_01_14_P.html", year: 2026, round: 1, num: 14, lang: "P", type: "programming" },
+  { file: "2026_01_17_J.html", year: 2026, round: 1, num: 17, lang: "J", type: "programming" },
 ];
 
 /**
