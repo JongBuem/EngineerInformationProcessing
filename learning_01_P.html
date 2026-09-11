@@ -418,7 +418,7 @@
         <div class="label">Python Learning Note — 05</div>
         <h1>Python 기본 자료구조 완전 정리</h1>
         <div class="meta">
-          Python · list · tuple · dict · set · 인덱싱 · 기본 메서드
+          Python · list · tuple · dict · set · 인덱싱 · 기본 메서드 · 연산자 · range()
         </div>
       </div>
 
@@ -447,7 +447,15 @@
             (튜플)</a
           >
           <a class="toc-item" href="#s6"
-            ><span class="toc-num" style="background: #2d5a3d">6</span>핵심
+            ><span class="toc-num" style="background: #8b3a0f">6</span>연산자
+            (Operators)</a
+          >
+          <a class="toc-item" href="#s7"
+            ><span class="toc-num" style="background: #1e3a6e">7</span>range()
+            함수</a
+          >
+          <a class="toc-item" href="#s8"
+            ><span class="toc-num" style="background: #2d5a3d">8</span>핵심
             요약</a
           >
         </div>
@@ -712,10 +720,85 @@ lo, hi = <span class="fn">minmax</span>([<span class="nl">3</span>,<span class="
         </div>
       </div>
 
-      <!-- ═══ 6. 핵심 요약 ═══ -->
+      <!-- ═══ 6. 연산자 ═══ -->
       <div class="section" id="s6">
         <div class="section-title">
-          <span class="num green">6</span>시험 핵심 요약
+          <span class="num">6</span>연산자 (Operators)
+        </div>
+        <div class="card">
+          <p>파이썬에서 자주 사용하는 특수 연산자입니다.</p>
+        </div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>연산자</th>
+              <th>설명</th>
+              <th>예제</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>//</code></td>
+              <td>나눗셈의 몫 (정수 반환)</td>
+              <td><code>7 // 2 &nbsp;=&gt;&nbsp; 3</code></td>
+            </tr>
+            <tr>
+              <td><code>%</code></td>
+              <td>나눗셈의 나머지 (Modulo)</td>
+              <td><code>7 % 2 &nbsp;=&gt;&nbsp; 1</code></td>
+            </tr>
+            <tr>
+              <td><code>**</code></td>
+              <td>거듭제곱</td>
+              <td><code>3 ** 2 &nbsp;=&gt;&nbsp; 9</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ═══ 7. range() ═══ -->
+      <div class="section" id="s7">
+        <div class="section-title">
+          <span class="num blue">7</span>range() 함수
+        </div>
+        <div class="card blue">
+          <p>특정 구간의 숫자 범위를 만들어 주는 함수입니다.</p>
+        </div>
+        <div class="sub-title">
+          <span class="sub-badge" style="background: var(--accent3)">사</span>사용법
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Python</span>
+          </div>
+          <pre><span class="fn">range</span>(stop)              <span class="cmt"># 0부터 stop-1까지</span>
+<span class="fn">range</span>(start, stop)        <span class="cmt"># start부터 stop-1까지</span>
+<span class="fn">range</span>(start, stop, step)  <span class="cmt"># start부터 step 간격으로 stop-1까지</span></pre>
+        </div>
+        <div class="sub-title">
+          <span class="sub-badge" style="background: var(--accent3)">예</span>예제
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span
+            ><span class="dot dot-g"></span><span class="lang">Python</span>
+          </div>
+          <pre><span class="fn">range</span>(<span class="nl">7</span>)        <span class="cmt"># 0부터 6까지</span>
+             <span class="cmt"># =&gt; [0, 1, 2, 3, 4, 5, 6]</span>
+
+<span class="fn">range</span>(<span class="nl">2</span>, <span class="nl">7</span>)     <span class="cmt"># 2부터 6까지</span>
+             <span class="cmt"># =&gt; [2, 3, 4, 5, 6]</span>
+
+<span class="fn">range</span>(<span class="nl">1</span>, <span class="nl">7</span>, <span class="nl">2</span>)  <span class="cmt"># 1부터 2칸씩, 6까지</span>
+             <span class="cmt"># =&gt; [1, 3, 5]</span></pre>
+        </div>
+      </div>
+
+      <!-- ═══ 8. 핵심 요약 ═══ -->
+      <div class="section" id="s8">
+        <div class="section-title">
+          <span class="num green">8</span>시험 핵심 요약
         </div>
         <div class="card gold">
           <ul class="point-list">
